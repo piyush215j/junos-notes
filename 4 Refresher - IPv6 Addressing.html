@@ -871,7 +871,430 @@
     .abbrev-case-note { font-size: 0.75rem; color: var(--text-secondary); }
     @media (max-width: 900px) { .abbrev-compare { grid-template-columns: 1fr; } }
     @media (max-width: 768px) { .hexet-block { min-width: 56px; } }
-  </style>
+  
+    /* ─── IPV6 RECREATED DIAGRAMS STYLING ─── */
+    .byte-compare-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px 24px;
+      margin: 16px 0;
+    }
+    .byte-table {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .bt-header, .bt-row {
+      display: grid;
+      grid-template-columns: 140px 1.2fr 1fr 1.3fr;
+      gap: 12px;
+      align-items: center;
+    }
+    @media (max-width: 768px) {
+      .bt-header, .bt-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      .bt-header { display: none; }
+      .bt-row {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 14px;
+        margin-bottom: 12px;
+      }
+    }
+    .bt-th {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+    .bt-th small {
+      display: block;
+      font-size: 0.65rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: none;
+      margin-top: 2px;
+    }
+    .bt-td {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .td-val .val-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .td-val small {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+    .byte-cell {
+      padding: 8px 14px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      transition: all var(--transition);
+    }
+    .bin-cell-pill {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      color: var(--accent);
+      letter-spacing: 0.08em;
+    }
+    .dec-cell-pill {
+      background: var(--red-dim);
+      border: 1px solid rgba(248, 81, 73, 0.4);
+      color: var(--red);
+    }
+    .hex-cell-pill {
+      background: var(--green-dim);
+      border: 1px solid rgba(63, 185, 80, 0.4);
+      color: var(--green);
+    }
+    .cell-sub {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+    .cell-tag {
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-align: center;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .cell-tag.tag-red {
+      color: var(--red);
+      background: rgba(248, 81, 73, 0.1);
+    }
+    .cell-tag.tag-green {
+      color: var(--green);
+      background: rgba(63, 185, 80, 0.1);
+    }
+    .byte-insight-banner {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      margin-top: 18px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .insight-icon {
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+    .insight-body strong {
+      font-size: 0.85rem;
+      color: var(--text-primary);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .insight-body p {
+      margin: 0;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* ─── LINK-LOCAL SCOPE TOPOLOGY ─── */
+    .linklocal-scope-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px 24px;
+      margin: 16px 0;
+    }
+    .scope-zones-header {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    @media (max-width: 768px) {
+      .scope-zones-header {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+    }
+    .scope-zone-pill {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .scope-zone-pill.zone-ab {
+      border-color: rgba(88, 166, 255, 0.4);
+      background: linear-gradient(135deg, rgba(88, 166, 255, 0.08) 0%, var(--bg-elevated) 100%);
+    }
+    .scope-zone-pill.zone-bc {
+      border-color: rgba(240, 136, 62, 0.4);
+      background: linear-gradient(135deg, rgba(240, 136, 62, 0.08) 0%, var(--bg-elevated) 100%);
+    }
+    .zone-badge {
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      display: inline-block;
+      width: fit-content;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-bottom: 2px;
+    }
+    .zone-badge.blue { background: var(--accent-dim); color: var(--accent); }
+    .zone-badge.orange { background: var(--orange-dim); color: var(--orange); }
+    .scope-zone-pill strong { font-size: 0.85rem; color: var(--text-primary); }
+    .scope-zone-pill small { font-size: 0.72rem; color: var(--text-secondary); }
+    .scope-zone-sep {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--red);
+      background: var(--red-dim);
+      border: 1px solid rgba(248, 81, 73, 0.3);
+      padding: 4px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+      text-align: center;
+    }
+
+    .ll-topo-grid {
+      display: grid;
+      grid-template-columns: 1fr 140px 1.4fr 140px 1fr;
+      gap: 10px;
+      align-items: stretch;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 900px) {
+      .ll-topo-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+    }
+    .ll-node {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .ll-node.r-a { border-color: rgba(88, 166, 255, 0.4); }
+    .ll-node.r-b { border-color: rgba(248, 81, 73, 0.5); }
+    .ll-node.r-c { border-color: rgba(240, 136, 62, 0.4); }
+    .ll-node-hdr {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .ll-icon { font-size: 1.2rem; }
+    .ll-node-hdr h4 { margin: 0; font-size: 0.95rem; font-weight: 700; color: var(--text-primary); }
+    .ll-sub { font-size: 0.7rem; color: var(--text-muted); display: block; }
+    .ll-iface-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .iface-name {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+    .iface-ip {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .iface-ip.link-green { color: var(--green); }
+    .iface-ip.hl-target { color: var(--orange); }
+    .iface-scope {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+    .iface-scope.valid { color: var(--green); }
+    .iface-scope.invalid { color: var(--orange); }
+    .ll-action {
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 0.75rem;
+    }
+    .ll-action.ping-action {
+      border-color: rgba(88, 166, 255, 0.3);
+      background: rgba(88, 166, 255, 0.05);
+    }
+    .act-tag { font-weight: 700; color: var(--accent); display: block; margin-bottom: 2px; }
+    .ll-action code { font-weight: 700; color: var(--orange); }
+    .ll-action small { display: block; font-size: 0.68rem; color: var(--text-muted); margin-top: 2px; }
+    .idle-text { font-size: 0.72rem; color: var(--text-muted); line-height: 1.35; display: block; }
+
+    /* Wire flows between routers */
+    .ll-wire-flow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-align: center;
+      padding: 8px 0;
+    }
+    .wire-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+    .wire-packet-stream {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      width: 100%;
+    }
+    .packet-pill {
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      width: 100%;
+      text-align: center;
+    }
+    .packet-pill.flowing {
+      background: var(--green-dim);
+      border: 1px solid rgba(63, 185, 80, 0.4);
+      color: var(--green);
+    }
+    .packet-pill.flowing .p-type { display: block; font-size: 0.65rem; }
+    .packet-pill.flowing .p-dest code { color: var(--orange); }
+    .packet-pill.blocked {
+      background: var(--red-dim);
+      border: 1px solid rgba(248, 81, 73, 0.4);
+      color: var(--red);
+      font-size: 0.65rem;
+    }
+    .wire-line {
+      width: 100%;
+      height: 3px;
+      border-radius: 2px;
+    }
+    .wire-line.ok {
+      background: linear-gradient(90deg, var(--accent) 0%, var(--green) 100%);
+    }
+    .wire-line.blocked {
+      background: var(--border);
+      border-top: 2px dashed var(--red);
+      height: 0;
+    }
+    .wire-status {
+      font-size: 0.68rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .wire-status.ok { color: var(--green); }
+    .wire-status.blocked { color: var(--red); }
+
+    .dual-iface-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .ll-drop-alert {
+      background: var(--red-dim);
+      border: 1px solid rgba(248, 81, 73, 0.4);
+      border-radius: 6px;
+      padding: 10px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .drop-icon {
+      font-size: 1.2rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .drop-text strong {
+      font-size: 0.78rem;
+      color: var(--red);
+      display: block;
+      margin-bottom: 2px;
+    }
+    .drop-text p {
+      margin: 0;
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      line-height: 1.35;
+    }
+    .drop-text p code { color: var(--orange); }
+    .drop-rule {
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--red);
+      margin-top: 4px;
+    }
+
+    .linklocal-rules-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+    }
+    .llr-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .llr-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+    }
+    @media (max-width: 768px) {
+      .llr-grid { grid-template-columns: 1fr; }
+    }
+    .llr-item strong {
+      font-size: 0.78rem;
+      color: var(--text-primary);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .llr-item p {
+      margin: 0;
+      font-size: 0.74rem;
+      color: var(--text-secondary);
+      line-height: 1.45;
+    }
+
+</style>
 </head>
 <body>
 
@@ -1141,44 +1564,115 @@
         </div>
 
 
-        <!-- Visual: Why Hex beats Decimal for byte encoding -->
-        <div class="diagram-wrap">
-          <div class="diagram-title"><span class="dot dot-green"></span> One byte written three ways — why hex wins</div>
-          <svg viewBox="0 0 780 198" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Comparison showing binary (8 chars), decimal (1-3 chars), hex (always 2 chars) for values 5, 99, and 255">
-            <text x="130" y="18" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#8b949e" font-weight="700">BINARY (always 8 chars)</text>
-            <text x="390" y="18" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#8b949e" font-weight="700">DECIMAL (1-3 chars - varies!)</text>
-            <text x="648" y="18" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#8b949e" font-weight="700">HEX (always exactly 2 chars)</text>
-            <!-- Value 5 -->
-            <text x="8" y="50" font-family="Inter,sans-serif" font-size="10" fill="#484f58" font-weight="600">Value 5</text>
-            <rect x="20" y="56" width="220" height="28" rx="6" fill="#1c2330" stroke="#30363d"/>
-            <text x="130" y="75" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="14" fill="#58a6ff" font-weight="700" letter-spacing="0.1em">00000101</text>
-            <rect x="348" y="56" width="84" height="28" rx="6" fill="#1c2330" stroke="#f85149"/>
-            <text x="390" y="75" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="14" fill="#f85149" font-weight="700">5</text>
-            <text x="390" y="98" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#f85149">1 character (varies!)</text>
-            <rect x="588" y="56" width="120" height="28" rx="6" fill="#1a3a25" stroke="#3fb950"/>
-            <text x="648" y="75" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="14" fill="#3fb950" font-weight="700">05</text>
-            <text x="648" y="98" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#3fb950">always 2 chars &#10003;</text>
-            <!-- Value 99 -->
-            <text x="8" y="122" font-family="Inter,sans-serif" font-size="10" fill="#484f58" font-weight="600">Value 99</text>
-            <rect x="20" y="128" width="220" height="28" rx="6" fill="#1c2330" stroke="#30363d"/>
-            <text x="130" y="147" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="14" fill="#58a6ff" font-weight="700" letter-spacing="0.1em">01100011</text>
-            <rect x="330" y="128" width="120" height="28" rx="6" fill="#1c2330" stroke="#f85149"/>
-            <text x="390" y="147" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="14" fill="#f85149" font-weight="700">99</text>
-            <text x="390" y="170" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#f85149">2 characters (varies!)</text>
-            <rect x="588" y="128" width="120" height="28" rx="6" fill="#1a3a25" stroke="#3fb950"/>
-            <text x="648" y="147" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="14" fill="#3fb950" font-weight="700">63</text>
-            <text x="648" y="170" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#3fb950">always 2 chars &#10003;</text>
-            <!-- Value 255 -->
-            <text x="8" y="192" font-family="Inter,sans-serif" font-size="10" fill="#484f58" font-weight="600">Value 255</text>
-            <rect x="20" y="178" width="220" height="18" rx="5" fill="#1c2330" stroke="#30363d"/>
-            <text x="130" y="191" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#58a6ff" letter-spacing="0.08em">11111111</text>
-            <rect x="319" y="178" width="142" height="18" rx="5" fill="#1c2330" stroke="#f85149"/>
-            <text x="390" y="191" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#f85149">255</text>
-            <text x="390" y="198" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#f85149">3 characters (varies!)</text>
-            <rect x="588" y="178" width="120" height="18" rx="5" fill="#1a3a25" stroke="#3fb950"/>
-            <text x="648" y="191" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#3fb950">FF</text>
-          </svg>
-          <p class="diagram-caption">Decimal width for one byte varies from 1 to 3 characters. Hex is always exactly 2 characters — making it perfectly consistent and compact for structured network addressing.</p>
+                <!-- Visual: Why Hex beats Decimal for byte encoding -->
+        <div class="byte-compare-wrap">
+          <div class="diagram-title"><span class="dot dot-green"></span> One byte written three ways &mdash; why hex wins</div>
+          
+          <div class="byte-table">
+            <!-- Header Row -->
+            <div class="bt-header">
+              <div class="bt-th th-val">Byte Value</div>
+              <div class="bt-th th-bin">
+                <span>BINARY</span>
+                <small>Always 8 bits (Long)</small>
+              </div>
+              <div class="bt-th th-dec">
+                <span>DECIMAL</span>
+                <small>1&ndash;3 digits (Variable Width &#10007;)</small>
+              </div>
+              <div class="bt-th th-hex">
+                <span>HEXADECIMAL</span>
+                <small>Always exactly 2 chars (Consistent &amp; Compact &#10004;)</small>
+              </div>
+            </div>
+
+            <!-- Row 1: Value 5 -->
+            <div class="bt-row">
+              <div class="bt-td td-val">
+                <span class="val-label">Value 5</span>
+                <small>Small number</small>
+              </div>
+              <div class="bt-td td-bin">
+                <div class="byte-cell bin-cell-pill">
+                  <code>00000101</code>
+                </div>
+                <span class="cell-sub">8 characters</span>
+              </div>
+              <div class="bt-td td-dec">
+                <div class="byte-cell dec-cell-pill">
+                  <code>5</code>
+                </div>
+                <span class="cell-tag tag-red">1 character (varies!)</span>
+              </div>
+              <div class="bt-td td-hex">
+                <div class="byte-cell hex-cell-pill">
+                  <code>05</code>
+                </div>
+                <span class="cell-tag tag-green">always 2 chars (leading 0) &#10004;</span>
+              </div>
+            </div>
+
+            <!-- Row 2: Value 99 -->
+            <div class="bt-row">
+              <div class="bt-td td-val">
+                <span class="val-label">Value 99</span>
+                <small>Medium number</small>
+              </div>
+              <div class="bt-td td-bin">
+                <div class="byte-cell bin-cell-pill">
+                  <code>01100011</code>
+                </div>
+                <span class="cell-sub">8 characters</span>
+              </div>
+              <div class="bt-td td-dec">
+                <div class="byte-cell dec-cell-pill">
+                  <code>99</code>
+                </div>
+                <span class="cell-tag tag-red">2 characters (varies!)</span>
+              </div>
+              <div class="bt-td td-hex">
+                <div class="byte-cell hex-cell-pill">
+                  <code>63</code>
+                </div>
+                <span class="cell-tag tag-green">always 2 chars &#10004;</span>
+              </div>
+            </div>
+
+            <!-- Row 3: Value 255 -->
+            <div class="bt-row">
+              <div class="bt-td td-val">
+                <span class="val-label">Value 255</span>
+                <small>Max 8-bit byte</small>
+              </div>
+              <div class="bt-td td-bin">
+                <div class="byte-cell bin-cell-pill">
+                  <code>11111111</code>
+                </div>
+                <span class="cell-sub">8 characters</span>
+              </div>
+              <div class="bt-td td-dec">
+                <div class="byte-cell dec-cell-pill">
+                  <code>255</code>
+                </div>
+                <span class="cell-tag tag-red">3 characters (varies!)</span>
+              </div>
+              <div class="bt-td td-hex">
+                <div class="byte-cell hex-cell-pill">
+                  <code>FF</code>
+                </div>
+                <span class="cell-tag tag-green">always 2 chars &#10004;</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Insight Card -->
+          <div class="byte-insight-banner">
+            <div class="insight-icon">&#128161;</div>
+            <div class="insight-body">
+              <strong>Why Hexadecimal is Essential for IPv6:</strong>
+              <p>Decimal width varies from 1 to 3 characters per byte, making 16-byte IPv6 addresses irregular and messy. In Hex, <strong>1 byte is ALWAYS exactly 2 hex characters</strong> (and 1 nibble = 1 hex char). This guarantees that every 128-bit IPv6 address is consistently structured as 32 hex characters grouped into 8 clean 16-bit blocks (hexets).</p>
+            </div>
+          </div>
         </div>
 
         <div class="card">
@@ -1820,70 +2314,146 @@
         </div>
 
 
-        <!-- Visual: Link-Local scope topology -->
-        <div class="diagram-wrap" style="margin-top:14px;">
-          <div class="diagram-title"><span class="dot dot-orange"></span> Link-Local Scope &mdash; Why a Cross-Link Ping Fails</div>
-          <svg viewBox="0 0 790 248" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Topology: Router A, B, C in chain. Ping from A to B-eth1 FE80 address is dropped at B.">
-            <defs>
-              <marker id="av7g" markerWidth="8" markerHeight="8" refX="7" refY="3.5" orient="auto"><polygon points="0 0,8 3.5,0 7" fill="#3fb950"/></marker>
-              <marker id="av7r" markerWidth="8" markerHeight="8" refX="7" refY="3.5" orient="auto"><polygon points="0 0,8 3.5,0 7" fill="#f85149"/></marker>
-            </defs>
+                <!-- Visual: Link-Local scope topology -->
+        <div class="linklocal-scope-wrap">
+          <div class="diagram-title"><span class="dot dot-orange"></span> Link-Local Scope (FE80::/10) &mdash; Why a Cross-Link Ping Fails</div>
+
+          <!-- Scope Zone Indicator Banners -->
+          <div class="scope-zones-header">
+            <div class="scope-zone-pill zone-ab">
+              <span class="zone-badge blue">SCOPE ZONE 1</span>
+              <strong>Link A&ndash;B Local Scope</strong>
+              <small>Valid only on the wire between Router A &amp; Router B</small>
+            </div>
+            <div class="scope-zone-sep">&#128683; Scope Boundary</div>
+            <div class="scope-zone-pill zone-bc">
+              <span class="zone-badge orange">SCOPE ZONE 2</span>
+              <strong>Link B&ndash;C Local Scope</strong>
+              <small>Valid only on the wire between Router B &amp; Router C</small>
+            </div>
+          </div>
+
+          <!-- 3-Router Interactive Topology Grid -->
+          <div class="ll-topo-grid">
             <!-- Router A -->
-            <rect x="18" y="82" width="132" height="82" rx="10" fill="#1f3a5f" stroke="#58a6ff" stroke-width="2"/>
-            <text x="84" y="106" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" fill="#58a6ff" font-weight="700">Router A</text>
-            <rect x="130" y="112" width="20" height="20" rx="3" fill="#1c2330" stroke="#58a6ff"/>
-            <text x="140" y="125" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#8b949e">eth0</text>
-            <text x="84" y="144" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#3fb950">FE80::A1</text>
-            <text x="84" y="156" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#484f58">on A-B link</text>
-            <!-- A-B link -->
-            <line x1="150" y1="122" x2="290" y2="122" stroke="#58a6ff" stroke-width="2"/>
-            <rect x="168" y="102" width="100" height="16" rx="4" fill="#1a3a25" stroke="#3fb950"/>
-            <text x="218" y="113" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#3fb950" font-weight="600">A-B Link (local)</text>
-            <!-- Router B -->
-            <rect x="290" y="62" width="162" height="122" rx="10" fill="#21262d" stroke="#3d444d" stroke-width="1.5"/>
-            <text x="371" y="86" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" fill="#e6edf3" font-weight="700">Router B</text>
-            <rect x="290" y="112" width="20" height="20" rx="3" fill="#1c2330" stroke="#484f58"/>
-            <text x="300" y="125" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#8b949e">eth0</text>
-            <rect x="452" y="112" width="20" height="20" rx="3" fill="#1c2330" stroke="#484f58"/>
-            <text x="462" y="125" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#8b949e">eth1</text>
-            <text x="371" y="108" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" fill="#8b949e">eth0: FE80::B1  (A-B link)</text>
-            <text x="371" y="122" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" fill="#f0883e">eth1: FE80::B2  (B-C link)</text>
-            <text x="371" y="142" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#484f58">Two interfaces = two separate link-local scopes</text>
-            <text x="371" y="154" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#484f58">FE80::B2 has no meaning on the A-B link</text>
-            <text x="371" y="166" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#484f58">Cannot be reached from Router A</text>
-            <text x="371" y="178" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#484f58">Never forwarded across links</text>
-            <!-- B-C link -->
-            <line x1="472" y1="122" x2="616" y2="122" stroke="#484f58" stroke-width="2" stroke-dasharray="5,3"/>
-            <rect x="490" y="102" width="100" height="16" rx="4" fill="#1c2330" stroke="#484f58"/>
-            <text x="540" y="113" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#484f58" font-weight="600">B-C Link (local)</text>
+            <div class="ll-node r-a">
+              <div class="ll-node-hdr">
+                <span class="ll-icon">&#128421;</span>
+                <div>
+                  <h4>Router A</h4>
+                  <span class="ll-sub">Source Host</span>
+                </div>
+              </div>
+              <div class="ll-iface-card">
+                <span class="iface-name">eth0</span>
+                <code class="iface-ip link-green">FE80::A1</code>
+                <span class="iface-scope">Active on Link A&ndash;B</span>
+              </div>
+              <div class="ll-action ping-action">
+                <span class="act-tag">&#128640; Action:</span>
+                <code>ping FE80::B2</code>
+                <small>Tries to ping B's eth1 IP</small>
+              </div>
+            </div>
+
+            <!-- Link A-B Wire Flow -->
+            <div class="ll-wire-flow wire-ab">
+              <div class="wire-label">Direct Link A&ndash;B Wire</div>
+              <div class="wire-packet-stream">
+                <div class="packet-pill flowing">
+                  <span class="p-type">ICMPv6 Ping</span>
+                  <span class="p-dest">Dest: <code>FE80::B2</code></span>
+                </div>
+                <div class="wire-line ok"></div>
+              </div>
+              <span class="wire-status ok">&#10003; Packet arrives at Router B eth0</span>
+            </div>
+
+            <!-- Router B (The Boundary & Drop Point) -->
+            <div class="ll-node r-b">
+              <div class="ll-node-hdr">
+                <span class="ll-icon">&#128256;</span>
+                <div>
+                  <h4>Router B</h4>
+                  <span class="ll-sub">Dual-Interface Router</span>
+                </div>
+              </div>
+              
+              <div class="dual-iface-wrap">
+                <div class="ll-iface-card iface-ab">
+                  <span class="iface-name">eth0 (Link A&ndash;B)</span>
+                  <code class="iface-ip">FE80::B1</code>
+                  <span class="iface-scope valid">&#10003; Valid on Link A&ndash;B</span>
+                </div>
+                <div class="ll-iface-card iface-bc">
+                  <span class="iface-name">eth1 (Link B&ndash;C)</span>
+                  <code class="iface-ip hl-target">FE80::B2</code>
+                  <span class="iface-scope invalid">&#10007; Target of Ping</span>
+                </div>
+              </div>
+
+              <!-- Drop Notice Banner -->
+              <div class="ll-drop-alert">
+                <div class="drop-icon">&#10060;</div>
+                <div class="drop-text">
+                  <strong>PACKET DROPPED AT ROUTER B!</strong>
+                  <p><code>FE80::B2</code> is scoped exclusively to <code>eth1</code> (Link B&ndash;C). It has <strong>zero meaning</strong> on <code>eth0</code>.</p>
+                  <span class="drop-rule">Link-local packets are NEVER forwarded across router interfaces.</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Link B-C Wire Flow (Blocked) -->
+            <div class="ll-wire-flow wire-bc">
+              <div class="wire-label">Direct Link B&ndash;C Wire</div>
+              <div class="wire-packet-stream">
+                <div class="packet-pill blocked">
+                  <span>&#9940; FORWARDING BLOCKED</span>
+                </div>
+                <div class="wire-line blocked"></div>
+              </div>
+              <span class="wire-status blocked">&#10007; Zero traffic reaches Link B&ndash;C</span>
+            </div>
+
             <!-- Router C -->
-            <rect x="616" y="82" width="152" height="82" rx="10" fill="#1c2330" stroke="#3d444d" stroke-width="1.5"/>
-            <text x="692" y="106" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" fill="#8b949e" font-weight="700">Router C</text>
-            <rect x="616" y="112" width="20" height="20" rx="3" fill="#1c2330" stroke="#484f58"/>
-            <text x="626" y="125" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#8b949e">eth0</text>
-            <text x="692" y="146" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#f0883e">FE80::B2</text>
-            <text x="692" y="158" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#484f58">only valid here</text>
-            <!-- Ping arrow A to B -->
-            <line x1="150" y1="118" x2="286" y2="118" stroke="#3fb950" stroke-width="2" marker-end="url(#av7g)"/>
-            <text x="218" y="112" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#3fb950">ping FE80::B2</text>
-            <!-- Drop at B -->
-            <circle cx="371" cy="206" r="17" fill="#3a1010" stroke="#f85149" stroke-width="2"/>
-            <text x="371" y="211" text-anchor="middle" font-family="Inter,sans-serif" font-size="15" fill="#f85149" font-weight="900">&#10005;</text>
-            <line x1="330" y1="187" x2="355" y2="202" stroke="#f85149" stroke-width="1.5" stroke-dasharray="3,2"/>
-            <text x="278" y="220" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#f85149">Arrives at B, DROPPED</text>
-            <text x="278" y="232" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#f85149">FE80::B2 is not on A-B link</text>
-            <text x="278" y="244" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#f85149">- has no meaning here</text>
-            <!-- Not forwarded -->
-            <line x1="387" y1="202" x2="452" y2="124" stroke="#f85149" stroke-width="1.5" stroke-dasharray="4,3"/>
-            <text x="452" y="196" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#f85149">NOT forwarded</text>
-            <text x="452" y="208" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#f85149">to B-C link</text>
-            <!-- Scope bands -->
-            <rect x="18" y="56" width="274" height="8" rx="4" fill="#1f3a5f" fill-opacity="0.5"/>
-            <text x="155" y="62" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#58a6ff">FE80 scope: A-B link only</text>
-            <rect x="466" y="56" width="302" height="8" rx="4" fill="#3a2010" fill-opacity="0.4"/>
-            <text x="617" y="62" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#f0883e">FE80 scope: B-C link only</text>
-          </svg>
-          <p class="diagram-caption">Router A pings FE80::B2 (B&rsquo;s eth1 link-local, belonging to the B&ndash;C link). The packet arrives at Router B but is dropped &mdash; that address belongs to a different link scope. Link-local addresses are never forwarded beyond their own link.</p>
+            <div class="ll-node r-c">
+              <div class="ll-node-hdr">
+                <span class="ll-icon">&#128421;</span>
+                <div>
+                  <h4>Router C</h4>
+                  <span class="ll-sub">Remote Host</span>
+                </div>
+              </div>
+              <div class="ll-iface-card">
+                <span class="iface-name">eth0</span>
+                <code class="iface-ip">FE80::C1</code>
+                <span class="iface-scope">Active on Link B&ndash;C</span>
+              </div>
+              <div class="ll-action idle">
+                <span class="act-tag">&#9208; Status:</span>
+                <span class="idle-text">Completely isolated from Router A's link-local traffic</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Key Rules Takeaway -->
+          <div class="linklocal-rules-card">
+            <div class="llr-title">&#128273; Essential Exam Rules for Link-Local Addresses (FE80::/10):</div>
+            <div class="llr-grid">
+              <div class="llr-item">
+                <strong>1. Local Scope Only:</strong>
+                <p>A link-local address is valid <em>only</em> on the directly connected physical wire (link). It does not exist beyond that interface.</p>
+              </div>
+              <div class="llr-item">
+                <strong>2. Non-Routable by Design:</strong>
+                <p>Routers will <strong>never route or forward</strong> link-local packets across interfaces. A cross-link ping is always dropped at the ingress interface.</p>
+              </div>
+              <div class="llr-item">
+                <strong>3. Interface Re-use:</strong>
+                <p>Because scopes are independent, different interfaces (even on the same router) can safely use the exact same link-local address without conflict!</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="grid-2" style="margin-top:14px;">
