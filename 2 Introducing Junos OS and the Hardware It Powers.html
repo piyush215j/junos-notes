@@ -117,13 +117,12 @@ td code{background:var(--cdbg);border:1px solid var(--bd);padding:1px 5px;border
 .pc ul{font-size:.82rem;color:var(--t2);padding-left:16px;margin-top:6px}
 .pc li{margin-bottom:2px}
 /* DIAGRAMS */
-/* DIAGRAMS */
 .dw{margin:28px 0;background:var(--bg2);border:1px solid var(--bd);border-radius:12px;padding:16px;box-shadow:0 4px 20px rgba(0,0,0,0.3);overflow:hidden;transition:border-color .2s,box-shadow .2s}
 .dw:hover{border-color:rgba(56,139,253,0.4);box-shadow:0 6px 24px rgba(0,0,0,0.4)}
 .dw svg{width:100%;height:auto;display:block;margin:0 auto;border-radius:8px}
-.dc{text-align:center;font-size:.82rem;color:var(--t2);margin-top:12px;font-weight:500;line-height:1.55;padding:0 12px}
-.dc strong{color:var(--t1);font-weight:600}
-.dc code{background:var(--cdbg);border:1px solid var(--bd);padding:1px 5px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--cyan)}
+.dc{text-align:center;font-size:.84rem;color:var(--t2);margin-top:12px;font-weight:500;line-height:1.55;padding:0 12px}
+.dc strong{color:var(--t1);font-weight:700}
+.dc code{background:var(--cdbg);border:1px solid var(--bd);padding:1px 5px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--cyan)}
 /* VERSION */
 .vbox{background:var(--bgc);border:1px solid var(--bd);border-radius:10px;padding:20px;margin:16px 0}
 .vstr{display:flex;gap:0;font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:700;margin-bottom:20px;justify-content:center;flex-wrap:wrap}
@@ -212,204 +211,173 @@ mark{background:rgba(240,136,62,.25);color:var(--amb);border-radius:2px;padding:
       <li><strong>Hardware separation for transit vs. device-destined traffic:</strong> transit traffic (forwarded packets) and management/protocol traffic are handled by <em>separate hardware</em>.</li>
       <li>This hardware separation <strong>protects transit forwarding</strong> even if the control plane is overwhelmed by management traffic or protocol events.</li>
     </ul>
-        <div class="dw">
-      <svg viewBox="0 0 920 490" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Junos OS Decoupled Control and Data Plane Architecture">
+            <div class="dw">
+      <svg viewBox="0 0 960 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Junos OS Decoupled Control and Data Plane Architecture">
   <defs>
-    <linearGradient id="bgGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0d1117"/>
-      <stop offset="100%" stop-color="#161b22"/>
-    </linearGradient>
-    <linearGradient id="cpGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#111c2e"/>
-      <stop offset="100%" stop-color="#0b1320"/>
-    </linearGradient>
-    <linearGradient id="dpGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0c2419"/>
-      <stop offset="100%" stop-color="#081710"/>
-    </linearGradient>
+    <filter id="shadow1" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
   </defs>
 
   <!-- Canvas Background -->
-  <rect width="920" height="490" rx="12" fill="url(#bgGrad1)" stroke="#30363d" stroke-width="1.5"/>
+  <rect width="960" height="480" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
 
-  <!-- Top Title Bar -->
-  <rect x="18" y="16" width="884" height="42" rx="8" fill="#1c2128" stroke="#30363d" stroke-width="1"/>
-  <text x="36" y="42" font-size="14" font-weight="700" fill="#58a6ff" font-family="'Inter', system-ui, sans-serif" letter-spacing="0.5">JUNOS OS DUAL-PLANE MODULAR ARCHITECTURE</text>
-  <text x="390" y="42" font-size="11.5" font-weight="500" fill="#8b949e" font-family="'Inter', system-ui, sans-serif">Hardware Decoupling: Routing Engine (RE) vs. Packet Forwarding Engine (PFE)</text>
-  <rect x="768" y="23" width="122" height="26" rx="13" fill="rgba(56,139,253,0.12)" stroke="#388bfd" stroke-width="1"/>
-  <text x="829" y="40" font-size="10.5" font-weight="600" fill="#79c0ff" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">Single Source OS</text>
+  <!-- Diagram Title -->
+  <text x="480" y="32" font-size="16" font-weight="800" fill="#0f172a" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">Figure 1: Junos OS Decoupled Architecture &mdash; Control Plane vs. Forwarding Plane</text>
 
-  <!-- LEFT: CONTROL PLANE (Routing Engine) -->
-  <g transform="translate(20, 72)">
-    <rect width="384" height="400" rx="10" fill="url(#cpGrad)" stroke="#1f6feb" stroke-width="1.5"/>
+  <!-- LEFT CARD: CONTROL PLANE (Routing Engine) -->
+  <g transform="translate(30, 55)" filter="url(#shadow1)">
+    <rect width="410" height="395" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+    <rect width="410" height="42" rx="7" fill="#1e40af"/>
     
-    <!-- Plane Header Banner -->
-    <rect x="12" y="12" width="360" height="34" rx="6" fill="#1f6feb" fill-opacity="0.2" stroke="#388bfd" stroke-width="1"/>
-    <circle cx="28" cy="29" r="6" fill="#58a6ff"/>
-    <text x="42" y="34" font-size="13" font-weight="700" fill="#e6edf3" font-family="'Inter', system-ui, sans-serif">CONTROL PLANE (Routing Engine - RE)</text>
-    
-    <text x="14" y="64" font-size="10.5" font-weight="600" fill="#79c0ff" font-family="'Inter', system-ui, sans-serif">Hardware: General-Purpose CPU Board &middot; FreeBSD Kernel</text>
+    <text x="20" y="26" font-size="14" font-weight="800" fill="#ffffff" font-family="'Inter', system-ui, sans-serif">CONTROL PLANE (Routing Engine - RE)</text>
+    <text x="400" y="26" font-size="11" font-weight="600" fill="#bfdbfe" text-anchor="end" font-family="'Inter', system-ui, sans-serif">General-Purpose CPU</text>
 
-    <!-- Modular Daemons Container -->
-    <rect x="12" y="74" width="360" height="176" rx="8" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
-    <text x="24" y="93" font-size="11" font-weight="700" fill="#58a6ff" font-family="'Inter', system-ui, sans-serif">Modular User-Space Daemons (Independent Memory Spaces)</text>
-    
-    <!-- Daemon 1: rpd -->
-    <g transform="translate(20, 102)">
-      <rect width="160" height="38" rx="6" fill="#161b22" stroke="#388bfd" stroke-width="1"/>
-      <text x="10" y="18" font-size="11" font-weight="700" fill="#79c0ff" font-family="'JetBrains Mono', monospace">rpd</text>
-      <text x="10" y="31" font-size="9" fill="#8b949e" font-family="'Inter', system-ui, sans-serif">Routing: BGP/OSPF/IS-IS</text>
-    </g>
+    <!-- Subtitle: FreeBSD OS -->
+    <rect x="15" y="52" width="380" height="28" rx="4" fill="#eff6ff" stroke="#bfdbfe"/>
+    <text x="205" y="70" font-size="11" font-weight="700" fill="#1d4ed8" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">Hardened FreeBSD OS &middot; Microkernel Architecture</text>
 
-    <!-- Daemon 2: mgd -->
-    <g transform="translate(190, 102)">
-      <rect width="170" height="38" rx="6" fill="#161b22" stroke="#388bfd" stroke-width="1"/>
-      <text x="10" y="18" font-size="11" font-weight="700" fill="#79c0ff" font-family="'JetBrains Mono', monospace">mgd</text>
-      <text x="10" y="31" font-size="9" fill="#8b949e" font-family="'Inter', system-ui, sans-serif">Management: CLI / XML</text>
-    </g>
+    <!-- Modular Daemons Section -->
+    <g transform="translate(15, 88)">
+      <rect width="380" height="130" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
+      <text x="12" y="20" font-size="11.5" font-weight="800" fill="#0f172a" font-family="'Inter', system-ui, sans-serif">Modular User-Space Daemons (Independent Memory):</text>
+      
+      <!-- Daemon 1: rpd -->
+      <g transform="translate(12, 30)">
+        <rect width="170" height="40" rx="4" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
+        <text x="10" y="19" font-size="12" font-weight="800" fill="#1d4ed8" font-family="'JetBrains Mono', monospace">rpd</text>
+        <text x="10" y="32" font-size="9.5" font-weight="600" fill="#64748b" font-family="'Inter', system-ui, sans-serif">Routing (BGP / OSPF / IS-IS)</text>
+      </g>
 
-    <!-- Daemon 3: chassd -->
-    <g transform="translate(20, 146)">
-      <rect width="160" height="38" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
-      <text x="10" y="18" font-size="11" font-weight="700" fill="#e6edf3" font-family="'JetBrains Mono', monospace">chassd</text>
-      <text x="10" y="31" font-size="9" fill="#8b949e" font-family="'Inter', system-ui, sans-serif">Chassis / Fans / PSUs</text>
-    </g>
+      <!-- Daemon 2: mgd -->
+      <g transform="translate(198, 30)">
+        <rect width="170" height="40" rx="4" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
+        <text x="10" y="19" font-size="12" font-weight="800" fill="#1d4ed8" font-family="'JetBrains Mono', monospace">mgd</text>
+        <text x="10" y="32" font-size="9.5" font-weight="600" fill="#64748b" font-family="'Inter', system-ui, sans-serif">Management (CLI / XML API)</text>
+      </g>
 
-    <!-- Daemon 4: snmpd & dcd -->
-    <g transform="translate(190, 146)">
-      <rect width="170" height="38" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
-      <text x="10" y="18" font-size="11" font-weight="700" fill="#e6edf3" font-family="'JetBrains Mono', monospace">snmpd / dcd</text>
-      <text x="10" y="31" font-size="9" fill="#8b949e" font-family="'Inter', system-ui, sans-serif">SNMP MIBs &amp; Dev Control</text>
-    </g>
+      <!-- Daemon 3: chassd -->
+      <g transform="translate(12, 78)">
+        <rect width="170" height="40" rx="4" fill="#ffffff" stroke="#64748b"/>
+        <text x="10" y="19" font-size="12" font-weight="800" fill="#334155" font-family="'JetBrains Mono', monospace">chassd</text>
+        <text x="10" y="32" font-size="9.5" font-weight="600" fill="#64748b" font-family="'Inter', system-ui, sans-serif">Chassis / Fans / Power</text>
+      </g>
 
-    <!-- Process Isolation Callout Box -->
-    <g transform="translate(20, 192)">
-      <rect width="340" height="48" rx="5" fill="rgba(240,136,62,0.12)" stroke="#f0883e" stroke-width="1"/>
-      <text x="10" y="18" font-size="9.5" font-weight="700" fill="#f0883e" font-family="'Inter', system-ui, sans-serif">&#9888; Process Isolation &amp; Fault Resilience:</text>
-      <text x="10" y="32" font-size="8.5" fill="#e6edf3" font-family="'Inter', system-ui, sans-serif">If a daemon (e.g. rpd) crashes, it restarts independently.</text>
-      <text x="10" y="44" font-size="8.5" fill="#8b949e" font-family="'Inter', system-ui, sans-serif">Forwarding and all other processes continue with zero downtime.</text>
+      <!-- Daemon 4: snmpd & dcd -->
+      <g transform="translate(198, 78)">
+        <rect width="170" height="40" rx="4" fill="#ffffff" stroke="#64748b"/>
+        <text x="10" y="19" font-size="12" font-weight="800" fill="#334155" font-family="'JetBrains Mono', monospace">snmpd / dcd</text>
+        <text x="10" y="32" font-size="9.5" font-weight="600" fill="#64748b" font-family="'Inter', system-ui, sans-serif">SNMP MIBs &amp; Dev Control</text>
+      </g>
     </g>
 
     <!-- Master Routing Table (RIB) -->
-    <g transform="translate(12, 258)">
-      <rect width="360" height="66" rx="8" fill="#0d1117" stroke="#1f6feb" stroke-width="1.2"/>
-      <text x="14" y="20" font-size="11.5" font-weight="700" fill="#58a6ff" font-family="'Inter', system-ui, sans-serif">Master Routing Table (RIB)</text>
-      <text x="14" y="38" font-size="9.5" fill="#79c0ff" font-family="'JetBrains Mono', monospace">inet.0 (IPv4) &middot; inet6.0 (IPv6) &middot; inet.3 (MPLS)</text>
-      <text x="14" y="54" font-size="9" fill="#8b949e" font-family="'Inter', system-ui, sans-serif">Selects active routes &amp; computes best paths &rarr; programs FIB in PFE</text>
+    <g transform="translate(15, 226)">
+      <rect width="380" height="72" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+      <text x="14" y="22" font-size="12" font-weight="800" fill="#1e40af" font-family="'Inter', system-ui, sans-serif">Master Routing Table (RIB &mdash; inet.0 / inet6.0)</text>
+      <text x="14" y="42" font-size="10.5" fill="#334155" font-family="'Inter', system-ui, sans-serif">&bull; Stores all learned protocol routes &amp; calculates best paths</text>
+      <text x="14" y="60" font-size="10.5" fill="#334155" font-family="'Inter', system-ui, sans-serif">&bull; Compiles active forwarding states to export into PFE FIB</text>
     </g>
 
-    <!-- Key Responsibilities -->
-    <g transform="translate(12, 332)">
-      <rect width="360" height="56" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
-      <text x="12" y="18" font-size="9.5" font-weight="600" fill="#79c0ff" font-family="'Inter', system-ui, sans-serif">&bull; Builds &amp; maintains routing protocols (BGP / OSPF / IS-IS)</text>
-      <text x="12" y="34" font-size="9.5" font-weight="600" fill="#79c0ff" font-family="'Inter', system-ui, sans-serif">&bull; Manages user authentication, CLI sessions &amp; system alarms</text>
-      <text x="12" y="50" font-size="9" fill="#8b949e" font-family="'Inter', system-ui, sans-serif">&bull; Controls chassis components, interfaces and system processes</text>
+    <!-- Process Isolation Callout -->
+    <g transform="translate(15, 306)">
+      <rect width="380" height="74" rx="6" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+      <text x="12" y="20" font-size="11" font-weight="800" fill="#b45309" font-family="'Inter', system-ui, sans-serif">&#9888; Key Advantage: Modular Process Isolation</text>
+      <text x="12" y="40" font-size="10" fill="#78350f" font-family="'Inter', system-ui, sans-serif">If a process (e.g. <code style="font-weight:700">rpd</code>) crashes, it restarts independently.</text>
+      <text x="12" y="58" font-size="10" font-weight="700" fill="#15803d" font-family="'Inter', system-ui, sans-serif">&rarr; Transit traffic continues forwarding with ZERO packet loss!</text>
     </g>
   </g>
 
-  <!-- CENTER: INTERNAL BUS & RATE-LIMITED LINK -->
-  <g transform="translate(414, 110)">
-    <rect width="92" height="320" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <!-- CENTER: INTERNAL RATE-LIMITED LINK -->
+  <g transform="translate(450, 110)">
+    <rect width="60" height="290" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1"/>
     
-    <!-- Title -->
-    <text x="46" y="22" font-size="9" font-weight="700" fill="#e6edf3" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">INTERNAL</text>
-    <text x="46" y="34" font-size="9" font-weight="700" fill="#e6edf3" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">CONTROL LINK</text>
-    <text x="46" y="46" font-size="8" fill="#8b949e" text-anchor="middle" font-family="'JetBrains Mono', monospace">fxp1 / PCIe</text>
+    <text x="30" y="24" font-size="9" font-weight="800" fill="#0f172a" text-anchor="middle">INTERNAL</text>
+    <text x="30" y="36" font-size="8.5" font-weight="700" fill="#475569" text-anchor="middle">LINK</text>
+    <text x="30" y="48" font-size="7.5" font-weight="600" fill="#64748b" text-anchor="middle">(fxp1/PCIe)</text>
 
     <!-- Downward FIB Arrow -->
-    <path d="M 46 62 L 46 112" stroke="#58a6ff" stroke-width="2" stroke-dasharray="4,3"/>
-    <polygon points="42,112 46,120 50,112" fill="#58a6ff"/>
-    <rect x="8" y="72" width="76" height="30" rx="4" fill="rgba(88,166,255,0.15)" stroke="#388bfd" stroke-width="0.8"/>
-    <text x="46" y="84" font-size="7.5" font-weight="700" fill="#79c0ff" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">FIB Updates</text>
-    <text x="46" y="96" font-size="7" fill="#8b949e" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">&amp; Filter Rules</text>
+    <path d="M 30 65 L 30 115" stroke="#2563eb" stroke-width="2.5"/>
+    <polygon points="25,115 30,123 35,115" fill="#2563eb"/>
+    <text x="30" y="136" font-size="8" font-weight="700" fill="#1d4ed8" text-anchor="middle">FIB Updates</text>
 
     <!-- Rate Limiter Shield Badge -->
-    <g transform="translate(11, 136)">
-      <rect width="70" height="52" rx="6" fill="#21262d" stroke="#f0883e" stroke-width="1.2"/>
-      <text x="35" y="18" font-size="8.5" font-weight="700" fill="#f0883e" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">RATE</text>
-      <text x="35" y="30" font-size="8.5" font-weight="700" fill="#f0883e" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">LIMITER</text>
-      <text x="35" y="44" font-size="7.5" fill="#8b949e" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">DDoS Shield</text>
+    <g transform="translate(6, 150)">
+      <rect width="48" height="42" rx="4" fill="#fff7ed" stroke="#ea580c" stroke-width="1.2"/>
+      <text x="24" y="16" font-size="8" font-weight="800" fill="#c2410c" text-anchor="middle">RATE</text>
+      <text x="24" y="26" font-size="8" font-weight="800" fill="#c2410c" text-anchor="middle">LIMITER</text>
+      <text x="24" y="36" font-size="7" font-weight="600" fill="#9a3412" text-anchor="middle">DDoS Shield</text>
     </g>
 
-    <!-- Upward Exception / Mgmt Arrow -->
-    <path d="M 46 270 L 46 210" stroke="#f0883e" stroke-width="2" stroke-dasharray="4,3"/>
-    <polygon points="42,210 46,202 50,210" fill="#f0883e"/>
-    <rect x="8" y="226" width="76" height="36" rx="4" fill="rgba(240,136,62,0.15)" stroke="#f0883e" stroke-width="0.8"/>
-    <text x="46" y="238" font-size="7.5" font-weight="700" fill="#f0883e" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">Exception Pkts</text>
-    <text x="46" y="250" font-size="7" fill="#8b949e" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">&amp; Protocol PDUs</text>
-    <text x="46" y="260" font-size="6.5" fill="#8b949e" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">(SSH/OSPF/BGP)</text>
+    <!-- Upward Exception Arrow -->
+    <path d="M 30 250 L 30 205" stroke="#ea580c" stroke-width="2.5"/>
+    <polygon points="25,205 30,197 35,205" fill="#ea580c"/>
+    <text x="30" y="264" font-size="8" font-weight="700" fill="#c2410c" text-anchor="middle">Exception</text>
+    <text x="30" y="274" font-size="7.5" font-weight="600" fill="#64748b" text-anchor="middle">Packets</text>
   </g>
 
-  <!-- RIGHT: DATA PLANE (Packet Forwarding Engine) -->
-  <g transform="translate(516, 72)">
-    <rect width="384" height="400" rx="10" fill="url(#dpGrad)" stroke="#238636" stroke-width="1.5"/>
+  <!-- RIGHT CARD: DATA PLANE (Packet Forwarding Engine) -->
+  <g transform="translate(520, 55)" filter="url(#shadow1)">
+    <rect width="410" height="395" rx="8" fill="#ffffff" stroke="#16a34a" stroke-width="2"/>
+    <rect width="410" height="42" rx="7" fill="#15803d"/>
     
-    <!-- Plane Header Banner -->
-    <rect x="12" y="12" width="360" height="34" rx="6" fill="#238636" fill-opacity="0.2" stroke="#3fb950" stroke-width="1"/>
-    <circle cx="28" cy="29" r="6" fill="#3fb950"/>
-    <text x="42" y="34" font-size="13" font-weight="700" fill="#e6edf3" font-family="'Inter', system-ui, sans-serif">DATA PLANE (Packet Forwarding Engine - PFE)</text>
-    
-    <text x="14" y="64" font-size="10.5" font-weight="600" fill="#3fb950" font-family="'Inter', system-ui, sans-serif">Hardware: Custom ASICs (Trio / Express) &middot; Hardware Lookup Engines</text>
+    <text x="20" y="26" font-size="14" font-weight="800" fill="#ffffff" font-family="'Inter', system-ui, sans-serif">DATA PLANE (Packet Forwarding Engine - PFE)</text>
+    <text x="400" y="26" font-size="11" font-weight="600" fill="#bbf7d0" text-anchor="end" font-family="'Inter', system-ui, sans-serif">Custom ASICs</text>
+
+    <!-- Subtitle: ASIC Chipset -->
+    <rect x="15" y="52" width="380" height="28" rx="4" fill="#f0fdf4" stroke="#bbf7d0"/>
+    <text x="205" y="70" font-size="11" font-weight="700" fill="#166534" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">Juniper Trio / Express ASICs &middot; Hardware Queues &amp; Fabric</text>
 
     <!-- Forwarding Table (FIB) -->
-    <g transform="translate(12, 74)">
-      <rect width="360" height="66" rx="8" fill="#0d1117" stroke="#238636" stroke-width="1.2"/>
-      <text x="14" y="20" font-size="11.5" font-weight="700" fill="#3fb950" font-family="'Inter', system-ui, sans-serif">Forwarding Table (FIB / forwarding-table)</text>
-      <text x="14" y="38" font-size="9.5" fill="#79c0ff" font-family="'JetBrains Mono', monospace">Next-hops &middot; Outgoing Interfaces &middot; MAC Table &middot; MPLS Labels</text>
-      <text x="14" y="54" font-size="9" fill="#8b949e" font-family="'Inter', system-ui, sans-serif">Direct copy of active RIB compiled routes; programmed in ASIC memory</text>
+    <g transform="translate(15, 88)">
+      <rect width="380" height="72" rx="6" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+      <text x="14" y="22" font-size="12" font-weight="800" fill="#15803d" font-family="'Inter', system-ui, sans-serif">Forwarding Table (FIB &mdash; forwarding-table)</text>
+      <text x="14" y="42" font-size="10.5" fill="#334155" font-family="'Inter', system-ui, sans-serif">&bull; Programmed directly into ASIC memory from RE Master RIB</text>
+      <text x="14" y="60" font-size="10.5" fill="#334155" font-family="'Inter', system-ui, sans-serif">&bull; Next-hop IP, outgoing physical port &amp; MAC address mappings</text>
     </g>
 
-    <!-- Hardware Pipeline Container -->
-    <g transform="translate(12, 148)">
-      <rect width="360" height="176" rx="8" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
-      <text x="16" y="20" font-size="11" font-weight="700" fill="#3fb950" font-family="'Inter', system-ui, sans-serif">Hardware ASIC Forwarding Pipeline</text>
-      
-      <!-- Ingress Port -->
-      <g transform="translate(14, 30)">
-        <rect width="74" height="44" rx="5" fill="#161b22" stroke="#3fb950" stroke-width="1"/>
-        <text x="37" y="18" font-size="8.5" font-weight="700" fill="#3fb950" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">INGRESS</text>
-        <text x="37" y="32" font-size="8" fill="#8b949e" text-anchor="middle" font-family="'JetBrains Mono', monospace">ge-0/0/0</text>
+    <!-- Line-Rate Hardware Forwarding Pipeline -->
+    <g transform="translate(15, 170)">
+      <rect width="380" height="126" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
+      <text x="14" y="20" font-size="11.5" font-weight="800" fill="#0f172a" font-family="'Inter', system-ui, sans-serif">Hardware ASIC Forwarding Pipeline:</text>
+
+      <!-- Port In -> ASIC -> Port Out -->
+      <g transform="translate(12, 30)">
+        <rect width="75" height="40" rx="4" fill="#ffffff" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="37" y="18" font-size="9" font-weight="800" fill="#15803d" text-anchor="middle">INGRESS</text>
+        <text x="37" y="32" font-size="9" font-family="'JetBrains Mono', monospace" fill="#334155" text-anchor="middle">ge-0/0/0</text>
       </g>
 
-      <!-- Processing Block -->
-      <g transform="translate(98, 30)">
-        <rect width="164" height="44" rx="5" fill="#161b22" stroke="#30363d" stroke-width="1"/>
-        <text x="82" y="16" font-size="8.5" font-weight="600" fill="#e6edf3" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">L2/L3 Lookup Engine</text>
-        <text x="82" y="28" font-size="8" fill="#8b949e" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">Policers &middot; CoS &middot; Filter Rules</text>
-        <text x="82" y="39" font-size="7.5" fill="#3fb950" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">Wire-Speed Forwarding Engine</text>
+      <g transform="translate(97, 30)">
+        <rect width="186" height="40" rx="4" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
+        <text x="93" y="17" font-size="9.5" font-weight="800" fill="#1d4ed8" text-anchor="middle">L2/L3 Hardware Lookup</text>
+        <text x="93" y="31" font-size="8.5" fill="#64748b" text-anchor="middle">Filters &middot; Policers &middot; CoS Queuing</text>
       </g>
 
-      <!-- Egress Port -->
-      <g transform="translate(272, 30)">
-        <rect width="74" height="44" rx="5" fill="#161b22" stroke="#3fb950" stroke-width="1"/>
-        <text x="37" y="18" font-size="8.5" font-weight="700" fill="#3fb950" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">EGRESS</text>
-        <text x="37" y="32" font-size="8" fill="#8b949e" text-anchor="middle" font-family="'JetBrains Mono', monospace">ge-0/0/1</text>
+      <g transform="translate(293, 30)">
+        <rect width="75" height="40" rx="4" fill="#ffffff" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="37" y="18" font-size="9" font-weight="800" fill="#15803d" text-anchor="middle">EGRESS</text>
+        <text x="37" y="32" font-family="'JetBrains Mono', monospace" font-size="9" fill="#334155" text-anchor="middle">ge-0/0/1</text>
       </g>
 
-      <!-- Transit Traffic Flow Path -->
-      <g transform="translate(14, 84)">
-        <rect width="332" height="40" rx="5" fill="rgba(63,185,80,0.12)" stroke="#238636" stroke-width="1"/>
-        <path d="M 16 20 L 310 20" stroke="#3fb950" stroke-width="3" stroke-dasharray="6,3"/>
-        <polygon points="310,16 320,20 310,24" fill="#3fb950"/>
-        <text x="166" y="14" font-size="8.5" font-weight="700" fill="#3fb950" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">TRANSIT TRAFFIC STREAM (Forwarded entirely in ASIC Hardware)</text>
-        <text x="166" y="30" font-size="7.5" fill="#8b949e" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">Zero RE CPU overhead &middot; Deterministic sub-microsecond line-rate latency</text>
+      <!-- Green Transit Flow Banner -->
+      <g transform="translate(12, 78)">
+        <rect width="356" height="38" rx="4" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="178" y="17" font-size="10.5" font-weight="800" fill="#15803d" text-anchor="middle">&#10140; TRANSIT TRAFFIC STREAM (Wire-Speed Forwarding)</text>
+        <text x="178" y="31" font-size="9" font-weight="700" fill="#166534" text-anchor="middle">100% Handled in ASIC Hardware &middot; ZERO CPU overhead on RE</text>
       </g>
-
-      <!-- Exception Flow Note -->
-      <text x="16" y="144" font-size="8.5" fill="#f0883e" font-family="'Inter', system-ui, sans-serif">&bull; Non-transit packets (BGP/OSPF/SSH/ICMP to router IP) &rarr; sent via rate-limited bus to RE</text>
-      <text x="16" y="160" font-size="8.5" fill="#8b949e" font-family="'Inter', system-ui, sans-serif">&bull; Transit packets never touch the RE CPU, ensuring high throughput under heavy control loads</text>
     </g>
 
-    <!-- Key Responsibilities -->
-    <g transform="translate(12, 332)">
-      <rect width="360" height="56" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
-      <text x="12" y="18" font-size="9.5" font-weight="600" fill="#3fb950" font-family="'Inter', system-ui, sans-serif">&bull; Line-rate packet forwarding based on hardware FIB</text>
-      <text x="12" y="34" font-size="9.5" font-weight="600" fill="#3fb950" font-family="'Inter', system-ui, sans-serif">&bull; Implements stateless firewall filters, traffic policing &amp; CoS queues</text>
-      <text x="12" y="50" font-size="9" fill="#8b949e" font-family="'Inter', system-ui, sans-serif">&bull; Encapsulates / decapsulates Layer 2 headers, VLAN tags &amp; MPLS labels</text>
+    <!-- Exception Traffic Callout -->
+    <g transform="translate(15, 306)">
+      <rect width="380" height="74" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+      <text x="12" y="20" font-size="11" font-weight="800" fill="#0f172a" font-family="'Inter', system-ui, sans-serif">&#9679; Device-Destined &amp; Exception Traffic:</text>
+      <text x="12" y="38" font-size="10" fill="#475569" font-family="'Inter', system-ui, sans-serif">&bull; Protocol packets (BGP/OSPF/LLDP) &amp; SSH management &rarr; punted to RE</text>
+      <text x="12" y="56" font-size="10" fill="#475569" font-family="'Inter', system-ui, sans-serif">&bull; Hardware rate limiters protect the RE CPU against packet storms</text>
     </g>
   </g>
 </svg>
-      <p class="dc"><strong>Figure 1: Junos OS Decoupled Architecture &amp; Separation of Planes</strong> &mdash; The Control Plane (Routing Engine) executes modular user-space daemons on a hardened FreeBSD kernel, while the Data Plane (Packet Forwarding Engine) forwards transit traffic at line rate via custom ASICs. A rate-limited internal link protects the RE from packet floods.</p>
+      <p class="dc"><strong>Figure 1: Junos OS Decoupled Architecture &amp; Separation of Planes</strong> &mdash; The Control Plane (Routing Engine) executes modular user-space daemons on a FreeBSD kernel, while the Data Plane (Packet Forwarding Engine) forwards transit traffic at wire speed using custom ASICs. A rate-limited internal link protects the RE from packet floods.</p>
     </div>
     <h3 class="tt" id="cpd">Control Plane vs. Data Plane</h3>
     <div class="tw"><table>
@@ -433,225 +401,170 @@ mark{background:rgba(240,136,62,.25);color:var(--amb);border-radius:2px;padding:
       <li>Two primary categories: <strong>Fixed Port Chassis</strong> and <strong>Modular Chassis</strong>.</li>
       <li><strong>U (Rack Unit):</strong> standard height measurement for rack-mountable devices. Larger U = more performance, higher port density, and sometimes more features.</li>
     </ul>
-        <div class="dw">
-      <svg viewBox="0 0 920 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Junos Hardware Comparison: Fixed-Port vs Modular Chassis">
+            <div class="dw">
+      <svg viewBox="0 0 960 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hardware Chassis Comparison: Fixed-Port vs Modular">
   <defs>
-    <linearGradient id="bgGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0d1117"/>
-      <stop offset="100%" stop-color="#161b22"/>
-    </linearGradient>
+    <filter id="shadow2" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
   </defs>
 
-  <rect width="920" height="540" rx="12" fill="url(#bgGrad2)" stroke="#30363d" stroke-width="1.5"/>
+  <rect width="960" height="480" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="480" y="32" font-size="16" font-weight="800" fill="#0f172a" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">Figure 2: Hardware Architecture Comparison &mdash; Fixed-Port Chassis vs. Modular Chassis</text>
 
-  <!-- Title Header -->
-  <rect x="18" y="14" width="884" height="42" rx="8" fill="#1c2128" stroke="#30363d" stroke-width="1"/>
-  <text x="36" y="40" font-size="14" font-weight="700" fill="#58a6ff" font-family="'Inter', system-ui, sans-serif" letter-spacing="0.5">HARDWARE &amp; CHASSIS TYPES: FIXED-PORT vs. MODULAR</text>
-  <text x="500" y="40" font-size="11.5" font-weight="500" fill="#8b949e" font-family="'Inter', system-ui, sans-serif">Comparison of physical construction, Line Cards, RE redundancy &amp; port scaling</text>
-
-  <!-- SECTION 1: FIXED PORT CHASSIS (e.g. MX204 / EX2300 - 1U) -->
-  <g transform="translate(20, 68)">
-    <rect width="880" height="210" rx="10" fill="#11161d" stroke="#388bfd" stroke-width="1.2"/>
-    
-    <!-- Header -->
-    <rect x="12" y="10" width="856" height="30" rx="6" fill="#1f6feb" fill-opacity="0.15" stroke="#388bfd" stroke-width="0.8"/>
-    <text x="24" y="30" font-size="12.5" font-weight="700" fill="#79c0ff" font-family="'Inter', system-ui, sans-serif">1. FIXED PORT CHASSIS &mdash; Example: Juniper MX204 / EX2300 (1U Form Factor)</text>
-    <rect x="740" y="14" width="120" height="22" rx="11" fill="#21262d" stroke="#388bfd" stroke-width="1"/>
-    <text x="800" y="29" font-size="10" font-weight="600" fill="#79c0ff" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">1U Fixed System</text>
+  <!-- TOP CARD: FIXED PORT CHASSIS (MX204 / EX2300) -->
+  <g transform="translate(30, 55)" filter="url(#shadow2)">
+    <rect width="900" height="190" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.5"/>
+    <rect width="900" height="34" rx="7" fill="#1e40af"/>
+    <text x="20" y="22" font-size="13" font-weight="800" fill="#ffffff">1. FIXED-PORT CHASSIS (e.g., Juniper MX204 / EX2300 &mdash; 1U Form Factor)</text>
+    <text x="880" y="22" font-size="11" font-weight="700" fill="#bfdbfe" text-anchor="end">Single Built-In RE &middot; Fixed Slot 0</text>
 
     <!-- 1U Chassis Front Panel Graphic -->
-    <g transform="translate(18, 48)">
-      <!-- Outer Metal Frame -->
-      <rect width="844" height="76" rx="6" fill="#0f172a" stroke="#475569" stroke-width="1.5"/>
+    <g transform="translate(20, 46)">
+      <rect width="860" height="60" rx="5" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/>
       
-      <!-- Mounting Ears -->
-      <rect x="0" y="0" width="24" height="76" rx="3" fill="#334155" stroke="#475569"/>
-      <circle cx="12" cy="18" r="4" fill="#94a3b8"/>
-      <circle cx="12" cy="58" r="4" fill="#94a3b8"/>
-      
-      <rect x="820" y="0" width="24" height="76" rx="3" fill="#334155" stroke="#475569"/>
-      <circle cx="832" cy="18" r="4" fill="#94a3b8"/>
-      <circle cx="832" cy="58" r="4" fill="#94a3b8"/>
-
-      <!-- Inner Faceplate -->
-      <rect x="30" y="6" width="784" height="64" rx="4" fill="#1e293b"/>
+      <!-- Left Ears -->
+      <rect x="0" y="0" width="20" height="60" fill="#334155" rx="2"/>
+      <circle cx="10" cy="15" r="3.5" fill="#94a3b8"/>
+      <circle cx="10" cy="45" r="3.5" fill="#94a3b8"/>
+      <!-- Right Ears -->
+      <rect x="840" y="0" width="20" height="60" fill="#334155" rx="2"/>
+      <circle cx="850" cy="15" r="3.5" fill="#94a3b8"/>
+      <circle cx="850" cy="45" r="3.5" fill="#94a3b8"/>
 
       <!-- Branding & LEDs -->
-      <g transform="translate(42, 14)">
-        <text x="0" y="14" font-size="11" font-weight="800" fill="#ffffff" letter-spacing="1">JUNIPER</text>
-        <text x="0" y="26" font-size="8.5" font-weight="600" fill="#94a3b8">MX204 1U Edge</text>
-        
-        <!-- Status LEDs -->
-        <circle cx="6" cy="38" r="3.5" fill="#22c55e"/>
-        <text x="14" y="41" font-size="7.5" font-weight="700" fill="#cbd5e1">PWR</text>
-        <circle cx="42" cy="38" r="3.5" fill="#22c55e"/>
-        <text x="50" y="41" font-size="7.5" font-weight="700" fill="#cbd5e1">STAT</text>
-        <circle cx="80" cy="38" r="3.5" fill="#f59e0b"/>
-        <text x="88" y="41" font-size="7.5" font-weight="700" fill="#cbd5e1">ALM</text>
-      </g>
+      <text x="30" y="24" font-size="10" font-weight="800" fill="#ffffff">JUNIPER</text>
+      <text x="30" y="38" font-size="8.5" font-weight="700" fill="#94a3b8">MX204 (1U)</text>
+      <circle cx="34" cy="48" r="3" fill="#22c55e"/>
+      <circle cx="46" cy="48" r="3" fill="#22c55e"/>
+      <circle cx="58" cy="48" r="3" fill="#f59e0b"/>
 
       <!-- Mgmt & Console Ports Area -->
-      <g transform="translate(170, 12)">
-        <rect width="116" height="52" rx="4" fill="#0f172a" stroke="#475569" stroke-width="1"/>
-        <text x="58" y="12" font-size="8" font-weight="700" fill="#cbd5e1" text-anchor="middle">MGMT / CONSOLE</text>
-        
-        <!-- RJ-45 Mgmt -->
-        <rect x="8" y="18" width="28" height="24" rx="2" fill="#1e293b" stroke="#64748b"/>
-        <text x="22" y="34" font-size="6.5" font-weight="600" fill="#79c0ff" text-anchor="middle">fxp0</text>
-        <text x="22" y="49" font-size="6" fill="#8b949e" text-anchor="middle">MGMT</text>
-
-        <!-- RJ-45 Console -->
-        <rect x="44" y="18" width="28" height="24" rx="2" fill="#1e293b" stroke="#64748b"/>
-        <text x="58" y="34" font-size="6.5" font-weight="600" fill="#cbd5e1" text-anchor="middle">CON</text>
-        <text x="58" y="49" font-size="6" fill="#8b949e" text-anchor="middle">SERIAL</text>
-
-        <!-- USB Port -->
-        <rect x="80" y="20" width="26" height="18" rx="2" fill="#1e293b" stroke="#64748b"/>
-        <text x="93" y="32" font-size="6.5" font-weight="600" fill="#cbd5e1" text-anchor="middle">USB</text>
+      <g transform="translate(100, 8)">
+        <rect width="120" height="44" rx="3" fill="#0f172a" stroke="#475569"/>
+        <text x="60" y="13" font-size="8" font-weight="700" fill="#cbd5e1" text-anchor="middle">MGMT / CONSOLE</text>
+        <rect x="8" y="18" width="30" height="20" rx="2" fill="#334155"/>
+        <text x="23" y="32" font-size="7" font-weight="700" fill="#38bdf8" text-anchor="middle">fxp0</text>
+        <rect x="45" y="18" width="30" height="20" rx="2" fill="#334155"/>
+        <text x="60" y="32" font-size="7" font-weight="700" fill="#ffffff" text-anchor="middle">CON</text>
+        <rect x="82" y="18" width="30" height="20" rx="2" fill="#334155"/>
+        <text x="97" y="32" font-size="7" font-weight="700" fill="#ffffff" text-anchor="middle">USB</text>
       </g>
 
-      <!-- Fixed PIC 0: 4x QSFP28 100GbE Ports -->
-      <g transform="translate(300, 12)">
-        <rect width="220" height="52" rx="4" fill="#0f172a" stroke="#388bfd" stroke-width="1"/>
-        <text x="110" y="12" font-size="8" font-weight="700" fill="#79c0ff" text-anchor="middle">PIC 0: 4x QSFP28 (100GbE / 40GbE) &mdash; et-0/0/0 to et-0/0/3</text>
+      <!-- PIC 0: 4x 100GE QSFP28 -->
+      <g transform="translate(235, 8)">
+        <rect width="270" height="44" rx="3" fill="#0f172a" stroke="#2563eb" stroke-width="1.2"/>
+        <text x="135" y="13" font-size="8" font-weight="700" fill="#60a5fa" text-anchor="middle">PIC 0: 4x 100GbE / 40GbE QSFP28 &mdash; et-0/0/0 to et-0/0/3</text>
         
-        <!-- 4 QSFP Ports -->
-        <rect x="10" y="18" width="44" height="26" rx="2" fill="#161b22" stroke="#388bfd"/>
-        <text x="32" y="34" font-size="7.5" font-weight="600" fill="#79c0ff" text-anchor="middle">et-0/0/0</text>
-        
-        <rect x="62" y="18" width="44" height="26" rx="2" fill="#161b22" stroke="#388bfd"/>
-        <text x="84" y="34" font-size="7.5" font-weight="600" fill="#79c0ff" text-anchor="middle">et-0/0/1</text>
-        
-        <rect x="114" y="18" width="44" height="26" rx="2" fill="#161b22" stroke="#388bfd"/>
-        <text x="136" y="34" font-size="7.5" font-weight="600" fill="#79c0ff" text-anchor="middle">et-0/0/2</text>
-        
-        <rect x="166" y="18" width="44" height="26" rx="2" fill="#161b22" stroke="#388bfd"/>
-        <text x="188" y="34" font-size="7.5" font-weight="600" fill="#79c0ff" text-anchor="middle">et-0/0/3</text>
+        <rect x="10" y="18" width="55" height="20" rx="2" fill="#1e3a8a" stroke="#3b82f6"/>
+        <text x="37" y="32" font-size="7.5" font-weight="700" fill="#93c5fd" text-anchor="middle">et-0/0/0</text>
+
+        <rect x="75" y="18" width="55" height="20" rx="2" fill="#1e3a8a" stroke="#3b82f6"/>
+        <text x="102" y="32" font-size="7.5" font-weight="700" fill="#93c5fd" text-anchor="middle">et-0/0/1</text>
+
+        <rect x="140" y="18" width="55" height="20" rx="2" fill="#1e3a8a" stroke="#3b82f6"/>
+        <text x="167" y="32" font-size="7.5" font-weight="700" fill="#93c5fd" text-anchor="middle">et-0/0/2</text>
+
+        <rect x="205" y="18" width="55" height="20" rx="2" fill="#1e3a8a" stroke="#3b82f6"/>
+        <text x="232" y="32" font-size="7.5" font-weight="700" fill="#93c5fd" text-anchor="middle">et-0/0/3</text>
       </g>
 
-      <!-- Fixed PIC 1: 8x SFP28 10/25GbE Ports -->
-      <g transform="translate(530, 12)">
-        <rect width="274" height="52" rx="4" fill="#0f172a" stroke="#238636" stroke-width="1"/>
-        <text x="137" y="12" font-size="8" font-weight="700" fill="#3fb950" text-anchor="middle">PIC 1: 8x SFP28 / SFP+ (10G/25G) &mdash; xe-0/1/0 to xe-0/1/7</text>
+      <!-- PIC 1: 8x 10GE SFP+ -->
+      <g transform="translate(520, 8)">
+        <rect width="310" height="44" rx="3" fill="#0f172a" stroke="#16a34a" stroke-width="1.2"/>
+        <text x="155" y="13" font-size="8" font-weight="700" fill="#4ade80" text-anchor="middle">PIC 1: 8x 10G/25G SFP28 &mdash; xe-0/1/0 to xe-0/1/7</text>
         
-        <!-- 8 SFP Ports (2 rows of 4) -->
-        <rect x="8" y="18" width="28" height="13" rx="1.5" fill="#161b22" stroke="#238636"/>
-        <text x="22" y="27" font-size="6" font-weight="600" fill="#3fb950" text-anchor="middle">0/1/0</text>
-        <rect x="8" y="33" width="28" height="13" rx="1.5" fill="#161b22" stroke="#238636"/>
-        <text x="22" y="42" font-size="6" font-weight="600" fill="#3fb950" text-anchor="middle">0/1/1</text>
-
-        <rect x="42" y="18" width="28" height="13" rx="1.5" fill="#161b22" stroke="#238636"/>
-        <text x="56" y="27" font-size="6" font-weight="600" fill="#3fb950" text-anchor="middle">0/1/2</text>
-        <rect x="42" y="33" width="28" height="13" rx="1.5" fill="#161b22" stroke="#238636"/>
-        <text x="56" y="42" font-size="6" font-weight="600" fill="#3fb950" text-anchor="middle">0/1/3</text>
-
-        <rect x="76" y="18" width="28" height="13" rx="1.5" fill="#161b22" stroke="#238636"/>
-        <text x="90" y="27" font-size="6" font-weight="600" fill="#3fb950" text-anchor="middle">0/1/4</text>
-        <rect x="76" y="33" width="28" height="13" rx="1.5" fill="#161b22" stroke="#238636"/>
-        <text x="90" y="42" font-size="6" font-weight="600" fill="#3fb950" text-anchor="middle">0/1/5</text>
-
-        <rect x="110" y="18" width="28" height="13" rx="1.5" fill="#161b22" stroke="#238636"/>
-        <text x="124" y="27" font-size="6" font-weight="600" fill="#3fb950" text-anchor="middle">0/1/6</text>
-        <rect x="110" y="33" width="28" height="13" rx="1.5" fill="#161b22" stroke="#238636"/>
-        <text x="124" y="42" font-size="6" font-weight="600" fill="#3fb950" text-anchor="middle">0/1/7</text>
-
-        <text x="195" y="34" font-size="7.5" fill="#8b949e" font-family="'Inter', system-ui, sans-serif">Dual Rate: 10G/25G SFP+</text>
+        <rect x="10" y="18" width="32" height="20" rx="2" fill="#14532d" stroke="#22c55e"/>
+        <text x="26" y="32" font-size="7" font-weight="700" fill="#86efac" text-anchor="middle">0/1/0</text>
+        <rect x="48" y="18" width="32" height="20" rx="2" fill="#14532d" stroke="#22c55e"/>
+        <text x="64" y="32" font-size="7" font-weight="700" fill="#86efac" text-anchor="middle">0/1/1</text>
+        <rect x="86" y="18" width="32" height="20" rx="2" fill="#14532d" stroke="#22c55e"/>
+        <text x="102" y="32" font-size="7" font-weight="700" fill="#86efac" text-anchor="middle">0/1/2</text>
+        <rect x="124" y="18" width="32" height="20" rx="2" fill="#14532d" stroke="#22c55e"/>
+        <text x="140" y="32" font-size="7" font-weight="700" fill="#86efac" text-anchor="middle">0/1/3</text>
+        <rect x="162" y="18" width="32" height="20" rx="2" fill="#14532d" stroke="#22c55e"/>
+        <text x="178" y="32" font-size="7" font-weight="700" fill="#86efac" text-anchor="middle">0/1/4</text>
+        <rect x="200" y="18" width="32" height="20" rx="2" fill="#14532d" stroke="#22c55e"/>
+        <text x="216" y="32" font-size="7" font-weight="700" fill="#86efac" text-anchor="middle">0/1/5</text>
+        <rect x="238" y="18" width="32" height="20" rx="2" fill="#14532d" stroke="#22c55e"/>
+        <text x="254" y="32" font-size="7" font-weight="700" fill="#86efac" text-anchor="middle">0/1/6</text>
+        <rect x="276" y="18" width="32" height="20" rx="2" fill="#14532d" stroke="#22c55e"/>
+        <text x="292" y="32" font-size="7" font-weight="700" fill="#86efac" text-anchor="middle">0/1/7</text>
       </g>
     </g>
 
-    <!-- Key Architectural Bullets -->
-    <g transform="translate(18, 134)">
-      <rect width="844" height="66" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
-      <text x="14" y="20" font-size="10" font-weight="700" fill="#e6edf3" font-family="'Inter', system-ui, sans-serif">Key Characteristics of Fixed-Port Systems:</text>
-      <text x="14" y="38" font-size="9" fill="#79c0ff" font-family="'Inter', system-ui, sans-serif">&bull; <strong>Non-removable front ports:</strong> Interfaces are hardwired into the chassis motherboard &mdash; cannot add new card slots.</text>
-      <text x="14" y="52" font-size="9" fill="#79c0ff" font-family="'Inter', system-ui, sans-serif">&bull; <strong>Single built-in Routing Engine (RE):</strong> Non-redundant CPU board. Chassis slot index is fixed at <strong>FPC 0</strong>.</text>
-      <text x="470" y="38" font-size="9" fill="#3fb950" font-family="'Inter', system-ui, sans-serif">&bull; <strong>Hot-swappable components:</strong> Dual AC/DC Power Supply Units (PSUs) &amp; Fan Trays on rear.</text>
-      <text x="470" y="52" font-size="9" fill="#3fb950" font-family="'Inter', system-ui, sans-serif">&bull; <strong>Low footprint (1U):</strong> High-density 100G/10G routing in space-constrained edge deployments.</text>
+    <!-- Bullets -->
+    <g transform="translate(20, 116)">
+      <rect width="860" height="62" rx="4" fill="#f8fafc" stroke="#cbd5e1"/>
+      <text x="14" y="20" font-size="11" font-weight="700" fill="#0f172a">&bull; Fixed Interfaces:</text>
+      <text x="135" y="20" font-size="10.5" fill="#334155">Ports are built permanently onto the chassis &mdash; no line card slots to add or remove.</text>
+      <text x="14" y="38" font-size="11" font-weight="700" fill="#0f172a">&bull; Single Routing Engine:</text>
+      <text x="170" y="38" font-size="10.5" fill="#334155">Integrated CPU board on motherboard; fixed slot ID is always <strong>FPC 0</strong>.</text>
+      <text x="14" y="54" font-size="11" font-weight="700" fill="#15803d">&bull; Field Replaceable:</text>
+      <text x="145" y="54" font-size="10.5" fill="#166534">Dual hot-swappable AC/DC Power Supplies (PSUs) and Fan Trays on rear panel.</text>
     </g>
   </g>
 
-  <!-- SECTION 2: MODULAR CHASSIS (e.g. MX480 / MX960 - 8U) -->
-  <g transform="translate(20, 288)">
-    <rect width="880" height="238" rx="10" fill="#11161d" stroke="#238636" stroke-width="1.2"/>
-    
-    <!-- Header -->
-    <rect x="12" y="10" width="856" height="30" rx="6" fill="#238636" fill-opacity="0.15" stroke="#3fb950" stroke-width="0.8"/>
-    <text x="24" y="30" font-size="12.5" font-weight="700" fill="#3fb950" font-family="'Inter', system-ui, sans-serif">2. MODULAR CHASSIS &mdash; Example: Juniper MX480 / MX960 (Multi-Slot Flexible Architecture)</text>
-    <rect x="730" y="14" width="130" height="22" rx="11" fill="#21262d" stroke="#3fb950" stroke-width="1"/>
-    <text x="795" y="29" font-size="10" font-weight="600" fill="#3fb950" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">8U Modular System</text>
+  <!-- BOTTOM CARD: MODULAR CHASSIS (MX480 / MX960) -->
+  <g transform="translate(30, 255)" filter="url(#shadow2)">
+    <rect width="900" height="210" rx="8" fill="#ffffff" stroke="#16a34a" stroke-width="1.5"/>
+    <rect width="900" height="34" rx="7" fill="#15803d"/>
+    <text x="20" y="22" font-size="13" font-weight="800" fill="#ffffff">2. MODULAR CHASSIS (e.g., Juniper MX480 / MX960 &mdash; 8U Multi-Slot Architecture)</text>
+    <text x="880" y="22" font-size="11" font-weight="700" fill="#bbf7d0" text-anchor="end">Hot-Swap Line Cards &middot; Dual Redundant REs</text>
 
-    <!-- Modular Chassis Slots Layout -->
-    <g transform="translate(18, 48)">
+    <!-- Modular Slots Layout -->
+    <g transform="translate(20, 46)">
       <!-- Left: Line Card Slots (FPCs) -->
       <g transform="translate(0, 0)">
-        <rect width="470" height="116" rx="6" fill="#0f172a" stroke="#475569" stroke-width="1.2"/>
-        <text x="12" y="18" font-size="9.5" font-weight="700" fill="#e6edf3">HOT-SWAPPABLE LINE CARD SLOTS (FPC 0 to FPC 2)</text>
+        <rect width="480" height="92" rx="4" fill="#f8fafc" stroke="#94a3b8"/>
         
-        <!-- Slot 0: FPC 0 with PIC 0 & PIC 1 -->
-        <g transform="translate(10, 26)">
-          <rect width="450" height="26" rx="3" fill="#1e293b" stroke="#388bfd" stroke-width="0.8"/>
-          <text x="8" y="17" font-size="8.5" font-weight="700" fill="#79c0ff">SLOT 0 (FPC 0):</text>
-          <rect x="95" y="4" width="165" height="18" rx="2" fill="#0f172a" stroke="#388bfd"/>
-          <text x="177" y="16" font-size="7.5" fill="#79c0ff" text-anchor="middle">PIC 0: 10x 10GE (xe-0/0/0 .. 9)</text>
-          <rect x="270" y="4" width="170" height="18" rx="2" fill="#0f172a" stroke="#388bfd"/>
-          <text x="355" y="16" font-size="7.5" fill="#79c0ff" text-anchor="middle">PIC 1: 2x 100GE (et-0/1/0 .. 1)</text>
-        </g>
+        <!-- Slot 0 -->
+        <rect x="8" y="8" width="464" height="24" rx="3" fill="#eff6ff" stroke="#3b82f6"/>
+        <text x="14" y="24" font-size="10" font-weight="800" fill="#1d4ed8">SLOT 0 (FPC 0):</text>
+        <text x="110" y="24" font-size="9.5" font-weight="600" fill="#1e40af">PIC 0 (10x 10GE xe-0/0/x) &middot; PIC 1 (2x 100GE et-0/1/x)</text>
 
-        <!-- Slot 1: FPC 1 High Density -->
-        <g transform="translate(10, 56)">
-          <rect width="450" height="26" rx="3" fill="#1e293b" stroke="#238636" stroke-width="0.8"/>
-          <text x="8" y="17" font-size="8.5" font-weight="700" fill="#3fb950">SLOT 1 (FPC 1):</text>
-          <rect x="95" y="4" width="345" height="18" rx="2" fill="#0f172a" stroke="#238636"/>
-          <text x="267" y="16" font-size="7.5" fill="#3fb950" text-anchor="middle">High-Density Modular Line Card (MPC / MIC Optics: xe-1/0/0 to xe-1/1/7)</text>
-        </g>
+        <!-- Slot 1 -->
+        <rect x="8" y="36" width="464" height="24" rx="3" fill="#f0fdf4" stroke="#16a34a"/>
+        <text x="14" y="52" font-size="10" font-weight="800" fill="#15803d">SLOT 1 (FPC 1):</text>
+        <text x="110" y="52" font-size="9.5" font-weight="600" fill="#166534">High-Density 400GE Line Card (MPC/MIC: xe-1/0/0 to xe-1/1/7)</text>
 
-        <!-- Slot 2: Empty / Expansion -->
-        <g transform="translate(10, 86)">
-          <rect width="450" height="24" rx="3" fill="#161b22" stroke="#475569" stroke-width="0.8" stroke-dasharray="3,3"/>
-          <text x="8" y="16" font-size="8.5" font-weight="600" fill="#8b949e">SLOT 2 (FPC 2): [ Available Expansion Slot &mdash; Blank Panel Installed ]</text>
-        </g>
+        <!-- Slot 2 -->
+        <rect x="8" y="64" width="464" height="20" rx="3" fill="#ffffff" stroke="#cbd5e1" stroke-dasharray="4,2"/>
+        <text x="14" y="78" font-size="9.5" font-weight="700" fill="#64748b">SLOT 2 (FPC 2): [ Available Expansion Slot &mdash; Blank Panel Installed ]</text>
       </g>
 
-      <!-- Right: Dual Redundant Routing Engines & SCB -->
-      <g transform="translate(480, 0)">
-        <rect width="364" height="116" rx="6" fill="#0f172a" stroke="#475569" stroke-width="1.2"/>
-        <text x="12" y="18" font-size="9.5" font-weight="700" fill="#e6edf3">REDUNDANT ROUTING ENGINES &amp; FABRIC</text>
+      <!-- Right: Redundant REs & Fabric -->
+      <g transform="translate(495, 0)">
+        <rect width="365" height="92" rx="4" fill="#f8fafc" stroke="#94a3b8"/>
         
-        <!-- RE 0 (Master) -->
-        <g transform="translate(10, 26)">
-          <rect width="344" height="26" rx="3" fill="#1e293b" stroke="#388bfd" stroke-width="1"/>
-          <circle cx="16" cy="13" r="4" fill="#22c55e"/>
-          <text x="26" y="17" font-size="8.5" font-weight="700" fill="#79c0ff">RE Slot 0: MASTER (Active Control Plane)</text>
-          <text x="255" y="17" font-size="7.5" fill="#8b949e">fxp0 &middot; Console &middot; USB</text>
-        </g>
+        <!-- RE 0 -->
+        <rect x="8" y="8" width="349" height="24" rx="3" fill="#eff6ff" stroke="#3b82f6"/>
+        <circle cx="20" cy="20" r="4" fill="#22c55e"/>
+        <text x="30" y="24" font-size="10" font-weight="800" fill="#1d4ed8">RE Slot 0: MASTER (Active Control Plane)</text>
+        <text x="280" y="24" font-size="9" fill="#64748b">fxp0 &middot; Console</text>
 
-        <!-- RE 1 (Standby / Backup) -->
-        <g transform="translate(10, 56)">
-          <rect width="344" height="26" rx="3" fill="#1e293b" stroke="#f0883e" stroke-width="1"/>
-          <circle cx="16" cy="13" r="4" fill="#f59e0b"/>
-          <text x="26" y="17" font-size="8.5" font-weight="700" fill="#f0883e">RE Slot 1: STANDBY / BACKUP (GRES / NSR)</text>
-          <text x="260" y="17" font-size="7.5" fill="#8b949e">Hitless Failover</text>
-        </g>
+        <!-- RE 1 -->
+        <rect x="8" y="36" width="349" height="24" rx="3" fill="#fffbeb" stroke="#f59e0b"/>
+        <circle cx="20" cy="48" r="4" fill="#f59e0b"/>
+        <text x="30" y="52" font-size="10" font-weight="800" fill="#b45309">RE Slot 1: STANDBY / BACKUP</text>
+        <text x="270" y="52" font-size="9" font-weight="700" fill="#15803d">GRES / NSR Hitless</text>
 
-        <!-- Switch Control Board (SCB) / Power -->
-        <g transform="translate(10, 86)">
-          <rect width="344" height="24" rx="3" fill="#161b22" stroke="#475569"/>
-          <text x="12" y="16" font-size="8" font-weight="600" fill="#cbd5e1">SCB 0 / SCB 1 (Switch Fabric) &middot; Redundant PSUs (0-3) &middot; Fan Trays</text>
-        </g>
+        <!-- SCB -->
+        <rect x="8" y="64" width="349" height="20" rx="3" fill="#ffffff" stroke="#cbd5e1"/>
+        <text x="14" y="78" font-size="9.5" font-weight="700" fill="#334155">Switch Control Boards (SCB 0/1) &middot; Redundant PSUs (0-3) &middot; Fans</text>
       </g>
     </g>
 
-    <!-- Naming Syntax & Modular Advantages -->
-    <g transform="translate(18, 172)">
-      <rect width="844" height="54" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
-      <g transform="translate(12, 10)">
-        <text x="0" y="14" font-size="9.5" font-weight="700" fill="#58a6ff">Junos Interface Naming Syntax:</text>
-        <rect x="180" y="0" width="180" height="22" rx="4" fill="#0d1117" stroke="#388bfd"/>
-        <text x="270" y="15" font-size="9" font-weight="700" fill="#79c0ff" text-anchor="middle" font-family="'JetBrains Mono', monospace">&lt;type&gt;-&lt;fpc&gt;/&lt;pic&gt;/&lt;port&gt;</text>
-        
-        <text x="375" y="14" font-size="8.5" fill="#8b949e">Example: <tspan fill="#3fb950" font-weight="700" font-family="'JetBrains Mono', monospace">xe-1/0/2</tspan> &rarr; 10G Ethernet (<tspan fill="#3fb950">xe</tspan>) on <tspan fill="#79c0ff">FPC Slot 1</tspan>, <tspan fill="#79c0ff">PIC Slot 0</tspan>, <tspan fill="#79c0ff">Port 2</tspan></text>
-      </g>
-      <text x="12" y="44" font-size="8.5" fill="#8b949e">&bull; <strong>High Availability:</strong> Dual REs support Graceful Routing Engine Switchover (GRES) &amp; Nonstop Routing (NSR) &mdash; zero dropped packets on RE failover.</text>
+    <!-- Interface Naming Formula Banner -->
+    <g transform="translate(20, 146)">
+      <rect width="860" height="52" rx="4" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.2"/>
+      <text x="14" y="22" font-size="11.5" font-weight="800" fill="#15803d">Junos Interface Naming Syntax:</text>
+      
+      <rect x="210" y="7" width="190" height="24" rx="4" fill="#ffffff" stroke="#16a34a"/>
+      <text x="305" y="23" font-size="11" font-weight="800" fill="#15803d" text-anchor="middle" font-family="'JetBrains Mono', monospace">&lt;type&gt;-&lt;fpc&gt;/&lt;pic&gt;/&lt;port&gt;</text>
+
+      <text x="415" y="23" font-size="11" fill="#0f172a">Example: <tspan fill="#15803d" font-weight="800" font-family="'JetBrains Mono', monospace">xe-1/0/2</tspan> &rarr; 10G Ethernet (<tspan fill="#15803d" font-weight="700">xe</tspan>) on <tspan fill="#1d4ed8" font-weight="700">FPC Slot 1</tspan>, <tspan fill="#1d4ed8" font-weight="700">PIC Slot 0</tspan>, <tspan fill="#1d4ed8" font-weight="700">Port 2</tspan></text>
+      <text x="14" y="42" font-size="10" fill="#475569">&bull; <strong>Hitless High Availability:</strong> Graceful Routing Engine Switchover (GRES) + Nonstop Active Routing (NSR) prevents route flap during RE failover.</text>
     </g>
   </g>
 </svg>
@@ -724,146 +637,145 @@ mark{background:rgba(240,136,62,.25);color:var(--amb);border-radius:2px;padding:
       <li>Two distinct topologies: <strong>logical topology</strong> (device connections) and <strong>management topology</strong> (management access paths).</li>
       <li>Management uses a <strong>dedicated management network</strong> separate from production traffic.</li>
     </ul>
-    <div class="dw">
-      <svg viewBox="0 0 920 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Customer Lab Network Topology and Management Subnet">
+        <div class="dw">
+      <svg viewBox="0 0 960 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Customer Lab Network Topology and Management Subnet">
   <defs>
-    <linearGradient id="bgGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0d1117"/>
-      <stop offset="100%" stop-color="#161b22"/>
-    </linearGradient>
+    <filter id="shadow3" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
   </defs>
 
-  <rect width="920" height="420" rx="12" fill="url(#bgGrad3)" stroke="#30363d" stroke-width="1.5"/>
+  <rect width="960" height="420" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="480" y="32" font-size="16" font-weight="800" fill="#0f172a" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">Figure 3: Customer Lab Network Topology &amp; Management Subnet Architecture</text>
 
-  <!-- Title Header -->
-  <rect x="18" y="14" width="884" height="42" rx="8" fill="#1c2128" stroke="#30363d" stroke-width="1"/>
-  <text x="36" y="40" font-size="14" font-weight="700" fill="#58a6ff" font-family="'Inter', system-ui, sans-serif" letter-spacing="0.5">CUSTOMER NETWORK TOPOLOGY &amp; MANAGEMENT LAB SCENARIO</text>
-  <text x="540" y="40" font-size="11" font-weight="500" fill="#8b949e" font-family="'Inter', system-ui, sans-serif">OOB Management Network (/24 Subnet) &middot; Default Gateway &middot; Transit Core</text>
+  <!-- 1. MANAGEMENT SUBNET BOX (Left) -->
+  <g transform="translate(30, 55)" filter="url(#shadow3)">
+    <rect width="320" height="280" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.5"/>
+    <rect width="320" height="34" rx="7" fill="#1e40af"/>
+    <text x="160" y="22" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">OOB MANAGEMENT SUBNET: 192.168.1.0/24</text>
 
-  <!-- LEFT: OUT-OF-BAND MANAGEMENT SUBNET (/24) -->
-  <g transform="translate(24, 70)">
-    <rect width="320" height="264" rx="10" fill="rgba(31,111,235,0.06)" stroke="#1f6feb" stroke-width="1.5" stroke-dasharray="6,3"/>
-    <rect x="12" y="10" width="296" height="26" rx="5" fill="#1f6feb" fill-opacity="0.2" stroke="#388bfd" stroke-width="0.8"/>
-    <text x="24" y="27" font-size="11" font-weight="700" fill="#79c0ff" font-family="'Inter', system-ui, sans-serif">OOB MGMT SUBNET: 192.168.1.0/24</text>
-
-    <!-- Workstation Host -->
-    <g transform="translate(20, 48)">
-      <rect width="280" height="76" rx="6" fill="#161b22" stroke="#388bfd" stroke-width="1.2"/>
-      <circle cx="24" cy="24" r="10" fill="#1f6feb"/>
-      <text x="24" y="28" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">&#128187;</text>
-      <text x="42" y="22" font-size="11" font-weight="700" fill="#e6edf3">Management Workstation</text>
-      <text x="42" y="36" font-size="9" fill="#79c0ff" font-family="'JetBrains Mono', monospace">IP: 192.168.1.50/24</text>
+    <!-- Workstation -->
+    <g transform="translate(15, 48)">
+      <rect width="290" height="74" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.2"/>
+      <rect x="12" y="14" width="36" height="24" rx="3" fill="#1e40af"/>
+      <path d="M 8 38 L 52 38 L 48 44 L 12 44 Z" fill="#64748b"/>
       
-      <rect x="14" y="46" width="252" height="22" rx="4" fill="#0d1117" stroke="#30363d"/>
-      <text x="20" y="60" font-size="8.5" fill="#8b949e">Default Gateway: <tspan fill="#3fb950" font-weight="600" font-family="'JetBrains Mono', monospace">192.168.1.1</tspan> (Router-A)</text>
+      <text x="58" y="24" font-size="12" font-weight="800" fill="#1e40af">Management Workstation</text>
+      <text x="58" y="40" font-size="10.5" font-weight="700" fill="#0f172a" font-family="'JetBrains Mono', monospace">IP: 192.168.1.50/24</text>
+      <text x="58" y="58" font-size="10" font-weight="600" fill="#15803d">Default GW: 192.168.1.1 (Router-A)</text>
     </g>
 
-    <!-- Out-of-Band Switch -->
-    <g transform="translate(20, 134)">
-      <rect width="280" height="42" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
-      <text x="14" y="18" font-size="9.5" font-weight="700" fill="#e6edf3">OOB Management Switch</text>
-      <text x="14" y="32" font-size="8.5" fill="#8b949e">Layer 2 Broadcast Domain &middot; Subnet 192.168.1.0/24</text>
+    <!-- OOB Switch -->
+    <g transform="translate(15, 132)">
+      <rect width="290" height="46" rx="6" fill="#f8fafc" stroke="#94a3b8"/>
+      <text x="14" y="20" font-size="11" font-weight="800" fill="#0f172a">Out-of-Band Management Switch</text>
+      <text x="14" y="36" font-size="9.5" fill="#64748b">Layer 2 broadcast domain &middot; Connects host to routers</text>
     </g>
 
-    <!-- Subnet Math Specs -->
-    <g transform="translate(20, 186)">
-      <rect width="280" height="66" rx="6" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
-      <text x="12" y="18" font-size="9" font-weight="700" fill="#58a6ff">/24 Subnet Architecture:</text>
-      <text x="12" y="34" font-size="8" fill="#8b949e">&bull; Mask: <tspan fill="#e6edf3" font-family="'JetBrains Mono', monospace">255.255.255.0</tspan> (24 bits network, 8 bits host)</text>
-      <text x="12" y="47" font-size="8" fill="#8b949e">&bull; Usable Hosts: <tspan fill="#3fb950" font-family="'JetBrains Mono', monospace">192.168.1.1 &ndash; 192.168.1.254</tspan> (254 IPs)</text>
-      <text x="12" y="60" font-size="8" fill="#8b949e">&bull; Network: <tspan fill="#e6edf3" font-family="'JetBrains Mono', monospace">.0</tspan> &middot; Broadcast: <tspan fill="#e6edf3" font-family="'JetBrains Mono', monospace">192.168.1.255</tspan></text>
+    <!-- Subnet Specs -->
+    <g transform="translate(15, 188)">
+      <rect width="290" height="78" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
+      <text x="12" y="18" font-size="10.5" font-weight="800" fill="#1d4ed8">/24 Subnet Breakdown:</text>
+      <text x="12" y="34" font-size="9.5" fill="#334155">&bull; Mask: <tspan font-family="'JetBrains Mono', monospace" font-weight="700">255.255.255.0</tspan> (24 net bits, 8 host bits)</text>
+      <text x="12" y="50" font-size="9.5" fill="#334155">&bull; Usable Hosts: <tspan font-family="'JetBrains Mono', monospace" font-weight="700" fill="#15803d">192.168.1.1 &ndash; 192.168.1.254</tspan> (254 IPs)</text>
+      <text x="12" y="66" font-size="9.5" fill="#334155">&bull; Network: <tspan font-family="'JetBrains Mono', monospace">.0</tspan> &middot; Broadcast: <tspan font-family="'JetBrains Mono', monospace">192.168.1.255</tspan></text>
     </g>
   </g>
 
-  <!-- Connectors from Workstation / Switch to Routers -->
-  <path d="M 324 200 L 370 200 L 370 140 L 400 140" stroke="#388bfd" stroke-width="2" fill="none" stroke-dasharray="4,2"/>
-  <text x="360" y="130" font-size="7.5" fill="#79c0ff" text-anchor="middle">fxp0 / ge-0/0/0</text>
+  <!-- Connectors from Mgmt Switch to Routers -->
+  <path d="M 350 200 L 400 200 L 400 135 L 430 135" stroke="#2563eb" stroke-width="2.5" fill="none" stroke-dasharray="5,3"/>
+  <rect x="360" y="125" width="60" height="18" rx="3" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="390" y="137" font-size="8" font-weight="700" fill="#1d4ed8" text-anchor="middle">fxp0 / ge-0</text>
 
-  <path d="M 324 200 L 370 200 L 370 260 L 660 260 L 660 170 L 690 170" stroke="#388bfd" stroke-width="2" fill="none" stroke-dasharray="4,2"/>
-  <text x="520" y="252" font-size="7.5" fill="#79c0ff" text-anchor="middle">OOB link to Router-B (192.168.1.2)</text>
+  <path d="M 350 200 L 400 200 L 400 270 L 680 270 L 680 170 L 710 170" stroke="#2563eb" stroke-width="2.5" fill="none" stroke-dasharray="5,3"/>
+  <rect x="520" y="260" width="120" height="18" rx="3" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="580" y="272" font-size="8" font-weight="700" fill="#1d4ed8" text-anchor="middle">OOB link to Router-B (192.168.1.2)</text>
 
-  <!-- CENTER: ROUTER-A (Primary Router & Default Gateway) -->
-  <g transform="translate(400, 70)">
-    <rect width="250" height="264" rx="10" fill="#111c2e" stroke="#1f6feb" stroke-width="1.5"/>
-    
-    <!-- Router-A Header -->
-    <rect x="12" y="12" width="226" height="32" rx="6" fill="#1f6feb" fill-opacity="0.25" stroke="#388bfd" stroke-width="1"/>
-    <text x="24" y="32" font-size="12" font-weight="700" fill="#79c0ff">Router-A (Junos 22.4R1)</text>
+  <!-- 2. ROUTER-A (Primary Edge & Default GW) -->
+  <g transform="translate(430, 55)" filter="url(#shadow3)">
+    <rect width="250" height="280" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+    <rect width="250" height="34" rx="7" fill="#1e40af"/>
+    <text x="125" y="22" font-size="12.5" font-weight="800" fill="#ffffff" text-anchor="middle">Router-A (Junos 22.4R1)</text>
 
-    <!-- Interfaces -->
-    <g transform="translate(12, 54)">
-      <rect width="226" height="52" rx="5" fill="#161b22" stroke="#3fb950" stroke-width="1"/>
-      <text x="10" y="16" font-size="8.5" font-weight="700" fill="#3fb950">ge-0/0/0.0 (or fxp0) &mdash; DEFAULT GW</text>
-      <text x="10" y="30" font-size="9" fill="#e6edf3" font-family="'JetBrains Mono', monospace">192.168.1.1/24</text>
-      <text x="10" y="44" font-size="7.5" fill="#8b949e">Provides routing for Mgmt Workstation</text>
+    <!-- Interface 1: Default GW -->
+    <g transform="translate(15, 46)">
+      <rect width="220" height="60" rx="5" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+      <text x="10" y="18" font-size="10" font-weight="800" fill="#15803d">DEFAULT GATEWAY PORT</text>
+      <text x="10" y="34" font-size="10.5" font-weight="700" fill="#0f172a" font-family="'JetBrains Mono', monospace">ge-0/0/0.0: 192.168.1.1/24</text>
+      <text x="10" y="50" font-size="9" fill="#166534">Routes all off-subnet workstation traffic</text>
     </g>
 
+    <!-- Interface 2: Transit Link -->
+    <g transform="translate(15, 114)">
+      <rect width="220" height="60" rx="5" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+      <text x="10" y="18" font-size="10" font-weight="800" fill="#1d4ed8">CORE TRANSIT LINK</text>
+      <text x="10" y="34" font-size="10.5" font-weight="700" fill="#0f172a" font-family="'JetBrains Mono', monospace">ge-0/0/1.0: 10.0.12.1/30</text>
+      <text x="10" y="50" font-size="9" fill="#1e40af">Point-to-Point Link to Router-B</text>
+    </g>
+
+    <!-- Interface 3: Local Data LAN -->
+    <g transform="translate(15, 182)">
+      <rect width="220" height="48" rx="5" fill="#f8fafc" stroke="#cbd5e1"/>
+      <text x="10" y="17" font-size="9.5" font-weight="700" fill="#334155">LOCAL DATA LAN</text>
+      <text x="10" y="33" font-size="9.5" font-family="'JetBrains Mono', monospace" fill="#475569">ge-0/0/2.0: 172.16.1.1/24</text>
+    </g>
+
+    <!-- SSH Callout -->
+    <g transform="translate(15, 238)">
+      <rect width="220" height="30" rx="4" fill="#eff6ff" stroke="#bfdbfe"/>
+      <text x="110" y="20" font-size="9.5" font-weight="700" fill="#1d4ed8" text-anchor="middle">&#128274; SSH to ANY IP reaches this RE</text>
+    </g>
+  </g>
+
+  <!-- Point-to-Point Link Between Routers -->
+  <g transform="translate(680, 140)">
+    <line x1="0" y1="0" x2="30" y2="0" stroke="#16a34a" stroke-width="3.5"/>
+    <rect x="-5" y="-12" width="40" height="24" rx="3" fill="#ffffff" stroke="#16a34a" stroke-width="1.2"/>
+    <text x="15" y="4" font-size="8.5" font-weight="800" fill="#15803d" text-anchor="middle">/30 Link</text>
+  </g>
+
+  <!-- 3. ROUTER-B (Core Transit Router) -->
+  <g transform="translate(710, 55)" filter="url(#shadow3)">
+    <rect width="220" height="280" rx="8" fill="#ffffff" stroke="#16a34a" stroke-width="2"/>
+    <rect width="220" height="34" rx="7" fill="#15803d"/>
+    <text x="110" y="22" font-size="12.5" font-weight="800" fill="#ffffff" text-anchor="middle">Router-B (Junos 22.4R1)</text>
+
+    <!-- Transit Interface -->
+    <g transform="translate(12, 46)">
+      <rect width="196" height="60" rx="5" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+      <text x="8" y="18" font-size="10" font-weight="800" fill="#1d4ed8">TRANSIT INTERFACE</text>
+      <text x="8" y="34" font-size="10" font-weight="700" fill="#0f172a" font-family="'JetBrains Mono', monospace">ge-0/0/1.0: 10.0.12.2/30</text>
+      <text x="8" y="50" font-size="8.5" fill="#1e40af">Connected to Router-A</text>
+    </g>
+
+    <!-- Branch Link -->
     <g transform="translate(12, 114)">
-      <rect width="226" height="52" rx="5" fill="#161b22" stroke="#388bfd" stroke-width="1"/>
-      <text x="10" y="16" font-size="8.5" font-weight="700" fill="#79c0ff">ge-0/0/1.0 &mdash; CORE TRANSIT</text>
-      <text x="10" y="30" font-size="9" fill="#e6edf3" font-family="'JetBrains Mono', monospace">10.0.12.1/30</text>
-      <text x="10" y="44" font-size="7.5" fill="#8b949e">Point-to-Point Link to Router-B</text>
+      <rect width="196" height="60" rx="5" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+      <text x="8" y="18" font-size="10" font-weight="800" fill="#b45309">REMOTE BRANCH LINK</text>
+      <text x="8" y="34" font-size="10" font-weight="700" fill="#0f172a" font-family="'JetBrains Mono', monospace">ge-0/0/2.0: 10.0.23.1/30</text>
+      <text x="8" y="50" font-size="8.5" fill="#92400e">Transit to Router-C (Branch)</text>
     </g>
 
-    <g transform="translate(12, 174)">
-      <rect width="226" height="46" rx="5" fill="#161b22" stroke="#30363d" stroke-width="1"/>
-      <text x="10" y="16" font-size="8.5" font-weight="700" fill="#e6edf3">ge-0/0/2.0 &mdash; DATA LAN</text>
-      <text x="10" y="30" font-size="9" fill="#8b949e" font-family="'JetBrains Mono', monospace">172.16.1.1/24 (LAN Subnet)</text>
+    <!-- OOB Interface -->
+    <g transform="translate(12, 182)">
+      <rect width="196" height="48" rx="5" fill="#f8fafc" stroke="#cbd5e1"/>
+      <text x="8" y="17" font-size="9.5" font-weight="700" fill="#334155">OOB MGMT INTERFACE</text>
+      <text x="8" y="33" font-size="9.5" font-family="'JetBrains Mono', monospace" fill="#475569">fxp0: 192.168.1.2/24</text>
     </g>
 
-    <!-- SSH Access Note -->
-    <rect x="12" y="228" width="226" height="24" rx="4" fill="rgba(88,166,255,0.1)" stroke="#388bfd" stroke-width="0.8"/>
-    <text x="125" y="244" font-size="7.5" font-weight="600" fill="#79c0ff" text-anchor="middle">&#128274; SSH reachable on ANY active IP</text>
+    <!-- Branch Note -->
+    <g transform="translate(12, 238)">
+      <rect width="196" height="30" rx="4" fill="#f0fdf4" stroke="#bbf7d0"/>
+      <text x="98" y="20" font-size="9" font-weight="700" fill="#15803d" text-anchor="middle">&rarr; Connects to Router-C (.23.2)</text>
+    </g>
   </g>
 
-  <!-- Point-to-Point Core Transit Link Arrow -->
-  <g transform="translate(650, 130)">
-    <path d="M 0 10 L 40 10" stroke="#3fb950" stroke-width="3"/>
-    <polygon points="38,6 46,10 38,14" fill="#3fb950"/>
-    <polygon points="8,6 0,10 8,14" fill="#3fb950"/>
-    <rect x="-10" y="20" width="60" height="18" rx="3" fill="#0d1117" stroke="#3fb950" stroke-width="0.8"/>
-    <text x="20" y="32" font-size="7" font-weight="700" fill="#3fb950" text-anchor="middle" font-family="'JetBrains Mono', monospace">/30 Link</text>
-  </g>
-
-  <!-- RIGHT: ROUTER-B & REMOTE BRANCH -->
-  <g transform="translate(690, 70)">
-    <rect width="210" height="264" rx="10" fill="#111c2e" stroke="#238636" stroke-width="1.5"/>
-    
-    <!-- Router-B Header -->
-    <rect x="10" y="12" width="190" height="32" rx="6" fill="#238636" fill-opacity="0.25" stroke="#3fb950" stroke-width="1"/>
-    <text x="20" y="32" font-size="12" font-weight="700" fill="#3fb950">Router-B (Junos)</text>
-
-    <!-- Interfaces -->
-    <g transform="translate(10, 54)">
-      <rect width="190" height="52" rx="5" fill="#161b22" stroke="#388bfd" stroke-width="1"/>
-      <text x="8" y="16" font-size="8.5" font-weight="700" fill="#79c0ff">ge-0/0/1.0 &mdash; TRANSIT</text>
-      <text x="8" y="30" font-size="9" fill="#e6edf3" font-family="'JetBrains Mono', monospace">10.0.12.2/30</text>
-      <text x="8" y="44" font-size="7.5" fill="#8b949e">Link to Router-A</text>
-    </g>
-
-    <g transform="translate(10, 114)">
-      <rect width="190" height="52" rx="5" fill="#161b22" stroke="#f0883e" stroke-width="1"/>
-      <text x="8" y="16" font-size="8.5" font-weight="700" fill="#f0883e">ge-0/0/2.0 &mdash; BRANCH LINK</text>
-      <text x="8" y="30" font-size="9" fill="#e6edf3" font-family="'JetBrains Mono', monospace">10.0.23.1/30</text>
-      <text x="8" y="44" font-size="7.5" fill="#8b949e">Transit to Router-C</text>
-    </g>
-
-    <g transform="translate(10, 174)">
-      <rect width="190" height="46" rx="5" fill="#161b22" stroke="#30363d" stroke-width="1"/>
-      <text x="8" y="16" font-size="8.5" font-weight="700" fill="#e6edf3">fxp0 &mdash; OOB MGMT</text>
-      <text x="8" y="30" font-size="9" fill="#8b949e" font-family="'JetBrains Mono', monospace">192.168.1.2/24</text>
-    </g>
-
-    <rect x="10" y="228" width="190" height="24" rx="4" fill="rgba(63,185,80,0.1)" stroke="#3fb950" stroke-width="0.8"/>
-    <text x="105" y="244" font-size="7.5" font-weight="600" fill="#3fb950" text-anchor="middle">Connected to Router-C (10.0.23.2)</text>
-  </g>
-
-  <!-- Exam Highlights Footer Banner -->
-  <g transform="translate(24, 348)">
-    <rect width="876" height="54" rx="8" fill="#1c2128" stroke="#30363d" stroke-width="1"/>
-    <text x="18" y="22" font-size="10" font-weight="700" fill="#f0883e" font-family="'Inter', system-ui, sans-serif">&#9733; JNCIA-Junos Exam Core Takeaways:</text>
-    <text x="18" y="40" font-size="9" fill="#79c0ff" font-family="'Inter', system-ui, sans-serif">1. <strong>Default Gateway Role:</strong> Host <code style="color:#79c0ff">192.168.1.50</code> forwards all packets destined outside <code style="color:#79c0ff">192.168.1.0/24</code> to its configured Default Gateway (<code style="color:#3fb950">192.168.1.1</code>).</text>
-    <text x="490" y="40" font-size="9" fill="#79c0ff" font-family="'Inter', system-ui, sans-serif">2. <strong>SSH Anywhere:</strong> Connecting to <code style="color:#79c0ff">192.168.1.1</code>, <code style="color:#79c0ff">10.0.12.1</code>, or <code style="color:#79c0ff">172.16.1.1</code> connects to the <strong>exact same Router-A RE</strong>.</text>
+  <!-- BOTTOM EXAM TAKEAWAYS BANNER -->
+  <g transform="translate(30, 350)">
+    <rect width="900" height="52" rx="6" fill="#1e293b" stroke="#0f172a"/>
+    <text x="16" y="22" font-size="11" font-weight="800" fill="#f59e0b">&#9733; Core Exam Takeaways:</text>
+    <text x="16" y="38" font-size="10.5" fill="#ffffff">1. <strong>Default Gateway Rule:</strong> Workstation <code style="color:#60a5fa">192.168.1.50</code> forwards all non-local packets to <code style="color:#4ade80">192.168.1.1</code> (Router-A).</text>
+    <text x="510" y="38" font-size="10.5" fill="#ffffff">2. <strong>Universal SSH Access:</strong> SSH to <code style="color:#60a5fa">192.168.1.1</code> or <code style="color:#60a5fa">10.0.12.1</code> accesses the <strong>exact same Router-A RE</strong>.</text>
   </g>
 </svg>
       <p class="dc"><strong>Figure 3: Customer Lab Network Topology &amp; Management Subnet</strong> &mdash; The Out-of-Band management subnet (<code>192.168.1.0/24</code>) connects the workstation (<code>.50</code>) to Router-A (<code>192.168.1.1</code> default gateway). Core transit links use <code>/30</code> point-to-point subnets. SSH to any active router interface IP reaches the exact same Routing Engine.</p>
@@ -892,116 +804,108 @@ mark{background:rgba(240,136,62,.25);color:var(--amb);border-radius:2px;padding:
       </tbody>
     </table></div>
     <div class="cal warn"><div class="cal-title">&#9888; Telnet Security Risk</div><p>Telnet sends <strong>usernames and passwords in clear text</strong>. Anyone on the network path can capture credentials. Always use SSH.</p></div>
-    <div class="dw">
-      <svg viewBox="0 0 920 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Remote Access Security Architecture: SSH vs Telnet vs Console">
+        <div class="dw">
+      <svg viewBox="0 0 960 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Remote Access Security Comparison: SSH vs Telnet vs Console">
   <defs>
-    <linearGradient id="bgGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0d1117"/>
-      <stop offset="100%" stop-color="#161b22"/>
-    </linearGradient>
+    <filter id="shadow4" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
   </defs>
 
-  <rect width="920" height="360" rx="12" fill="url(#bgGrad4)" stroke="#30363d" stroke-width="1.5"/>
+  <rect width="960" height="360" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="480" y="32" font-size="16" font-weight="800" fill="#0f172a" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">Figure 4: Remote Access Security Architecture &mdash; SSH vs. Telnet vs. Out-of-Band Console</text>
 
-  <!-- Title Header -->
-  <rect x="18" y="14" width="884" height="42" rx="8" fill="#1c2128" stroke="#30363d" stroke-width="1"/>
-  <text x="36" y="40" font-size="14" font-weight="700" fill="#58a6ff" font-family="'Inter', system-ui, sans-serif" letter-spacing="0.5">REMOTE ACCESS PROTOCOLS &amp; SECURITY COMPARISON</text>
-  <text x="500" y="40" font-size="11" font-weight="500" fill="#8b949e" font-family="'Inter', system-ui, sans-serif">SSH (TCP 22) vs. Telnet (TCP 23) vs. Direct Out-of-Band Console Access</text>
+  <!-- 1. SSH PANEL (SECURE) -->
+  <g transform="translate(30, 55)" filter="url(#shadow4)">
+    <rect width="285" height="280" rx="8" fill="#ffffff" stroke="#16a34a" stroke-width="2"/>
+    <rect width="285" height="34" rx="7" fill="#15803d"/>
+    <text x="142" y="22" font-size="13" font-weight="800" fill="#ffffff" text-anchor="middle">&#128274; SSH (TCP PORT 22)</text>
 
-  <!-- PANEL 1: SSH (SECURE) -->
-  <g transform="translate(24, 70)">
-    <rect width="276" height="268" rx="10" fill="#0d2118" stroke="#238636" stroke-width="1.5"/>
-    
-    <rect x="12" y="12" width="252" height="32" rx="6" fill="#238636" fill-opacity="0.25" stroke="#3fb950" stroke-width="1"/>
-    <text x="24" y="32" font-size="12" font-weight="700" fill="#3fb950">&#128274; SSH &mdash; TCP PORT 22</text>
+    <!-- Status Badge -->
+    <rect x="15" y="46" width="255" height="26" rx="4" fill="#dcfce7" stroke="#16a34a"/>
+    <text x="142" y="63" font-size="10.5" font-weight="800" fill="#15803d" text-anchor="middle">[ SECURE &middot; RECOMMENDED STANDARD ]</text>
 
-    <!-- Badge -->
-    <rect x="12" y="52" width="252" height="24" rx="4" fill="#161b22" stroke="#238636"/>
-    <text x="138" y="68" font-size="9" font-weight="700" fill="#3fb950" text-anchor="middle">[ SECURE &middot; RECOMMENDED STANDARD ]</text>
-
-    <!-- Visual Payload -->
-    <g transform="translate(12, 84)">
-      <rect width="252" height="48" rx="5" fill="#0d1117" stroke="#30363d"/>
-      <text x="10" y="18" font-size="8.5" font-weight="700" fill="#79c0ff">Encrypted Payload Stream:</text>
-      <text x="10" y="34" font-size="8.5" fill="#3fb950" font-family="'JetBrains Mono', monospace">7f 8a 3b e2 9c fa 10 4d ...</text>
+    <!-- Visual Encrypted Payload -->
+    <g transform="translate(15, 80)">
+      <rect width="255" height="46" rx="4" fill="#f0fdf4" stroke="#bbf7d0"/>
+      <text x="10" y="18" font-size="9.5" font-weight="700" fill="#166534">Encrypted Ciphertext Stream:</text>
+      <text x="10" y="34" font-size="9" font-family="'JetBrains Mono', monospace" font-weight="700" fill="#15803d">7f 8a 3b e2 9c fa 10 4d ...</text>
     </g>
 
     <!-- Details -->
-    <g transform="translate(12, 140)">
-      <text x="0" y="14" font-size="9" fill="#e6edf3">&bull; <strong>Strong Encryption:</strong> AES-256-GCM / ChaCha20</text>
-      <text x="0" y="30" font-size="9" fill="#e6edf3">&bull; <strong>Public-Key Auth:</strong> RSA / Ed25519 Host Keys</text>
-      <text x="0" y="46" font-size="9" fill="#e6edf3">&bull; <strong>Protection:</strong> Credentials &amp; CLI data are safe</text>
-      <text x="0" y="62" font-size="9" fill="#8b949e">&bull; Stored in <code style="color:#79c0ff">~/.ssh/known_hosts</code></text>
-      <text x="0" y="78" font-size="9" fill="#8b949e">&bull; Mandatory for all production network access</text>
+    <g transform="translate(15, 138)">
+      <text x="0" y="14" font-size="10.5" fill="#0f172a">&bull; <strong>Strong Encryption:</strong> AES-256 / ChaCha20</text>
+      <text x="0" y="32" font-size="10.5" fill="#0f172a">&bull; <strong>Host Key Auth:</strong> RSA / Ed25519</text>
+      <text x="0" y="50" font-size="10.5" fill="#0f172a">&bull; <strong>Protected:</strong> Passwords &amp; CLI data safe</text>
+      <text x="0" y="68" font-size="10" fill="#64748b">&bull; Stored in <code style="font-weight:700">~/.ssh/known_hosts</code></text>
+      <text x="0" y="86" font-size="10" fill="#64748b">&bull; Standard for all production access</text>
     </g>
 
-    <!-- Status Banner -->
-    <rect x="12" y="230" width="252" height="26" rx="4" fill="rgba(63,185,80,0.15)" stroke="#3fb950" stroke-width="0.8"/>
-    <text x="138" y="247" font-size="8.5" font-weight="600" fill="#3fb950" text-anchor="middle">&#10004; Default for Junos In-Band &amp; OOB Mgmt</text>
+    <!-- Bottom Footer -->
+    <rect x="15" y="240" width="255" height="28" rx="4" fill="#f0fdf4" stroke="#16a34a"/>
+    <text x="142" y="258" font-size="9.5" font-weight="800" fill="#15803d" text-anchor="middle">&#10004; Preferred for Junos Management</text>
   </g>
 
-  <!-- PANEL 2: TELNET (INSECURE) -->
-  <g transform="translate(322, 70)">
-    <rect width="276" height="268" rx="10" fill="#2d1515" stroke="#f85149" stroke-width="1.5"/>
-    
-    <rect x="12" y="12" width="252" height="32" rx="6" fill="#f85149" fill-opacity="0.25" stroke="#f85149" stroke-width="1"/>
-    <text x="24" y="32" font-size="12" font-weight="700" fill="#f85149">&#9888; TELNET &mdash; TCP PORT 23</text>
+  <!-- 2. TELNET PANEL (INSECURE) -->
+  <g transform="translate(337, 55)" filter="url(#shadow4)">
+    <rect width="285" height="280" rx="8" fill="#ffffff" stroke="#dc2626" stroke-width="2"/>
+    <rect width="285" height="34" rx="7" fill="#b91c1c"/>
+    <text x="142" y="22" font-size="13" font-weight="800" fill="#ffffff" text-anchor="middle">&#9888; TELNET (TCP PORT 23)</text>
 
-    <!-- Badge -->
-    <rect x="12" y="52" width="252" height="24" rx="4" fill="#161b22" stroke="#f85149"/>
-    <text x="138" y="68" font-size="9" font-weight="700" fill="#f85149" text-anchor="middle">[ INSECURE &middot; DEPRECATED ]</text>
+    <!-- Status Badge -->
+    <rect x="15" y="46" width="255" height="26" rx="4" fill="#fee2e2" stroke="#dc2626"/>
+    <text x="142" y="63" font-size="10.5" font-weight="800" fill="#b91c1c" text-anchor="middle">[ INSECURE &middot; DEPRECATED ]</text>
 
-    <!-- Visual Payload -->
-    <g transform="translate(12, 84)">
-      <rect width="252" height="48" rx="5" fill="#0d1117" stroke="#30363d"/>
-      <text x="10" y="18" font-size="8.5" font-weight="700" fill="#f85149">Cleartext Exposure (Wireshark):</text>
-      <text x="10" y="34" font-size="8.5" fill="#f85149" font-family="'JetBrains Mono', monospace">user: lab / pass: Juniper123</text>
+    <!-- Visual Plaintext Exposure -->
+    <g transform="translate(15, 80)">
+      <rect width="255" height="46" rx="4" fill="#fef2f2" stroke="#fecaca"/>
+      <text x="10" y="18" font-size="9.5" font-weight="700" fill="#991b1b">Cleartext Vulnerability (Wireshark):</text>
+      <text x="10" y="34" font-size="9" font-family="'JetBrains Mono', monospace" font-weight="700" fill="#dc2626">user: admin / pass: Juniper123</text>
     </g>
 
     <!-- Details -->
-    <g transform="translate(12, 140)">
-      <text x="0" y="14" font-size="9" fill="#e6edf3">&bull; <strong>Zero Encryption:</strong> Everything in plain ASCII</text>
-      <text x="0" y="30" font-size="9" fill="#e6edf3">&bull; <strong>Eavesdropping Risk:</strong> Sniffers capture root pass</text>
-      <text x="0" y="46" font-size="9" fill="#e6edf3">&bull; <strong>Vulnerable to MITM:</strong> No server verification</text>
-      <text x="0" y="62" font-size="9" fill="#8b949e">&bull; Disabled by default in hardened templates</text>
-      <text x="0" y="78" font-size="9" fill="#8b949e">&bull; Never use over untrusted or shared links</text>
+    <g transform="translate(15, 138)">
+      <text x="0" y="14" font-size="10.5" fill="#0f172a">&bull; <strong>Zero Encryption:</strong> Raw ASCII on wire</text>
+      <text x="0" y="32" font-size="10.5" fill="#0f172a">&bull; <strong>Sniffing Risk:</strong> Anyone can read passwords</text>
+      <text x="0" y="50" font-size="10.5" fill="#0f172a">&bull; <strong>Vulnerable to MITM:</strong> No server identity</text>
+      <text x="0" y="68" font-size="10" fill="#64748b">&bull; Disabled by default in secure baselines</text>
+      <text x="0" y="86" font-size="10" fill="#64748b">&bull; NEVER use over untrusted networks</text>
     </g>
 
-    <!-- Status Banner -->
-    <rect x="12" y="230" width="252" height="26" rx="4" fill="rgba(248,81,73,0.15)" stroke="#f85149" stroke-width="0.8"/>
-    <text x="138" y="247" font-size="8.5" font-weight="600" fill="#f85149" text-anchor="middle">&#10008; Exam Warning: Avoid Plaintext Telnet</text>
+    <!-- Bottom Footer -->
+    <rect x="15" y="240" width="255" height="28" rx="4" fill="#fef2f2" stroke="#dc2626"/>
+    <text x="142" y="258" font-size="9.5" font-weight="800" fill="#b91c1c" text-anchor="middle">&#10008; Exam Warning: Avoid in Production</text>
   </g>
 
-  <!-- PANEL 3: CONSOLE (OUT-OF-BAND) -->
-  <g transform="translate(620, 70)">
-    <rect width="276" height="268" rx="10" fill="#1b172a" stroke="#bc8cff" stroke-width="1.5"/>
-    
-    <rect x="12" y="12" width="252" height="32" rx="6" fill="#bc8cff" fill-opacity="0.25" stroke="#bc8cff" stroke-width="1"/>
-    <text x="24" y="32" font-size="12" font-weight="700" fill="#bc8cff">&#128268; CONSOLE &mdash; SERIAL UART</text>
+  <!-- 3. CONSOLE PANEL (OUT-OF-BAND) -->
+  <g transform="translate(645, 55)" filter="url(#shadow4)">
+    <rect width="285" height="280" rx="8" fill="#ffffff" stroke="#7c3aed" stroke-width="2"/>
+    <rect width="285" height="34" rx="7" fill="#6d28d9"/>
+    <text x="142" y="22" font-size="13" font-weight="800" fill="#ffffff" text-anchor="middle">&#128268; CONSOLE (SERIAL UART)</text>
 
-    <!-- Badge -->
-    <rect x="12" y="52" width="252" height="24" rx="4" fill="#161b22" stroke="#bc8cff"/>
-    <text x="138" y="68" font-size="9" font-weight="700" fill="#bc8cff" text-anchor="middle">[ PHYSICAL OUT-OF-BAND ACCESS ]</text>
+    <!-- Status Badge -->
+    <rect x="15" y="46" width="255" height="26" rx="4" fill="#f3e8ff" stroke="#7c3aed"/>
+    <text x="142" y="63" font-size="10.5" font-weight="800" fill="#6d28d9" text-anchor="middle">[ PHYSICAL OUT-OF-BAND ACCESS ]</text>
 
-    <!-- Visual Payload -->
-    <g transform="translate(12, 84)">
-      <rect width="252" height="48" rx="5" fill="#0d1117" stroke="#30363d"/>
-      <text x="10" y="18" font-size="8.5" font-weight="700" fill="#bc8cff">Serial Line Parameters:</text>
-      <text x="10" y="34" font-size="8.5" fill="#e6edf3" font-family="'JetBrains Mono', monospace">9600 baud &middot; 8-N-1 &middot; No Flow Ctl</text>
+    <!-- Serial Specs -->
+    <g transform="translate(15, 80)">
+      <rect width="255" height="46" rx="4" fill="#faf5ff" stroke="#e9d5ff"/>
+      <text x="10" y="18" font-size="9.5" font-weight="700" fill="#6d28d9">Serial Line Settings:</text>
+      <text x="10" y="34" font-size="9" font-family="'JetBrains Mono', monospace" font-weight="700" fill="#4c1d95">9600 baud &middot; 8-N-1 &middot; No Flow Control</text>
     </g>
 
     <!-- Details -->
-    <g transform="translate(12, 140)">
-      <text x="0" y="14" font-size="9" fill="#e6edf3">&bull; <strong>Direct RE UART:</strong> RJ-45 Rollover / USB Type-C</text>
-      <text x="0" y="30" font-size="9" fill="#e6edf3">&bull; <strong>No Network Stack:</strong> Bypasses IP &amp; Ethernet</text>
-      <text x="0" y="46" font-size="9" fill="#e6edf3">&bull; <strong>Bootstrapping:</strong> Initial out-of-the-box setup</text>
-      <text x="0" y="62" font-size="9" fill="#8b949e">&bull; <strong>Recovery:</strong> Root password recovery via loader</text>
-      <text x="0" y="78" font-size="9" fill="#8b949e">&bull; Requires physical access or terminal server</text>
+    <g transform="translate(15, 138)">
+      <text x="0" y="14" font-size="10.5" fill="#0f172a">&bull; <strong>Direct RE UART:</strong> RJ-45 Rollover / USB</text>
+      <text x="0" y="32" font-size="10.5" fill="#0f172a">&bull; <strong>No Network Stack:</strong> Bypasses IP layer</text>
+      <text x="0" y="50" font-size="10.5" fill="#0f172a">&bull; <strong>Initial Setup:</strong> Out-of-the-box bootstrapping</text>
+      <text x="0" y="68" font-size="10" fill="#64748b">&bull; <strong>Password Recovery:</strong> Access via loader</text>
+      <text x="0" y="86" font-size="10" fill="#64748b">&bull; Requires physical or terminal server access</text>
     </g>
 
-    <!-- Status Banner -->
-    <rect x="12" y="230" width="252" height="26" rx="4" fill="rgba(188,140,255,0.15)" stroke="#bc8cff" stroke-width="0.8"/>
-    <text x="138" y="247" font-size="8.5" font-weight="600" fill="#bc8cff" text-anchor="middle">&#10004; Essential for Disaster Recovery</text>
+    <!-- Bottom Footer -->
+    <rect x="15" y="240" width="255" height="28" rx="4" fill="#faf5ff" stroke="#7c3aed"/>
+    <text x="142" y="258" font-size="9.5" font-weight="800" fill="#6d28d9" text-anchor="middle">&#10004; Essential for Disaster Recovery</text>
   </g>
 </svg>
       <p class="dc"><strong>Figure 4: Remote Access Protocols &amp; Security Comparison</strong> &mdash; SSH (TCP port 22) creates a cryptographically encrypted tunnel protecting passwords from packet capture. Legacy Telnet (TCP port 23) transmits cleartext credentials vulnerable to sniffing. Console provides direct physical out-of-band access.</p>
@@ -1041,174 +945,162 @@ mark{background:rgba(240,136,62,.25);color:var(--amb);border-radius:2px;padding:
       <li>If the CLI hostname in the prompt doesn&rsquo;t match the network diagram, <strong>fix the router hostname</strong> (not the diagram) during configuration exercises.</li>
     </ul>
     <h3 class="tt" id="modes">CLI Modes</h3>
-        <div class="dw">
-      <svg viewBox="0 0 920 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Junos CLI Modes, Prompts and Transition State Machine">
+            <div class="dw">
+      <svg viewBox="0 0 960 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Junos CLI Modes, Prompts and Transition State Machine">
   <defs>
-    <linearGradient id="bgGrad5" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0d1117"/>
-      <stop offset="100%" stop-color="#161b22"/>
-    </linearGradient>
+    <filter id="shadow5" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
   </defs>
 
-  <rect width="920" height="400" rx="12" fill="url(#bgGrad5)" stroke="#30363d" stroke-width="1.5"/>
+  <rect width="960" height="400" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="480" y="32" font-size="16" font-weight="800" fill="#0f172a" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">Figure 5: Junos CLI Modes, Prompt Indicators &amp; Transition State Machine</text>
 
-  <!-- Title Header -->
-  <rect x="18" y="14" width="884" height="42" rx="8" fill="#1c2128" stroke="#30363d" stroke-width="1"/>
-  <text x="36" y="40" font-size="14" font-weight="700" fill="#58a6ff" font-family="'Inter', system-ui, sans-serif" letter-spacing="0.5">JUNOS CLI MODES &amp; TRANSITION STATE MACHINE</text>
-  <text x="470" y="40" font-size="11" font-weight="500" fill="#8b949e" font-family="'Inter', system-ui, sans-serif">FreeBSD Shell (%) &harr; Operational Mode (&gt;) &harr; Configuration Mode (#)</text>
+  <!-- 1. FREEBSD UNIX SHELL (%) -->
+  <g transform="translate(30, 55)" filter="url(#shadow5)">
+    <rect width="270" height="240" rx="8" fill="#ffffff" stroke="#dc2626" stroke-width="2"/>
+    <rect width="270" height="34" rx="7" fill="#b91c1c"/>
+    <text x="135" y="22" font-size="12.5" font-weight="800" fill="#ffffff" text-anchor="middle">1. UNIX FreeBSD Shell</text>
 
-  <!-- 3 CLI MODE CARDS -->
-
-  <!-- MODE 1: FREEBSD UNIX SHELL (%) -->
-  <g transform="translate(24, 70)">
-    <rect width="260" height="230" rx="10" fill="#161b22" stroke="#f85149" stroke-width="1.5"/>
-    
-    <!-- Mode Header -->
-    <rect x="10" y="10" width="240" height="30" rx="5" fill="#f85149" fill-opacity="0.2" stroke="#f85149" stroke-width="0.8"/>
-    <text x="20" y="30" font-size="11.5" font-weight="700" fill="#f85149">1. UNIX FreeBSD Shell</text>
-
-    <!-- Prompt Badge -->
-    <rect x="10" y="48" width="240" height="34" rx="5" fill="#0d1117" stroke="#f85149" stroke-width="1"/>
-    <text x="20" y="70" font-size="12" font-weight="700" fill="#f85149" font-family="'JetBrains Mono', monospace">user@router% <tspan fill="#e6edf3">_</tspan></text>
-
-    <!-- Details -->
-    <g transform="translate(10, 92)">
-      <text x="0" y="14" font-size="9" fill="#e6edf3">&bull; <strong>Prompt Symbol:</strong> <code style="color:#f85149">%</code> (Percent sign)</text>
-      <text x="0" y="30" font-size="9" fill="#e6edf3">&bull; <strong>Purpose:</strong> Low-level OS filesystem</text>
-      <text x="0" y="46" font-size="9" fill="#8b949e">&bull; Access logs: <code style="color:#79c0ff">/var/log/messages</code></text>
-      <text x="0" y="62" font-size="9" fill="#8b949e">&bull; Commands: <code style="color:#79c0ff">ls, top, ps aux, ping</code></text>
-      <text x="0" y="78" font-size="9" fill="#8b949e">&bull; Python / SLAX shell scripts</text>
+    <!-- Prompt Box -->
+    <g transform="translate(15, 46)">
+      <rect width="240" height="38" rx="5" fill="#1e293b" stroke="#0f172a"/>
+      <text x="15" y="24" font-size="13" font-weight="800" fill="#f87171" font-family="'JetBrains Mono', monospace">user@router% <tspan fill="#ffffff">_</tspan></text>
     </g>
 
-    <!-- Transition to Operational -->
-    <rect x="10" y="186" width="240" height="34" rx="5" fill="rgba(88,166,255,0.15)" stroke="#388bfd" stroke-width="1"/>
-    <text x="130" y="202" font-size="8.5" font-weight="700" fill="#79c0ff" text-anchor="middle">Enter Junos CLI: type <tspan fill="#3fb950" font-family="'JetBrains Mono', monospace">cli</tspan></text>
-    <text x="130" y="214" font-size="7.5" fill="#8b949e" text-anchor="middle">&rarr; Transitions to Operational Mode</text>
+    <!-- Details -->
+    <g transform="translate(15, 96)">
+      <text x="0" y="14" font-size="11" fill="#0f172a">&bull; <strong>Prompt Character:</strong> <code style="color:#dc2626;font-weight:800">%</code> (Percent)</text>
+      <text x="0" y="32" font-size="11" fill="#0f172a">&bull; <strong>Purpose:</strong> Low-level FreeBSD OS shell</text>
+      <text x="0" y="50" font-size="10.5" fill="#475569">&bull; Inspect logs: <code style="color:#2563eb">/var/log/messages</code></text>
+      <text x="0" y="68" font-size="10.5" fill="#475569">&bull; OS tools: <code style="color:#2563eb">ls, top, ps aux, ping</code></text>
+      <text x="0" y="86" font-size="10.5" fill="#475569">&bull; SLAX &amp; Python automation scripts</text>
+    </g>
+
+    <!-- Enter CLI Button -->
+    <rect x="15" y="196" width="240" height="32" rx="4" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
+    <text x="120" y="217" font-size="10.5" font-weight="800" fill="#1d4ed8" text-anchor="middle">Enter CLI: type <tspan fill="#15803d" font-family="'JetBrains Mono', monospace">cli</tspan> &rarr;</text>
   </g>
 
-  <!-- ARROW 1: Shell <-> Operational -->
-  <g transform="translate(286, 120)">
+  <!-- ARROWS 1: Shell <-> Operational -->
+  <g transform="translate(305, 110)">
     <!-- Right Arrow (cli) -->
-    <path d="M 6 30 L 40 30" stroke="#388bfd" stroke-width="2.5"/>
-    <polygon points="40,26 48,30 40,34" fill="#388bfd"/>
-    <text x="24" y="22" font-size="9" font-weight="700" fill="#79c0ff" text-anchor="middle" font-family="'JetBrains Mono', monospace">cli</text>
+    <path d="M 5 25 L 35 25" stroke="#2563eb" stroke-width="3"/>
+    <polygon points="35,20 45,25 35,30" fill="#2563eb"/>
+    <text x="25" y="14" font-size="10" font-weight="800" fill="#1d4ed8" text-anchor="middle" font-family="'JetBrains Mono', monospace">cli</text>
 
     <!-- Left Arrow (exit / start shell) -->
-    <path d="M 44 70 L 10 70" stroke="#f85149" stroke-width="2.5"/>
-    <polygon points="10,66 2,70 10,74" fill="#f85149"/>
-    <text x="24" y="62" font-size="8" font-weight="700" fill="#f85149" text-anchor="middle" font-family="'JetBrains Mono', monospace">exit / quit</text>
-    <text x="24" y="86" font-size="7.5" fill="#8b949e" text-anchor="middle">start shell</text>
+    <path d="M 40 70 L 10 70" stroke="#dc2626" stroke-width="3"/>
+    <polygon points="10,65 0,70 10,75" fill="#dc2626"/>
+    <text x="25" y="62" font-size="9.5" font-weight="800" fill="#b91c1c" text-anchor="middle" font-family="'JetBrains Mono', monospace">exit</text>
+    <text x="25" y="86" font-size="8.5" font-weight="600" fill="#64748b" text-anchor="middle">start shell</text>
   </g>
 
-  <!-- MODE 2: OPERATIONAL MODE (>) -->
-  <g transform="translate(338, 70)">
-    <rect width="260" height="230" rx="10" fill="#111c2e" stroke="#1f6feb" stroke-width="1.5"/>
-    
-    <!-- Mode Header -->
-    <rect x="10" y="10" width="240" height="30" rx="5" fill="#1f6feb" fill-opacity="0.3" stroke="#388bfd" stroke-width="0.8"/>
-    <text x="20" y="30" font-size="11.5" font-weight="700" fill="#79c0ff">2. Junos Operational Mode</text>
+  <!-- 2. JUNOS OPERATIONAL MODE (>) -->
+  <g transform="translate(355, 55)" filter="url(#shadow5)">
+    <rect width="270" height="240" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+    <rect width="270" height="34" rx="7" fill="#1e40af"/>
+    <text x="135" y="22" font-size="12.5" font-weight="800" fill="#ffffff" text-anchor="middle">2. Junos Operational Mode</text>
 
-    <!-- Prompt Badge -->
-    <rect x="10" y="48" width="240" height="34" rx="5" fill="#0d1117" stroke="#388bfd" stroke-width="1"/>
-    <text x="20" y="70" font-size="12" font-weight="700" fill="#58a6ff" font-family="'JetBrains Mono', monospace">user@router&gt; <tspan fill="#e6edf3">_</tspan></text>
-
-    <!-- Details -->
-    <g transform="translate(10, 92)">
-      <text x="0" y="14" font-size="9" fill="#e6edf3">&bull; <strong>Prompt Symbol:</strong> <code style="color:#58a6ff">&gt;</code> (Greater-than)</text>
-      <text x="0" y="30" font-size="9" fill="#e6edf3">&bull; <strong>Purpose:</strong> View status, monitor, test</text>
-      <text x="0" y="46" font-size="9" fill="#8b949e">&bull; Commands: <code style="color:#79c0ff">show, monitor, clear</code></text>
-      <text x="0" y="62" font-size="9" fill="#8b949e">&bull; Hardware: <code style="color:#79c0ff">show chassis environment</code></text>
-      <text x="0" y="78" font-size="9" fill="#8b949e">&bull; System: <code style="color:#79c0ff">request system reboot</code></text>
+    <!-- Prompt Box -->
+    <g transform="translate(15, 46)">
+      <rect width="240" height="38" rx="5" fill="#1e293b" stroke="#0f172a"/>
+      <text x="15" y="24" font-size="13" font-weight="800" fill="#60a5fa" font-family="'JetBrains Mono', monospace">user@router&gt; <tspan fill="#ffffff">_</tspan></text>
     </g>
 
-    <!-- Transition to Config -->
-    <rect x="10" y="186" width="240" height="34" rx="5" fill="rgba(240,136,62,0.15)" stroke="#f0883e" stroke-width="1"/>
-    <text x="130" y="202" font-size="8.5" font-weight="700" fill="#f0883e" text-anchor="middle">Enter Config: type <tspan fill="#3fb950" font-family="'JetBrains Mono', monospace">configure</tspan></text>
-    <text x="130" y="214" font-size="7.5" fill="#8b949e" text-anchor="middle">&rarr; Transitions to Configuration Mode</text>
+    <!-- Details -->
+    <g transform="translate(15, 96)">
+      <text x="0" y="14" font-size="11" fill="#0f172a">&bull; <strong>Prompt Character:</strong> <code style="color:#2563eb;font-weight:800">&gt;</code> (Greater-than)</text>
+      <text x="0" y="32" font-size="11" fill="#0f172a">&bull; <strong>Purpose:</strong> View status, monitor, test</text>
+      <text x="0" y="50" font-size="10.5" fill="#475569">&bull; Health: <code style="color:#2563eb">show, monitor, clear</code></text>
+      <text x="0" y="68" font-size="10.5" fill="#475569">&bull; Network tests: <code style="color:#2563eb">ping, traceroute</code></text>
+      <text x="0" y="86" font-size="10.5" fill="#475569">&bull; Control: <code style="color:#2563eb">request system reboot</code></text>
+    </g>
+
+    <!-- Enter Config Button -->
+    <rect x="15" y="196" width="240" height="32" rx="4" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.2"/>
+    <text x="120" y="217" font-size="10.5" font-weight="800" fill="#b45309" text-anchor="middle">Enter Config: type <tspan fill="#15803d" font-family="'JetBrains Mono', monospace">configure</tspan> &rarr;</text>
   </g>
 
-  <!-- ARROW 2: Operational <-> Config -->
-  <g transform="translate(600, 120)">
+  <!-- ARROWS 2: Operational <-> Config -->
+  <g transform="translate(630, 110)">
     <!-- Right Arrow (configure) -->
-    <path d="M 6 30 L 40 30" stroke="#f0883e" stroke-width="2.5"/>
-    <polygon points="40,26 48,30 40,34" fill="#f0883e"/>
-    <text x="24" y="22" font-size="8.5" font-weight="700" fill="#f0883e" text-anchor="middle" font-family="'JetBrains Mono', monospace">configure</text>
+    <path d="M 5 25 L 35 25" stroke="#ea580c" stroke-width="3"/>
+    <polygon points="35,20 45,25 35,30" fill="#ea580c"/>
+    <text x="25" y="14" font-size="9.5" font-weight="800" fill="#c2410c" text-anchor="middle" font-family="'JetBrains Mono', monospace">configure</text>
 
     <!-- Left Arrow (exit / quit) -->
-    <path d="M 44 70 L 10 70" stroke="#388bfd" stroke-width="2.5"/>
-    <polygon points="10,66 2,70 10,74" fill="#388bfd"/>
-    <text x="24" y="62" font-size="8" font-weight="700" fill="#79c0ff" text-anchor="middle" font-family="'JetBrains Mono', monospace">exit / quit</text>
-    <text x="24" y="86" font-size="7.5" fill="#8b949e" text-anchor="middle">at [edit] root</text>
+    <path d="M 40 70 L 10 70" stroke="#2563eb" stroke-width="3"/>
+    <polygon points="10,65 0,70 10,75" fill="#2563eb"/>
+    <text x="25" y="62" font-size="9.5" font-weight="800" fill="#1d4ed8" text-anchor="middle" font-family="'JetBrains Mono', monospace">exit / quit</text>
+    <text x="25" y="86" font-size="8.5" font-weight="600" fill="#64748b" text-anchor="middle">at [edit] root</text>
   </g>
 
-  <!-- MODE 3: CONFIGURATION MODE (#) -->
-  <g transform="translate(650, 70)">
-    <rect width="246" height="230" rx="10" fill="#1c160c" stroke="#f0883e" stroke-width="1.5"/>
-    
-    <!-- Mode Header -->
-    <rect x="10" y="10" width="226" height="30" rx="5" fill="#f0883e" fill-opacity="0.2" stroke="#f0883e" stroke-width="0.8"/>
-    <text x="20" y="30" font-size="11.5" font-weight="700" fill="#f0883e">3. Junos Configuration Mode</text>
+  <!-- 3. JUNOS CONFIGURATION MODE (#) -->
+  <g transform="translate(680, 55)" filter="url(#shadow5)">
+    <rect width="250" height="240" rx="8" fill="#ffffff" stroke="#ea580c" stroke-width="2"/>
+    <rect width="250" height="34" rx="7" fill="#c2410c"/>
+    <text x="125" y="22" font-size="12.5" font-weight="800" fill="#ffffff" text-anchor="middle">3. Configuration Mode</text>
 
-    <!-- Prompt Badge -->
-    <rect x="10" y="48" width="226" height="34" rx="5" fill="#0d1117" stroke="#f0883e" stroke-width="1"/>
-    <text x="16" y="62" font-size="9" fill="#8b949e" font-family="'JetBrains Mono', monospace">[edit]</text>
-    <text x="16" y="75" font-size="11" font-weight="700" fill="#f0883e" font-family="'JetBrains Mono', monospace">user@router# <tspan fill="#e6edf3">_</tspan></text>
+    <!-- Prompt Box -->
+    <g transform="translate(15, 46)">
+      <rect width="220" height="38" rx="5" fill="#1e293b" stroke="#0f172a"/>
+      <text x="12" y="18" font-size="9.5" fill="#94a3b8" font-family="'JetBrains Mono', monospace">[edit]</text>
+      <text x="12" y="32" font-size="12" font-weight="800" fill="#fb923c" font-family="'JetBrains Mono', monospace">user@router# <tspan fill="#ffffff">_</tspan></text>
+    </g>
 
     <!-- Details -->
-    <g transform="translate(10, 92)">
-      <text x="0" y="14" font-size="9" fill="#e6edf3">&bull; <strong>Prompt Symbol:</strong> <code style="color:#f0883e">#</code> (Pound / Hash)</text>
-      <text x="0" y="30" font-size="9" fill="#e6edf3">&bull; <strong>Purpose:</strong> Modify candidate config</text>
-      <text x="0" y="46" font-size="9" fill="#8b949e">&bull; Commands: <code style="color:#79c0ff">set, delete, edit, top</code></text>
-      <text x="0" y="62" font-size="9" fill="#8b949e">&bull; Validate &amp; save: <code style="color:#3fb950">commit</code></text>
-      <text x="0" y="78" font-size="9" fill="#8b949e">&bull; Check diffs: <code style="color:#79c0ff">show | compare</code></text>
+    <g transform="translate(15, 96)">
+      <text x="0" y="14" font-size="11" fill="#0f172a">&bull; <strong>Prompt Character:</strong> <code style="color:#ea580c;font-weight:800">#</code> (Pound/Hash)</text>
+      <text x="0" y="32" font-size="11" fill="#0f172a">&bull; <strong>Purpose:</strong> Modify candidate config</text>
+      <text x="0" y="50" font-size="10.5" fill="#475569">&bull; Edit commands: <code style="color:#2563eb">set, delete, edit</code></text>
+      <text x="0" y="68" font-size="10.5" fill="#475569">&bull; Activate changes: <code style="color:#15803d;font-weight:700">commit</code></text>
+      <text x="0" y="86" font-size="10.5" fill="#475569">&bull; Check changes: <code style="color:#2563eb">show | compare</code></text>
     </g>
 
     <!-- Direct Run Tip -->
-    <rect x="10" y="186" width="226" height="34" rx="5" fill="rgba(63,185,80,0.15)" stroke="#3fb950" stroke-width="1"/>
-    <text x="123" y="200" font-size="8" font-weight="700" fill="#3fb950" text-anchor="middle">Execute Op Cmds: type <tspan fill="#e6edf3" font-family="'JetBrains Mono', monospace">run &lt;cmd&gt;</tspan></text>
-    <text x="123" y="213" font-size="7.5" fill="#8b949e" text-anchor="middle">e.g. <code style="color:#79c0ff">run show interfaces terse</code></text>
+    <rect x="15" y="196" width="220" height="32" rx="4" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.2"/>
+    <text x="110" y="217" font-size="10" font-weight="800" fill="#15803d" text-anchor="middle">Execute Op Cmds: <tspan fill="#1e40af" font-family="'JetBrains Mono', monospace">run &lt;cmd&gt;</tspan></text>
   </g>
 
-  <!-- BOTTOM: PROMPT ANATOMY BANNER -->
-  <g transform="translate(24, 314)">
-    <rect width="872" height="72" rx="8" fill="#1c2128" stroke="#30363d" stroke-width="1"/>
-    <text x="16" y="22" font-size="10" font-weight="700" fill="#58a6ff" font-family="'Inter', system-ui, sans-serif">Junos CLI Prompt Structure Breakdown:</text>
+  <!-- BOTTOM: PROMPT STRUCTURE ANATOMY -->
+  <g transform="translate(30, 310)">
+    <rect width="900" height="74" rx="6" fill="#1e293b" stroke="#0f172a"/>
+    <text x="16" y="22" font-size="11" font-weight="800" fill="#60a5fa">Junos CLI Prompt Component Anatomy:</text>
     
-    <!-- Exploded Prompt Example -->
     <g transform="translate(16, 32)">
-      <!-- Level Box -->
-      <rect width="64" height="28" rx="4" fill="#0d1117" stroke="#30363d"/>
-      <text x="32" y="18" font-size="10" font-weight="700" fill="#8b949e" text-anchor="middle" font-family="'JetBrains Mono', monospace">[edit]</text>
-      <text x="32" y="37" font-size="7" fill="#8b949e" text-anchor="middle">Hierarchy</text>
+      <!-- Level -->
+      <rect width="60" height="28" rx="3" fill="#0f172a" stroke="#475569"/>
+      <text x="30" y="18" font-size="10" font-weight="700" fill="#94a3b8" text-anchor="middle" font-family="'JetBrains Mono', monospace">[edit]</text>
+      <text x="30" y="37" font-size="7.5" fill="#94a3b8" text-anchor="middle">Hierarchy</text>
 
-      <!-- User Box -->
-      <g transform="translate(72, 0)">
-        <rect width="70" height="28" rx="4" fill="#0d1117" stroke="#388bfd"/>
-        <text x="35" y="18" font-size="10" font-weight="700" fill="#79c0ff" text-anchor="middle" font-family="'JetBrains Mono', monospace">labuser</text>
-        <text x="35" y="37" font-size="7" fill="#79c0ff" text-anchor="middle">Logged User</text>
+      <!-- User -->
+      <g transform="translate(68, 0)">
+        <rect width="75" height="28" rx="3" fill="#0f172a" stroke="#3b82f6"/>
+        <text x="37" y="18" font-size="11" font-weight="800" fill="#60a5fa" text-anchor="middle" font-family="'JetBrains Mono', monospace">labuser</text>
+        <text x="37" y="37" font-size="7.5" fill="#60a5fa" text-anchor="middle">Username</text>
       </g>
 
-      <!-- Separator -->
-      <text x="148" y="18" font-size="12" font-weight="700" fill="#8b949e" font-family="'JetBrains Mono', monospace">@</text>
+      <text x="151" y="18" font-size="14" font-weight="800" fill="#94a3b8" font-family="'JetBrains Mono', monospace">@</text>
 
-      <!-- Hostname Box -->
-      <g transform="translate(160, 0)">
-        <rect width="80" height="28" rx="4" fill="#0d1117" stroke="#3fb950"/>
-        <text x="40" y="18" font-size="10" font-weight="700" fill="#3fb950" text-anchor="middle" font-family="'JetBrains Mono', monospace">Router-A</text>
-        <text x="40" y="37" font-size="7" fill="#3fb950" text-anchor="middle">Hostname</text>
+      <!-- Hostname -->
+      <g transform="translate(165, 0)">
+        <rect width="85" height="28" rx="3" fill="#0f172a" stroke="#22c55e"/>
+        <text x="42" y="18" font-size="11" font-weight="800" fill="#4ade80" text-anchor="middle" font-family="'JetBrains Mono', monospace">Router-A</text>
+        <text x="42" y="37" font-size="7.5" fill="#4ade80" text-anchor="middle">Hostname</text>
       </g>
 
-      <!-- Mode Character Box -->
-      <g transform="translate(248, 0)">
-        <rect width="40" height="28" rx="4" fill="#0d1117" stroke="#f0883e"/>
-        <text x="20" y="18" font-size="12" font-weight="700" fill="#f0883e" text-anchor="middle" font-family="'JetBrains Mono', monospace">&gt; / #</text>
-        <text x="20" y="37" font-size="7" fill="#f0883e" text-anchor="middle">CLI Mode</text>
+      <!-- Mode -->
+      <g transform="translate(258, 0)">
+        <rect width="42" height="28" rx="3" fill="#0f172a" stroke="#f59e0b"/>
+        <text x="21" y="18" font-size="13" font-weight="800" fill="#fbbf24" text-anchor="middle" font-family="'JetBrains Mono', monospace">&gt; / #</text>
+        <text x="21" y="37" font-size="7.5" fill="#fbbf24" text-anchor="middle">Mode</text>
       </g>
 
-      <!-- Exam Note -->
-      <g transform="translate(305, 4)">
-        <text x="0" y="14" font-size="8.5" fill="#e6edf3">&#9888; <strong>Exam Tip:</strong> If the hostname prompt does not match the network diagram, <strong>correct the router hostname</strong> in config mode.</text>
-        <text x="0" y="27" font-size="8" fill="#8b949e">Use command: <code style="color:#79c0ff">set system host-name &lt;correct-name&gt;</code> &rarr; <code style="color:#3fb950">commit</code></text>
+      <!-- Tip -->
+      <g transform="translate(315, 6)">
+        <text x="0" y="14" font-size="9.5" fill="#ffffff">&#9888; <strong>Exam Tip:</strong> If the hostname prompt does not match the lab diagram, <strong>correct the router hostname</strong> in config mode.</text>
+        <text x="0" y="28" font-size="9" fill="#94a3b8">Command: <code style="color:#60a5fa">set system host-name &lt;name&gt;</code> &rarr; <code style="color:#4ade80">commit</code></text>
       </g>
     </g>
   </g>
@@ -1288,135 +1180,125 @@ user@router&gt; <span class="cmd">request system shell</span>   <span class="cmt
 
     <!-- VERSION NAMING -->
     <h3 class="tt" id="ver">Junos OS Version Naming Convention</h3>
-        <div class="dw">
-      <svg viewBox="0 0 920 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Junos OS Version Naming Convention and Release Cadence">
+            <div class="dw">
+      <svg viewBox="0 0 960 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Junos OS Version Naming Breakdown and Release Cadence">
   <defs>
-    <linearGradient id="bgGrad6" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0d1117"/>
-      <stop offset="100%" stop-color="#161b22"/>
-    </linearGradient>
+    <filter id="shadow6" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
   </defs>
 
-  <rect width="920" height="380" rx="12" fill="url(#bgGrad6)" stroke="#30363d" stroke-width="1.5"/>
+  <rect width="960" height="360" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="480" y="32" font-size="16" font-weight="800" fill="#0f172a" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">Figure 6: Junos OS Version Naming Anatomy &amp; Release Cadence</text>
 
-  <!-- Title Header -->
-  <rect x="18" y="14" width="884" height="42" rx="8" fill="#1c2128" stroke="#30363d" stroke-width="1"/>
-  <text x="36" y="40" font-size="14" font-weight="700" fill="#58a6ff" font-family="'Inter', system-ui, sans-serif" letter-spacing="0.5">JUNOS OS VERSION NAMING CONVENTION &amp; RELEASE CADENCE</text>
-  <text x="560" y="40" font-size="11" font-weight="500" fill="#8b949e" font-family="'Inter', system-ui, sans-serif">Standard Format: Year &middot; Quarter &middot; Type &middot; Edition &middot; Service Release &middot; Build</text>
-
-  <!-- TOP: LARGE EXPLODED VERSION BADGE -->
-  <g transform="translate(24, 68)">
-    <rect width="872" height="150" rx="10" fill="#161b22" stroke="#388bfd" stroke-width="1.2"/>
-    
-    <!-- Version String Header -->
-    <text x="436" y="26" font-size="11.5" font-weight="700" fill="#8b949e" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">EXAMPLE JUNOS OS VERSION STRING BREAKDOWN:</text>
+  <!-- TOP CARD: EXPLODED VERSION BADGE -->
+  <g transform="translate(30, 55)" filter="url(#shadow6)">
+    <rect width="900" height="135" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.5"/>
+    <text x="450" y="24" font-size="11.5" font-weight="800" fill="#0f172a" text-anchor="middle">EXAMPLE JUNOS OS VERSION STRING ANATOMY:</text>
 
     <!-- Version Blocks -->
-    <g transform="translate(36, 40)">
-      <!-- Block 1: Year (22) -->
+    <g transform="translate(30, 36)">
+      <!-- Year (22) -->
       <g transform="translate(0, 0)">
-        <rect width="105" height="52" rx="6" fill="#0d1117" stroke="#f0883e" stroke-width="1.5"/>
-        <text x="52" y="34" font-size="20" font-weight="800" fill="#f0883e" text-anchor="middle" font-family="'JetBrains Mono', monospace">22</text>
-        <rect x="0" y="58" width="105" height="34" rx="4" fill="rgba(240,136,62,0.1)"/>
-        <text x="52" y="72" font-size="9" font-weight="700" fill="#f0883e" text-anchor="middle">Year of Release</text>
-        <text x="52" y="84" font-size="8" fill="#8b949e" text-anchor="middle">2022</text>
+        <rect width="110" height="46" rx="5" fill="#fff7ed" stroke="#ea580c" stroke-width="1.5"/>
+        <text x="55" y="31" font-size="20" font-weight="800" fill="#c2410c" text-anchor="middle" font-family="'JetBrains Mono', monospace">22</text>
+        <rect x="0" y="52" width="110" height="30" rx="3" fill="#f8fafc" stroke="#cbd5e1"/>
+        <text x="55" y="65" font-size="9" font-weight="800" fill="#c2410c" text-anchor="middle">Release Year</text>
+        <text x="55" y="77" font-size="8" fill="#64748b" text-anchor="middle">2022</text>
       </g>
 
-      <text x="114" y="34" font-size="20" font-weight="700" fill="#8b949e" font-family="'JetBrains Mono', monospace">.</text>
+      <text x="120" y="31" font-size="20" font-weight="800" fill="#94a3b8" font-family="'JetBrains Mono', monospace">.</text>
 
-      <!-- Block 2: Quarter (.4) -->
-      <g transform="translate(126, 0)">
-        <rect width="105" height="52" rx="6" fill="#0d1117" stroke="#58a6ff" stroke-width="1.5"/>
-        <text x="52" y="34" font-size="20" font-weight="800" fill="#58a6ff" text-anchor="middle" font-family="'JetBrains Mono', monospace">4</text>
-        <rect x="0" y="58" width="105" height="34" rx="4" fill="rgba(88,166,255,0.1)"/>
-        <text x="52" y="72" font-size="9" font-weight="700" fill="#58a6ff" text-anchor="middle">Release Quarter</text>
-        <text x="52" y="84" font-size="8" fill="#8b949e" text-anchor="middle">Q4 (4th quarter)</text>
+      <!-- Quarter (4) -->
+      <g transform="translate(135, 0)">
+        <rect width="110" height="46" rx="5" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+        <text x="55" y="31" font-size="20" font-weight="800" fill="#1d4ed8" text-anchor="middle" font-family="'JetBrains Mono', monospace">4</text>
+        <rect x="0" y="52" width="110" height="30" rx="3" fill="#f8fafc" stroke="#cbd5e1"/>
+        <text x="55" y="65" font-size="9" font-weight="800" fill="#1d4ed8" text-anchor="middle">Quarter / Seq</text>
+        <text x="55" y="77" font-size="8" fill="#64748b" text-anchor="middle">Q4 (4th Quarter)</text>
       </g>
 
-      <!-- Block 3: Release Type (R) -->
-      <g transform="translate(242, 0)">
-        <rect width="105" height="52" rx="6" fill="#0d1117" stroke="#3fb950" stroke-width="1.5"/>
-        <text x="52" y="34" font-size="20" font-weight="800" fill="#3fb950" text-anchor="middle" font-family="'JetBrains Mono', monospace">R</text>
-        <rect x="0" y="58" width="105" height="34" rx="4" fill="rgba(63,185,80,0.1)"/>
-        <text x="52" y="72" font-size="9" font-weight="700" fill="#3fb950" text-anchor="middle">Release Type</text>
-        <text x="52" y="84" font-size="8" fill="#8b949e" text-anchor="middle">R = Mainline</text>
+      <!-- Release Type (R) -->
+      <g transform="translate(260, 0)">
+        <rect width="110" height="46" rx="5" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="55" y="31" font-size="20" font-weight="800" fill="#15803d" text-anchor="middle" font-family="'JetBrains Mono', monospace">R</text>
+        <rect x="0" y="52" width="110" height="30" rx="3" fill="#f8fafc" stroke="#cbd5e1"/>
+        <text x="55" y="65" font-size="9" font-weight="800" fill="#15803d" text-anchor="middle">Release Type</text>
+        <text x="55" y="77" font-size="8" fill="#64748b" text-anchor="middle">R = Mainline</text>
       </g>
 
-      <!-- Block 4: Edition / Revision (1) -->
-      <g transform="translate(358, 0)">
-        <rect width="125" height="52" rx="6" fill="#0d1117" stroke="#bc8cff" stroke-width="1.5"/>
-        <text x="62" y="34" font-size="20" font-weight="800" fill="#bc8cff" text-anchor="middle" font-family="'JetBrains Mono', monospace">1</text>
-        <rect x="0" y="58" width="125" height="34" rx="4" fill="rgba(188,140,255,0.1)"/>
-        <text x="62" y="72" font-size="9" font-weight="700" fill="#bc8cff" text-anchor="middle">Edition / Revision</text>
-        <text x="62" y="84" font-size="8" fill="#8b949e" text-anchor="middle">1 = Feature Rel (FR)</text>
+      <!-- Edition (1) -->
+      <g transform="translate(385, 0)">
+        <rect width="130" height="46" rx="5" fill="#faf5ff" stroke="#7c3aed" stroke-width="1.5"/>
+        <text x="65" y="31" font-size="20" font-weight="800" fill="#6d28d9" text-anchor="middle" font-family="'JetBrains Mono', monospace">1</text>
+        <rect x="0" y="52" width="130" height="30" rx="3" fill="#f8fafc" stroke="#cbd5e1"/>
+        <text x="65" y="65" font-size="9" font-weight="800" fill="#6d28d9" text-anchor="middle">Edition / Revision</text>
+        <text x="65" y="77" font-size="8" fill="#64748b" text-anchor="middle">1 = Feature Rel (FR)</text>
       </g>
 
-      <text x="491" y="34" font-size="20" font-weight="700" fill="#8b949e" font-family="'JetBrains Mono', monospace">-</text>
+      <text x="525" y="31" font-size="20" font-weight="800" fill="#94a3b8" font-family="'JetBrains Mono', monospace">-</text>
 
-      <!-- Block 5: Service Release (-S2) -->
-      <g transform="translate(506, 0)">
-        <rect width="135" height="52" rx="6" fill="#0d1117" stroke="#f85149" stroke-width="1.5"/>
-        <text x="67" y="34" font-size="20" font-weight="800" fill="#f85149" text-anchor="middle" font-family="'JetBrains Mono', monospace">S2</text>
-        <rect x="0" y="58" width="135" height="34" rx="4" fill="rgba(248,81,73,0.1)"/>
-        <text x="67" y="72" font-size="9" font-weight="700" fill="#f85149" text-anchor="middle">Service Release (SR)</text>
-        <text x="67" y="84" font-size="8" fill="#8b949e" text-anchor="middle">Critical Patch / Hotfix</text>
+      <!-- Service Release (S2) -->
+      <g transform="translate(540, 0)">
+        <rect width="140" height="46" rx="5" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+        <text x="70" y="31" font-size="20" font-weight="800" fill="#b91c1c" text-anchor="middle" font-family="'JetBrains Mono', monospace">S2</text>
+        <rect x="0" y="52" width="140" height="30" rx="3" fill="#f8fafc" stroke="#cbd5e1"/>
+        <text x="70" y="65" font-size="9" font-weight="800" fill="#b91c1c" text-anchor="middle">Service Release (SR)</text>
+        <text x="70" y="77" font-size="8" fill="#64748b" text-anchor="middle">Security PSN Patch</text>
       </g>
 
-      <text x="649" y="34" font-size="20" font-weight="700" fill="#8b949e" font-family="'JetBrains Mono', monospace">.</text>
+      <text x="690" y="31" font-size="20" font-weight="800" fill="#94a3b8" font-family="'JetBrains Mono', monospace">.</text>
 
-      <!-- Block 6: Build Number (.5) -->
-      <g transform="translate(662, 0)">
-        <rect width="135" height="52" rx="6" fill="#0d1117" stroke="#79c0ff" stroke-width="1.5"/>
-        <text x="67" y="34" font-size="20" font-weight="800" fill="#79c0ff" text-anchor="middle" font-family="'JetBrains Mono', monospace">5</text>
-        <rect x="0" y="58" width="135" height="34" rx="4" fill="rgba(121,192,255,0.1)"/>
-        <text x="67" y="72" font-size="9" font-weight="700" fill="#79c0ff" text-anchor="middle">Build / Spin</text>
-        <text x="67" y="84" font-size="8" fill="#8b949e" text-anchor="middle">Internal Spin 5</text>
+      <!-- Build (5) -->
+      <g transform="translate(705, 0)">
+        <rect width="135" height="46" rx="5" fill="#f0f9ff" stroke="#0284c7" stroke-width="1.5"/>
+        <text x="67" y="31" font-size="20" font-weight="800" fill="#0369a1" text-anchor="middle" font-family="'JetBrains Mono', monospace">5</text>
+        <rect x="0" y="52" width="135" height="30" rx="3" fill="#f8fafc" stroke="#cbd5e1"/>
+        <text x="67" y="65" font-size="9" font-weight="800" fill="#0369a1" text-anchor="middle">Build / Spin</text>
+        <text x="67" y="77" font-size="8" fill="#64748b" text-anchor="middle">Internal Build 5</text>
       </g>
     </g>
   </g>
 
-  <!-- BOTTOM: RELEASE TYPES & CADENCE COMPARISON -->
-  <g transform="translate(24, 230)">
-    <rect width="872" height="136" rx="10" fill="#11161d" stroke="#30363d" stroke-width="1.2"/>
-    
-    <!-- 3 Columns for FR, MR, SR -->
-    <!-- Col 1: Feature Release (FR) -->
-    <g transform="translate(14, 12)">
-      <rect width="268" height="112" rx="6" fill="#161b22" stroke="#bc8cff" stroke-width="1"/>
-      <rect x="8" y="8" width="252" height="22" rx="3" fill="#bc8cff" fill-opacity="0.2"/>
-      <text x="16" y="23" font-size="10" font-weight="700" fill="#bc8cff">FEATURE RELEASE (FR) &mdash; R1</text>
-      
-      <text x="12" y="44" font-size="8.5" fill="#e6edf3">&bull; <strong>First edition</strong> of a major release (e.g. 22.4R1)</text>
-      <text x="12" y="58" font-size="8.5" fill="#e6edf3">&bull; Introduces <strong>brand new software features</strong></text>
-      <text x="12" y="72" font-size="8.5" fill="#8b949e">&bull; Includes new hardware &amp; protocol capabilities</text>
-      <text x="12" y="86" font-size="8.5" fill="#8b949e">&bull; Suitable for lab testing &amp; early feature adoption</text>
-      <text x="12" y="100" font-size="8" font-weight="600" fill="#79c0ff">Example: Junos 22.4R1</text>
+  <!-- BOTTOM 3 CARDS: RELEASE TYPES EXPLAINED -->
+  <g transform="translate(30, 205)" filter="url(#shadow6)">
+    <!-- Card 1: FR -->
+    <g transform="translate(0, 0)">
+      <rect width="285" height="135" rx="8" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
+      <rect width="285" height="30" rx="7" fill="#6d28d9"/>
+      <text x="142" y="20" font-size="11.5" font-weight="800" fill="#ffffff" text-anchor="middle">FEATURE RELEASE (FR) &mdash; R1</text>
+      <g transform="translate(12, 40)">
+        <text x="0" y="14" font-size="10.5" fill="#0f172a">&bull; <strong>First edition</strong> of major release (e.g. 22.4R1)</text>
+        <text x="0" y="32" font-size="10.5" fill="#0f172a">&bull; Introduces <strong>brand new software features</strong></text>
+        <text x="0" y="50" font-size="10" fill="#64748b">&bull; New hardware support &amp; protocol engines</text>
+        <text x="0" y="68" font-size="10" font-weight="700" fill="#6d28d9">Used for lab evaluation &amp; feature adoption</text>
+      </g>
     </g>
 
-    <!-- Col 2: Maintenance Release (MR) -->
-    <g transform="translate(302, 12)">
-      <rect width="268" height="112" rx="6" fill="#161b22" stroke="#3fb950" stroke-width="1"/>
-      <rect x="8" y="8" width="252" height="22" rx="3" fill="#3fb950" fill-opacity="0.2"/>
-      <text x="16" y="23" font-size="10" font-weight="700" fill="#3fb950">MAINTENANCE RELEASE (MR) &mdash; R2, R3</text>
-      
-      <text x="12" y="44" font-size="8.5" fill="#e6edf3">&bull; Subsequent editions (e.g. 22.4R2, 22.4R3)</text>
-      <text x="12" y="58" font-size="8.5" fill="#3fb950">&bull; <strong>Bug-fixes &amp; stability improvements ONLY</strong></text>
-      <text x="12" y="72" font-size="8.5" fill="#e6edf3">&bull; <strong>NO new features</strong> are added in MRs</text>
-      <text x="12" y="86" font-size="8.5" fill="#8b949e">&bull; Recommended for production deployments</text>
-      <text x="12" y="100" font-size="8" font-weight="600" fill="#3fb950">Example: Junos 22.4R2-S1 / 22.4R3</text>
+    <!-- Card 2: MR -->
+    <g transform="translate(307, 0)">
+      <rect width="285" height="135" rx="8" fill="#ffffff" stroke="#16a34a" stroke-width="1.5"/>
+      <rect width="285" height="30" rx="7" fill="#15803d"/>
+      <text x="142" y="20" font-size="11.5" font-weight="800" fill="#ffffff" text-anchor="middle">MAINTENANCE RELEASE (MR) &mdash; R2, R3</text>
+      <g transform="translate(12, 40)">
+        <text x="0" y="14" font-size="10.5" fill="#0f172a">&bull; Subsequent editions (e.g. 22.4R2, 22.4R3)</text>
+        <text x="0" y="32" font-size="10.5" fill="#15803d"><strong>&bull; Bug-fixes &amp; stability improvements ONLY</strong></text>
+        <text x="0" y="50" font-size="10" fill="#b91c1c"><strong>&bull; NO new features</strong> added in MRs</text>
+        <text x="0" y="68" font-size="10" font-weight="700" fill="#15803d">Recommended for enterprise production</text>
+      </g>
     </g>
 
-    <!-- Col 3: Service Release (SR) & Cadence -->
-    <g transform="translate(590, 12)">
-      <rect width="268" height="112" rx="6" fill="#161b22" stroke="#f85149" stroke-width="1"/>
-      <rect x="8" y="8" width="252" height="22" rx="3" fill="#f85149" fill-opacity="0.2"/>
-      <text x="16" y="23" font-size="10" font-weight="700" fill="#f85149">SERVICE RELEASE (SR) &amp; CADENCE</text>
-      
-      <text x="12" y="44" font-size="8.5" fill="#e6edf3">&bull; Urgent hotfixes built between releases (e.g. -S1)</text>
-      <text x="12" y="58" font-size="8.5" fill="#f85149">&bull; Delivers critical security PSN patches</text>
-      <text x="12" y="72" font-size="8.5" fill="#8b949e">&bull; <strong>Quarterly Cadence:</strong> Q1 (.1), Q2 (.2), Q3 (.3), Q4 (.4)</text>
-      <text x="12" y="86" font-size="8.5" fill="#8b949e">&bull; Standard lifecycle support: 36 months</text>
-      <text x="12" y="100" font-size="8" font-weight="600" fill="#f0883e">Example: Junos 21.4R3-S5</text>
+    <!-- Card 3: SR -->
+    <g transform="translate(615, 0)">
+      <rect width="285" height="135" rx="8" fill="#ffffff" stroke="#dc2626" stroke-width="1.5"/>
+      <rect width="285" height="30" rx="7" fill="#b91c1c"/>
+      <text x="142" y="20" font-size="11.5" font-weight="800" fill="#ffffff" text-anchor="middle">SERVICE RELEASE (SR) &amp; CADENCE</text>
+      <g transform="translate(12, 40)">
+        <text x="0" y="14" font-size="10.5" fill="#0f172a">&bull; Urgent hotfixes built between MRs (-S1)</text>
+        <text x="0" y="32" font-size="10.5" fill="#0f172a">&bull; Delivers critical security PSN patches</text>
+        <text x="0" y="50" font-size="10" fill="#64748b">&bull; <strong>Cadence:</strong> Q1 (.1), Q2 (.2), Q3 (.3), Q4 (.4)</text>
+        <text x="0" y="68" font-size="10" font-weight="700" fill="#c2410c">Standard lifecycle support: 36 months</text>
+      </g>
     </g>
   </g>
 </svg>
@@ -1465,98 +1347,89 @@ user@router&gt; <span class="cmd">request system shell</span>   <span class="cmt
       <li><strong>Vendor name</strong> / system description</li>
     </ul>
     <div class="cal note"><div class="cal-title">&#128204; PoE Definition</div><p><strong>PoE (Power over Ethernet):</strong> technology delivering electrical power over standard Ethernet cabling alongside data. Common for IP phones, wireless APs, IP cameras.</p></div>
-    <div class="dw">
-      <svg viewBox="0 0 920 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Link Layer Discovery Protocol LLDP 802.1AB Architecture and TLVs">
+        <div class="dw">
+      <svg viewBox="0 0 960 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Link Layer Discovery Protocol LLDP 802.1AB Architecture and TLVs">
   <defs>
-    <linearGradient id="bgGrad7" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0d1117"/>
-      <stop offset="100%" stop-color="#161b22"/>
-    </linearGradient>
+    <filter id="shadow7" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
   </defs>
 
-  <rect width="920" height="380" rx="12" fill="url(#bgGrad7)" stroke="#30363d" stroke-width="1.5"/>
-
-  <!-- Title Header -->
-  <rect x="18" y="14" width="884" height="42" rx="8" fill="#1c2128" stroke="#30363d" stroke-width="1"/>
-  <text x="36" y="40" font-size="14" font-weight="700" fill="#58a6ff" font-family="'Inter', system-ui, sans-serif" letter-spacing="0.5">LINK LAYER DISCOVERY PROTOCOL (LLDP &mdash; IEEE 802.1AB)</text>
-  <text x="560" y="40" font-size="11" font-weight="500" fill="#8b949e" font-family="'Inter', system-ui, sans-serif">Vendor-Neutral Layer 2 Neighbor Discovery &middot; Periodic Multicast &middot; TLV Structure</text>
+  <rect width="960" height="360" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="480" y="32" font-size="16" font-weight="800" fill="#0f172a" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">Figure 7: Link Layer Discovery Protocol (LLDP &mdash; IEEE 802.1AB) Architecture &amp; TLVs</text>
 
   <!-- TOP: CONNECTED NEIGHBORS TOPOLOGY -->
-  <g transform="translate(24, 68)">
-    <rect width="872" height="116" rx="10" fill="#11161d" stroke="#388bfd" stroke-width="1.2"/>
+  <g transform="translate(30, 55)" filter="url(#shadow7)">
+    <rect width="900" height="110" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.5"/>
     
     <!-- Device 1: Router-A -->
     <g transform="translate(20, 16)">
-      <rect width="230" height="84" rx="8" fill="#161b22" stroke="#1f6feb" stroke-width="1.2"/>
-      <text x="14" y="24" font-size="12" font-weight="700" fill="#79c0ff">Router-A (MX204)</text>
-      <text x="14" y="40" font-size="8.5" fill="#8b949e">Chassis ID: <tspan fill="#e6edf3" font-family="'JetBrains Mono', monospace">00:05:86:71:3d:00</tspan></text>
-      <rect x="14" y="48" width="202" height="24" rx="4" fill="#0d1117" stroke="#388bfd"/>
-      <text x="115" y="64" font-size="9" font-weight="700" fill="#58a6ff" text-anchor="middle" font-family="'JetBrains Mono', monospace">Local Port: ge-0/0/0</text>
+      <rect width="230" height="78" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+      <text x="14" y="24" font-size="13" font-weight="800" fill="#1d4ed8">Router-A (MX204)</text>
+      <text x="14" y="42" font-size="9.5" fill="#475569">Chassis MAC: <tspan font-family="'JetBrains Mono', monospace" font-weight="700">00:05:86:71:3d:00</tspan></text>
+      <rect x="14" y="50" width="202" height="20" rx="3" fill="#ffffff" stroke="#3b82f6"/>
+      <text x="115" y="64" font-size="9" font-weight="700" fill="#1d4ed8" text-anchor="middle" font-family="'JetBrains Mono', monospace">Local Port: ge-0/0/0</text>
     </g>
 
-    <!-- Center: LLDP Bi-directional Multicast Link -->
-    <g transform="translate(265, 20)">
-      <path d="M 10 32 L 330 32" stroke="#3fb950" stroke-width="3"/>
-      <polygon points="328,27 338,32 328,37" fill="#3fb950"/>
-      <polygon points="12,27 2,32 12,37" fill="#3fb950"/>
+    <!-- Center: LLDPDU Multicast Link -->
+    <g transform="translate(275, 20)">
+      <line x1="10" y1="35" x2="330" y2="35" stroke="#16a34a" stroke-width="3.5"/>
+      <polygon points="330,30 340,35 330,40" fill="#16a34a"/>
+      <polygon points="10,30 0,35 10,40" fill="#16a34a"/>
       
-      <rect x="40" y="8" width="260" height="46" rx="6" fill="#0d1117" stroke="#3fb950" stroke-width="1"/>
-      <text x="170" y="24" font-size="8.5" font-weight="700" fill="#3fb950" text-anchor="middle">Periodic LLDPDU Advertisement (Every 30s)</text>
-      <text x="170" y="38" font-size="7.5" fill="#8b949e" text-anchor="middle">Multicast MAC: <tspan fill="#79c0ff" font-family="'JetBrains Mono', monospace">01:80:C2:00:00:0E</tspan> &middot; EtherType: <tspan fill="#79c0ff" font-family="'JetBrains Mono', monospace">0x88CC</tspan></text>
-      <text x="170" y="48" font-size="7" fill="#f0883e" text-anchor="middle">Hold Time: 120s &middot; Works across all vendors (Juniper, Cisco, HP, Arista)</text>
+      <rect x="35" y="8" width="280" height="54" rx="5" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.2"/>
+      <text x="175" y="24" font-size="10" font-weight="800" fill="#15803d" text-anchor="middle">Periodic LLDPDU Advertisement (Every 30s)</text>
+      <text x="175" y="40" font-size="8.5" fill="#0f172a" text-anchor="middle">Multicast MAC: <tspan font-family="'JetBrains Mono', monospace" font-weight="700" fill="#2563eb">01:80:C2:00:00:0E</tspan> &middot; EtherType: <tspan font-family="'JetBrains Mono', monospace" font-weight="700" fill="#2563eb">0x88CC</tspan></text>
+      <text x="175" y="54" font-size="8" font-weight="600" fill="#64748b" text-anchor="middle">Hold Time: 120s &middot; Works across all vendors (Juniper, Cisco, Arista)</text>
     </g>
 
     <!-- Device 2: Switch-1 -->
-    <g transform="translate(622, 16)">
-      <rect width="230" height="84" rx="8" fill="#161b22" stroke="#238636" stroke-width="1.2"/>
-      <text x="14" y="24" font-size="12" font-weight="700" fill="#3fb950">Switch-1 (EX3400)</text>
-      <text x="14" y="40" font-size="8.5" fill="#8b949e">Chassis ID: <tspan fill="#e6edf3" font-family="'JetBrains Mono', monospace">00:05:86:99:4a:00</tspan></text>
-      <rect x="14" y="48" width="202" height="24" rx="4" fill="#0d1117" stroke="#238636"/>
-      <text x="115" y="64" font-size="9" font-weight="700" fill="#3fb950" text-anchor="middle" font-family="'JetBrains Mono', monospace">Remote Port: ge-0/0/24</text>
+    <g transform="translate(650, 16)">
+      <rect width="230" height="78" rx="6" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+      <text x="14" y="24" font-size="13" font-weight="800" fill="#15803d">Switch-1 (EX3400)</text>
+      <text x="14" y="42" font-size="9.5" fill="#475569">Chassis MAC: <tspan font-family="'JetBrains Mono', monospace" font-weight="700">00:05:86:99:4a:00</tspan></text>
+      <rect x="14" y="50" width="202" height="20" rx="3" fill="#ffffff" stroke="#16a34a"/>
+      <text x="115" y="64" font-size="9" font-weight="700" fill="#15803d" text-anchor="middle" font-family="'JetBrains Mono', monospace">Remote Port: ge-0/0/24</text>
     </g>
   </g>
 
-  <!-- BOTTOM: TLV PAYLOAD & CLI COMMAND CORRELATION -->
-  <g transform="translate(24, 196)">
-    <rect width="872" height="170" rx="10" fill="#161b22" stroke="#30363d" stroke-width="1.2"/>
+  <!-- BOTTOM: TLVs & COMMANDS -->
+  <g transform="translate(30, 180)" filter="url(#shadow7)">
+    <rect width="900" height="165" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
     
-    <!-- Left: Discovered TLV Elements -->
-    <g transform="translate(14, 12)">
-      <rect width="420" height="146" rx="6" fill="#0d1117" stroke="#388bfd" stroke-width="1"/>
-      <text x="14" y="20" font-size="10.5" font-weight="700" fill="#58a6ff">LLDP Type-Length-Value (TLV) Attributes Discovered:</text>
+    <!-- Left: TLV Attributes -->
+    <g transform="translate(15, 12)">
+      <rect width="425" height="140" rx="6" fill="#f8fafc" stroke="#3b82f6" stroke-width="1.2"/>
+      <text x="14" y="20" font-size="11" font-weight="800" fill="#1d4ed8">LLDP Type-Length-Value (TLV) Attributes Discovered:</text>
       
       <g transform="translate(14, 30)">
-        <text x="0" y="14" font-size="8.5" fill="#e6edf3">&bull; <strong>Chassis ID:</strong> Neighbor hardware MAC (<code style="color:#79c0ff">00:05:86:99:4a:00</code>)</text>
-        <text x="0" y="28" font-size="8.5" fill="#e6edf3">&bull; <strong>Port ID / Description:</strong> Connected remote port (<code style="color:#3fb950">ge-0/0/24</code>)</text>
-        <text x="0" y="42" font-size="8.5" fill="#e6edf3">&bull; <strong>System Name:</strong> Configured neighbor hostname (<code style="color:#79c0ff">Switch-1</code>)</text>
-        <text x="0" y="56" font-size="8.5" fill="#e6edf3">&bull; <strong>System Description:</strong> OS version (<code style="color:#8b949e">Junos: 22.4R1.10</code>) &amp; model</text>
-        <text x="0" y="70" font-size="8.5" fill="#e6edf3">&bull; <strong>System Capabilities:</strong> Supported features (<code style="color:#bc8cff">Bridge, Router</code>)</text>
-        <text x="0" y="84" font-size="8.5" fill="#e6edf3">&bull; <strong>Management Address:</strong> OOB / Loopback IP (<code style="color:#79c0ff">192.168.1.250</code>)</text>
-        <text x="0" y="98" font-size="8.5" fill="#e6edf3">&bull; <strong>IEEE 802.3 PoE:</strong> Power over Ethernet allocation / wattage class</text>
+        <text x="0" y="14" font-size="9.5" fill="#0f172a">&bull; <strong>Chassis ID:</strong> Neighbor hardware MAC (<code style="color:#2563eb">00:05:86:99:4a:00</code>)</text>
+        <text x="0" y="30" font-size="9.5" fill="#0f172a">&bull; <strong>Port ID / Desc:</strong> Remote interface (<code style="color:#16a34a">ge-0/0/24</code>)</text>
+        <text x="0" y="46" font-size="9.5" fill="#0f172a">&bull; <strong>System Name:</strong> Configured neighbor hostname (<code style="color:#2563eb">Switch-1</code>)</text>
+        <text x="0" y="62" font-size="9.5" fill="#0f172a">&bull; <strong>System Description:</strong> Junos OS version &amp; hardware model</text>
+        <text x="0" y="78" font-size="9.5" fill="#0f172a">&bull; <strong>System Capabilities:</strong> Supported features (<code style="color:#7c3aed">Bridge, Router</code>)</text>
+        <text x="0" y="94" font-size="9.5" fill="#0f172a">&bull; <strong>IEEE 802.3 PoE:</strong> Power over Ethernet allocation class / wattage</text>
       </g>
     </g>
 
-    <!-- Right: Operational Commands Verification -->
-    <g transform="translate(446, 12)">
-      <rect width="412" height="146" rx="6" fill="#0d1117" stroke="#238636" stroke-width="1"/>
-      <text x="14" y="20" font-size="10.5" font-weight="700" fill="#3fb950">Key Junos Operational Verification Commands:</text>
+    <!-- Right: Commands -->
+    <g transform="translate(460, 12)">
+      <rect width="425" height="140" rx="6" fill="#f8fafc" stroke="#16a34a" stroke-width="1.2"/>
+      <text x="14" y="20" font-size="11" font-weight="800" fill="#15803d">Key Junos Verification Commands:</text>
       
       <g transform="translate(14, 30)">
-        <rect width="384" height="26" rx="4" fill="#161b22" stroke="#30363d"/>
-        <text x="10" y="17" font-size="9" font-weight="700" fill="#79c0ff" font-family="'JetBrains Mono', monospace">show lldp neighbors</text>
-        <text x="190" y="17" font-size="8" fill="#8b949e">&rarr; Summary table of all adjacent peers</text>
+        <rect width="395" height="26" rx="3" fill="#ffffff" stroke="#cbd5e1"/>
+        <text x="10" y="17" font-size="9.5" font-weight="700" fill="#1d4ed8" font-family="'JetBrains Mono', monospace">show lldp neighbors</text>
+        <text x="210" y="17" font-size="9" fill="#64748b">&rarr; Summary table of all adjacent peers</text>
 
-        <rect x="0" y="32" width="384" height="26" rx="4" fill="#161b22" stroke="#30363d"/>
-        <text x="10" y="49" font-size="9" font-weight="700" fill="#79c0ff" font-family="'JetBrains Mono', monospace">show lldp neighbors detail</text>
-        <text x="210" y="49" font-size="8" fill="#8b949e">&rarr; Full TLVs: OS, PoE, IP, MAC</text>
-
-        <rect x="0" y="64" width="384" height="26" rx="4" fill="#161b22" stroke="#30363d"/>
-        <text x="10" y="81" font-size="9" font-weight="700" fill="#79c0ff" font-family="'JetBrains Mono', monospace">clear lldp statistics</text>
-        <text x="180" y="81" font-size="8" fill="#8b949e">&rarr; Resets LLDP frame counters</text>
+        <rect x="0" y="32" width="395" height="26" rx="3" fill="#ffffff" stroke="#cbd5e1"/>
+        <text x="10" y="49" font-size="9.5" font-weight="700" fill="#1d4ed8" font-family="'JetBrains Mono', monospace">show lldp neighbors detail</text>
+        <text x="235" y="49" font-size="9" fill="#64748b">&rarr; Full TLVs: OS, PoE, IP, MAC</text>
 
         <!-- Exam Note -->
-        <rect x="0" y="96" width="384" height="24" rx="4" fill="rgba(240,136,62,0.12)" stroke="#f0883e" stroke-width="0.8"/>
-        <text x="192" y="112" font-size="7.5" font-weight="700" fill="#f0883e" text-anchor="middle">&#9888; Exam Rule: LLDP operates at Layer 2 &mdash; does not require IP configured!</text>
+        <rect x="0" y="64" width="395" height="34" rx="4" fill="#fffbeb" stroke="#f59e0b"/>
+        <text x="197" y="80" font-size="9" font-weight="800" fill="#b45309" text-anchor="middle">&#9888; Exam Rule: LLDP operates at Layer 2</text>
+        <text x="197" y="93" font-size="8.5" fill="#78350f" text-anchor="middle">Does NOT require IP addressing configured on the interface!</text>
       </g>
     </g>
   </g>
@@ -1614,121 +1487,116 @@ show system a      <span class="cmt">&rarr; ambiguous: shows alarms | audit</spa
       <li>Top-level operational keywords: <code>show</code>, <code>monitor</code>, <code>clear</code>, <code>request</code>.</li>
       <li>Use <code>?</code> at any level &mdash; the CLI is fully self-documenting; no need to memorize everything.</li>
     </ul>
-    <div class="dw">
-      <svg viewBox="0 0 920 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Junos CLI Configuration Hierarchy Tree and Navigation Commands">
+        <div class="dw">
+      <svg viewBox="0 0 960 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Junos CLI Configuration Hierarchy Tree and Navigation">
   <defs>
-    <linearGradient id="bgGrad8" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0d1117"/>
-      <stop offset="100%" stop-color="#161b22"/>
-    </linearGradient>
+    <filter id="shadow8" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
   </defs>
 
-  <rect width="920" height="380" rx="12" fill="url(#bgGrad8)" stroke="#30363d" stroke-width="1.5"/>
+  <rect width="960" height="360" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="480" y="32" font-size="16" font-weight="800" fill="#0f172a" text-anchor="middle" font-family="'Inter', system-ui, sans-serif">Figure 8: Junos CLI Hierarchical Configuration Tree &amp; Navigation Shortcuts</text>
 
-  <!-- Title Header -->
-  <rect x="18" y="14" width="884" height="42" rx="8" fill="#1c2128" stroke="#30363d" stroke-width="1"/>
-  <text x="36" y="40" font-size="14" font-weight="700" fill="#58a6ff" font-family="'Inter', system-ui, sans-serif" letter-spacing="0.5">JUNOS CLI HIERARCHICAL CONFIGURATION TREE &amp; NAVIGATION</text>
-  <text x="560" y="40" font-size="11" font-weight="500" fill="#8b949e" font-family="'Inter', system-ui, sans-serif">Tree Structure &middot; Contextual Navigation: edit, up, top, set, show</text>
-
-  <!-- LEFT: HIERARCHICAL TREE DIAGRAM -->
-  <g transform="translate(24, 68)">
-    <rect width="480" height="298" rx="10" fill="#11161d" stroke="#388bfd" stroke-width="1.2"/>
-    <text x="16" y="24" font-size="11" font-weight="700" fill="#58a6ff">Configuration Hierarchy Tree Structure:</text>
+  <!-- LEFT: HIERARCHY TREE -->
+  <g transform="translate(30, 55)" filter="url(#shadow8)">
+    <rect width="480" height="280" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.5"/>
+    <text x="16" y="24" font-size="11.5" font-weight="800" fill="#1e40af">Configuration Tree Hierarchy:</text>
     
-    <!-- Root [edit] -->
     <g transform="translate(16, 36)">
-      <rect width="100" height="30" rx="5" fill="#1f6feb" stroke="#388bfd" stroke-width="1"/>
-      <text x="50" y="20" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle" font-family="'JetBrains Mono', monospace">[edit]</text>
+      <!-- Root -->
+      <rect width="90" height="28" rx="4" fill="#1e40af"/>
+      <text x="45" y="19" font-size="11" font-weight="800" fill="#ffffff" text-anchor="middle" font-family="'JetBrains Mono', monospace">[edit]</text>
 
       <!-- Connecting Lines -->
-      <path d="M 50 30 L 50 240" stroke="#475569" stroke-width="1.5"/>
-      <path d="M 50 50 L 90 50" stroke="#475569" stroke-width="1.5"/>
-      <path d="M 50 100 L 90 100" stroke="#475569" stroke-width="1.5"/>
-      <path d="M 50 170 L 90 170" stroke="#475569" stroke-width="1.5"/>
-      <path d="M 50 230 L 90 230" stroke="#475569" stroke-width="1.5"/>
+      <path d="M 45 28 L 45 210" stroke="#94a3b8" stroke-width="1.5"/>
+      <path d="M 45 46 L 85 46" stroke="#94a3b8" stroke-width="1.5"/>
+      <path d="M 45 92 L 85 92" stroke="#94a3b8" stroke-width="1.5"/>
+      <path d="M 45 156 L 85 156" stroke="#94a3b8" stroke-width="1.5"/>
+      <path d="M 45 204 L 85 204" stroke="#94a3b8" stroke-width="1.5"/>
 
       <!-- Branch 1: system -->
-      <g transform="translate(90, 36)">
-        <rect width="110" height="28" rx="4" fill="#161b22" stroke="#388bfd"/>
-        <text x="10" y="18" font-size="9.5" font-weight="700" fill="#79c0ff" font-family="'JetBrains Mono', monospace">system</text>
-        <text x="120" y="18" font-size="8.5" fill="#8b949e">&rarr; host-name, services { ssh; }, syslog</text>
+      <g transform="translate(85, 34)">
+        <rect width="105" height="24" rx="3" fill="#eff6ff" stroke="#3b82f6"/>
+        <text x="10" y="16" font-size="9.5" font-weight="800" fill="#1d4ed8" font-family="'JetBrains Mono', monospace">system</text>
+        <text x="115" y="16" font-size="9" fill="#475569">&rarr; host-name, services { ssh; }, syslog</text>
       </g>
 
       <!-- Branch 2: interfaces (Nested) -->
-      <g transform="translate(90, 86)">
-        <rect width="110" height="28" rx="4" fill="#161b22" stroke="#3fb950"/>
-        <text x="10" y="18" font-size="9.5" font-weight="700" fill="#3fb950" font-family="'JetBrains Mono', monospace">interfaces</text>
+      <g transform="translate(85, 80)">
+        <rect width="105" height="24" rx="3" fill="#f0fdf4" stroke="#16a34a"/>
+        <text x="10" y="16" font-size="9.5" font-weight="800" fill="#15803d" font-family="'JetBrains Mono', monospace">interfaces</text>
 
         <!-- Nested ge-0/0/0 -->
-        <path d="M 20 28 L 20 60 L 40 60" stroke="#3fb950" stroke-width="1.2" fill="none"/>
-        <g transform="translate(40, 46)">
-          <rect width="90" height="26" rx="4" fill="#0d1117" stroke="#3fb950"/>
-          <text x="8" y="17" font-size="8.5" font-weight="600" fill="#3fb950" font-family="'JetBrains Mono', monospace">ge-0/0/0</text>
+        <path d="M 20 24 L 20 54 L 40 54" stroke="#16a34a" stroke-width="1.2" fill="none"/>
+        <g transform="translate(40, 42)">
+          <rect width="85" height="22" rx="3" fill="#ffffff" stroke="#16a34a"/>
+          <text x="8" y="15" font-size="9" font-weight="700" fill="#15803d" font-family="'JetBrains Mono', monospace">ge-0/0/0</text>
 
           <!-- Nested unit 0 -->
-          <path d="M 20 26 L 20 50 L 40 50" stroke="#3fb950" stroke-width="1.2" fill="none"/>
-          <g transform="translate(40, 38)">
-            <rect width="250" height="24" rx="4" fill="#0d1117" stroke="#3fb950"/>
-            <text x="8" y="16" font-size="8" fill="#79c0ff" font-family="'JetBrains Mono', monospace">unit 0 { family inet { address .. } }</text>
+          <path d="M 20 22 L 20 44 L 40 44" stroke="#16a34a" stroke-width="1.2" fill="none"/>
+          <g transform="translate(40, 34)">
+            <rect width="210" height="20" rx="3" fill="#ffffff" stroke="#16a34a"/>
+            <text x="8" y="14" font-size="8.5" fill="#1e40af" font-family="'JetBrains Mono', monospace">unit 0 { family inet { address .. } }</text>
           </g>
         </g>
       </g>
 
       <!-- Branch 3: protocols -->
-      <g transform="translate(90, 156)">
-        <rect width="110" height="28" rx="4" fill="#161b22" stroke="#bc8cff"/>
-        <text x="10" y="18" font-size="9.5" font-weight="700" fill="#bc8cff" font-family="'JetBrains Mono', monospace">protocols</text>
-        <text x="120" y="18" font-size="8.5" fill="#8b949e">&rarr; bgp, ospf, lldp { interface all; }</text>
+      <g transform="translate(85, 144)">
+        <rect width="105" height="24" rx="3" fill="#faf5ff" stroke="#7c3aed"/>
+        <text x="10" y="16" font-size="9.5" font-weight="800" fill="#6d28d9" font-family="'JetBrains Mono', monospace">protocols</text>
+        <text x="115" y="16" font-size="9" fill="#475569">&rarr; bgp, ospf, lldp { interface all; }</text>
       </g>
 
       <!-- Branch 4: routing-options -->
-      <g transform="translate(90, 216)">
-        <rect width="125" height="28" rx="4" fill="#161b22" stroke="#f0883e"/>
-        <text x="10" y="18" font-size="9.5" font-weight="700" fill="#f0883e" font-family="'JetBrains Mono', monospace">routing-options</text>
-        <text x="135" y="18" font-size="8.5" fill="#8b949e">&rarr; static { route 0.0.0.0/0 next-hop .. }</text>
+      <g transform="translate(85, 192)">
+        <rect width="120" height="24" rx="3" fill="#fff7ed" stroke="#ea580c"/>
+        <text x="10" y="16" font-size="9.5" font-weight="800" fill="#c2410c" font-family="'JetBrains Mono', monospace">routing-options</text>
+        <text x="130" y="16" font-size="9" fill="#475569">&rarr; static { route 0.0.0.0/0 next-hop .. }</text>
       </g>
     </g>
   </g>
 
-  <!-- RIGHT: NAVIGATION COMMANDS & SHORTCUTS -->
-  <g transform="translate(516, 68)">
-    <rect width="380" height="298" rx="10" fill="#161b22" stroke="#30363d" stroke-width="1.2"/>
-    <text x="16" y="24" font-size="11" font-weight="700" fill="#79c0ff">Hierarchy Navigation Commands:</text>
+  <!-- RIGHT: NAVIGATION SHORTCUTS -->
+  <g transform="translate(530, 55)" filter="url(#shadow8)">
+    <rect width="400" height="280" rx="8" fill="#ffffff" stroke="#16a34a" stroke-width="1.5"/>
+    <text x="16" y="24" font-size="11.5" font-weight="800" fill="#15803d">Contextual Navigation Commands:</text>
 
-    <!-- Command 1: edit -->
-    <g transform="translate(14, 36)">
-      <rect width="352" height="42" rx="5" fill="#0d1117" stroke="#388bfd" stroke-width="1"/>
-      <text x="10" y="18" font-size="9" font-weight="700" fill="#79c0ff" font-family="'JetBrains Mono', monospace">edit &lt;path&gt;</text>
-      <text x="10" y="32" font-size="8" fill="#8b949e">Descend directly: <code style="color:#79c0ff">edit interfaces ge-0/0/0 unit 0</code></text>
-    </g>
+    <g transform="translate(16, 36)">
+      <!-- edit -->
+      <rect width="368" height="38" rx="4" fill="#eff6ff" stroke="#3b82f6"/>
+      <text x="10" y="16" font-size="9.5" font-weight="800" fill="#1d4ed8" font-family="'JetBrains Mono', monospace">edit &lt;statement-path&gt;</text>
+      <text x="10" y="30" font-size="8.5" fill="#475569">Descend directly: <code style="color:#1d4ed8">edit interfaces ge-0/0/0 unit 0</code></text>
 
-    <!-- Command 2: up & up <n> -->
-    <g transform="translate(14, 84)">
-      <rect width="352" height="42" rx="5" fill="#0d1117" stroke="#3fb950" stroke-width="1"/>
-      <text x="10" y="18" font-size="9" font-weight="700" fill="#3fb950" font-family="'JetBrains Mono', monospace">up [n]</text>
-      <text x="10" y="32" font-size="8" fill="#8b949e">Move 1 level up (<code style="color:#3fb950">up</code>) or multiple levels up (<code style="color:#3fb950">up 2</code>)</text>
-    </g>
+      <!-- up -->
+      <g transform="translate(0, 44)">
+        <rect width="368" height="38" rx="4" fill="#f0fdf4" stroke="#16a34a"/>
+        <text x="10" y="16" font-size="9.5" font-weight="800" fill="#15803d" font-family="'JetBrains Mono', monospace">up [n]</text>
+        <text x="10" y="30" font-size="8.5" fill="#475569">Move 1 level up (<code style="color:#15803d">up</code>) or multiple levels up (<code style="color:#15803d">up 2</code>)</text>
+      </g>
 
-    <!-- Command 3: top -->
-    <g transform="translate(14, 132)">
-      <rect width="352" height="42" rx="5" fill="#0d1117" stroke="#f0883e" stroke-width="1"/>
-      <text x="10" y="18" font-size="9" font-weight="700" fill="#f0883e" font-family="'JetBrains Mono', monospace">top</text>
-      <text x="10" y="32" font-size="8" fill="#8b949e">Jump instantly from any deep level back to root <code style="color:#f0883e">[edit]</code></text>
-    </g>
+      <!-- top -->
+      <g transform="translate(0, 88)">
+        <rect width="368" height="38" rx="4" fill="#fff7ed" stroke="#ea580c"/>
+        <text x="10" y="16" font-size="9.5" font-weight="800" fill="#c2410c" font-family="'JetBrains Mono', monospace">top</text>
+        <text x="10" y="30" font-size="8.5" fill="#475569">Jump instantly back to the root <code style="color:#c2410c">[edit]</code> level</text>
+      </g>
 
-    <!-- Command 4: show -->
-    <g transform="translate(14, 180)">
-      <rect width="352" height="42" rx="5" fill="#0d1117" stroke="#bc8cff" stroke-width="1"/>
-      <text x="10" y="18" font-size="9" font-weight="700" fill="#bc8cff" font-family="'JetBrains Mono', monospace">show</text>
-      <text x="10" y="32" font-size="8" fill="#8b949e">Displays config only at current level (or <code style="color:#bc8cff">show | display set</code>)</text>
-    </g>
+      <!-- show & set -->
+      <g transform="translate(0, 132)">
+        <rect width="368" height="38" rx="4" fill="#faf5ff" stroke="#7c3aed"/>
+        <text x="10" y="16" font-size="9.5" font-weight="800" fill="#6d28d9" font-family="'JetBrains Mono', monospace">show &middot; set</text>
+        <text x="10" y="30" font-size="8.5" fill="#475569"><code style="color:#6d28d9">show</code> displays config scoped to current level (or <code style="color:#6d28d9">| display set</code>)</text>
+      </g>
 
-    <!-- Command 5: exit -->
-    <g transform="translate(14, 228)">
-      <rect width="352" height="54" rx="5" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
-      <text x="10" y="18" font-size="9" font-weight="700" fill="#e6edf3" font-family="'JetBrains Mono', monospace">exit vs. quit</text>
-      <text x="10" y="32" font-size="8" fill="#8b949e">&bull; <code style="color:#79c0ff">exit</code> moves up 1 level (or exits config mode if at root)</text>
-      <text x="10" y="46" font-size="8" fill="#8b949e">&bull; <code style="color:#f85149">quit</code> exits config mode immediately, regardless of depth</text>
+      <!-- exit vs quit -->
+      <g transform="translate(0, 176)">
+        <rect width="368" height="50" rx="4" fill="#f8fafc" stroke="#94a3b8"/>
+        <text x="10" y="16" font-size="9.5" font-weight="800" fill="#0f172a" font-family="'JetBrains Mono', monospace">exit vs. quit</text>
+        <text x="10" y="30" font-size="8.5" fill="#475569">&bull; <code style="color:#1d4ed8">exit</code> moves up 1 level (or exits config mode if at root)</text>
+        <text x="10" y="44" font-size="8.5" fill="#475569">&bull; <code style="color:#dc2626">quit</code> exits configuration mode immediately from any level</text>
+      </g>
     </g>
   </g>
 </svg>
