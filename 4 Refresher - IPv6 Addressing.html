@@ -1,0 +1,2287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JNCIA-Junos | IPv6 Addressing &amp; Counting Systems</title>
+  <meta name="description" content="JNCIA-Junos study guide: Binary, Hexadecimal, IPv6 address format, abbreviation rules, subnetting (/64, /128), and link-local addressing. Exam-ready technical reference." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet" />
+  <style>
+    /* ─── DESIGN TOKENS ────────────────────────────────────────── */
+    :root {
+      --bg-base:      #0d1117;
+      --bg-surface:   #161b22;
+      --bg-elevated:  #1c2330;
+      --bg-card:      #21262d;
+      --border:       #30363d;
+      --border-light: #3d444d;
+      --accent:       #58a6ff;
+      --accent-dim:   #1f3a5f;
+      --accent-glow:  rgba(88,166,255,0.12);
+      --green:        #3fb950;
+      --green-dim:    #1a3a25;
+      --orange:       #f0883e;
+      --orange-dim:   #3a2010;
+      --red:          #f85149;
+      --red-dim:      #3a1010;
+      --purple:       #bc8cff;
+      --purple-dim:   #2a1a4a;
+      --yellow:       #e3b341;
+      --yellow-dim:   #3a2e10;
+      --text-primary: #e6edf3;
+      --text-secondary:#8b949e;
+      --text-muted:   #484f58;
+      --sidebar-w:    270px;
+      --radius:       8px;
+      --radius-lg:    12px;
+      --shadow:       0 4px 24px rgba(0,0,0,0.4);
+      --transition:   0.2s ease;
+    }
+
+    /* ─── RESET & BASE ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 15px; }
+    body {
+      background: var(--bg-base);
+      color: var(--text-primary);
+      font-family: 'Inter', system-ui, sans-serif;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+    ::selection { background: var(--accent-dim); color: var(--accent); }
+
+    /* ─── SCROLLBAR ────────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-base); }
+    ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+    /* ─── LAYOUT ───────────────────────────────────────────────── */
+    .layout { display: flex; min-height: 100vh; }
+
+    /* ─── SIDEBAR ──────────────────────────────────────────────── */
+    .sidebar {
+      width: var(--sidebar-w);
+      min-width: var(--sidebar-w);
+      background: var(--bg-surface);
+      border-right: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      transition: transform var(--transition);
+    }
+    .sidebar-header {
+      padding: 20px 18px 16px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--bg-surface);
+      z-index: 1;
+    }
+    .sidebar-badge {
+      display: inline-block;
+      background: var(--accent-dim);
+      color: var(--accent);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+    .sidebar-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+    .sidebar-subtitle {
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+    .sidebar-nav { padding: 12px 8px; flex: 1; }
+    .nav-group { margin-bottom: 4px; }
+    .nav-group-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      padding: 8px 10px 4px;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: var(--radius);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 500;
+      transition: all var(--transition);
+      cursor: pointer;
+    }
+    .nav-link:hover { background: var(--bg-elevated); color: var(--text-primary); }
+    .nav-link.active { background: var(--accent-dim); color: var(--accent); }
+    .nav-link .nav-icon { width: 16px; text-align: center; font-size: 0.85rem; flex-shrink: 0; }
+    .nav-link .nav-num {
+      margin-left: auto;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      background: var(--bg-elevated);
+      padding: 1px 6px;
+      border-radius: 10px;
+    }
+    .sidebar-footer {
+      padding: 12px 18px;
+      border-top: 1px solid var(--border);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    /* ─── HAMBURGER ────────────────────────────────────────────── */
+    .hamburger {
+      display: none;
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      z-index: 200;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 8px 12px;
+      cursor: pointer;
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      align-items: center;
+      gap: 6px;
+    }
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 99;
+    }
+
+    /* ─── MAIN CONTENT ─────────────────────────────────────────── */
+    .main {
+      flex: 1;
+      min-width: 0;
+      padding: 0 0 80px;
+    }
+
+    /* ─── TOP BAR ──────────────────────────────────────────────── */
+    .topbar {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .topbar-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+    .topbar-sep { color: var(--border-light); }
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      max-width: 340px;
+    }
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+      font-size: 0.8rem;
+    }
+    #search-input {
+      width: 100%;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      padding: 7px 10px 7px 32px;
+      outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    #search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+    #search-input::placeholder { color: var(--text-muted); }
+
+    /* ─── CONTENT AREA ─────────────────────────────────────────── */
+    .content { padding: 36px 40px; max-width: 960px; }
+
+    /* ─── HERO ─────────────────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 36px 40px;
+      margin-bottom: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50px; right: -50px;
+      width: 240px; height: 240px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-dim);
+      color: var(--accent);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+    .hero h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      line-height: 1.25;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-desc {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      max-width: 580px;
+      margin-bottom: 22px;
+    }
+    .hero-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border: 1px solid;
+    }
+    .pill-blue   { background: var(--accent-dim);  color: var(--accent);  border-color: var(--accent-dim);  }
+    .pill-green  { background: var(--green-dim);   color: var(--green);   border-color: var(--green-dim);   }
+    .pill-orange { background: var(--orange-dim);  color: var(--orange);  border-color: var(--orange-dim);  }
+    .pill-purple { background: var(--purple-dim);  color: var(--purple);  border-color: var(--purple-dim);  }
+    .pill-yellow { background: var(--yellow-dim);  color: var(--yellow);  border-color: var(--yellow-dim);  }
+    .pill-red    { background: var(--red-dim);     color: var(--red);     border-color: var(--red-dim);     }
+
+    /* ─── SECTIONS ─────────────────────────────────────────────── */
+    .section {
+      margin-bottom: 44px;
+      scroll-margin-top: 80px;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-icon {
+      width: 36px; height: 36px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .section-num {
+      margin-left: auto;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg-elevated);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    /* ─── CARD ─────────────────────────────────────────────────── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px 24px;
+      margin-bottom: 14px;
+    }
+    .card-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+    .dot-green  { background: var(--green); }
+    .dot-orange { background: var(--orange); }
+    .dot-purple { background: var(--purple); }
+    .dot-red    { background: var(--red); }
+    .dot-yellow { background: var(--yellow); }
+
+    /* ─── LISTS ────────────────────────────────────────────────── */
+    ul.tech-list { list-style: none; padding: 0; }
+    ul.tech-list li {
+      padding: 5px 0 5px 20px;
+      position: relative;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+    }
+    ul.tech-list li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 0.75rem;
+      top: 7px;
+    }
+    ul.tech-list li strong { color: var(--accent); }
+    ul.tech-list.green li::before  { color: var(--green); }
+    ul.tech-list.green li strong   { color: var(--green); }
+    ul.tech-list.orange li::before { color: var(--orange); }
+    ul.tech-list.orange li strong  { color: var(--orange); }
+    ul.tech-list.purple li::before { color: var(--purple); }
+    ul.tech-list.purple li strong  { color: var(--purple); }
+    ul.tech-list.red li::before    { color: var(--red); }
+    ul.tech-list.red li strong     { color: var(--red); }
+    ul.tech-list.yellow li::before { color: var(--yellow); }
+    ul.tech-list.yellow li strong  { color: var(--yellow); }
+
+    /* ─── CALLOUTS ─────────────────────────────────────────────── */
+    .callout {
+      display: flex;
+      gap: 12px;
+      padding: 14px 18px;
+      border-radius: var(--radius);
+      margin: 14px 0;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      border-left: 3px solid;
+    }
+    .callout-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+    .callout-content strong { display: block; margin-bottom: 3px; font-size: 0.9rem; }
+    .callout.info    { background: var(--accent-dim);  border-color: var(--accent);  color: var(--text-primary); }
+    .callout.success { background: var(--green-dim);   border-color: var(--green);   color: var(--text-primary); }
+    .callout.warn    { background: var(--orange-dim);  border-color: var(--orange);  color: var(--text-primary); }
+    .callout.crit    { background: var(--red-dim);     border-color: var(--red);     color: var(--text-primary); }
+    .callout.tip     { background: var(--purple-dim);  border-color: var(--purple);  color: var(--text-primary); }
+    .callout.note    { background: var(--yellow-dim);  border-color: var(--yellow);  color: var(--text-primary); }
+
+    /* ─── CODE BLOCKS ──────────────────────────────────────────── */
+    .code-block {
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin: 10px 0;
+    }
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 14px;
+      background: var(--bg-elevated);
+      border-bottom: 1px solid var(--border);
+    }
+    .code-lang {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+    .copy-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.72rem;
+      font-family: 'Inter', sans-serif;
+      padding: 3px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .copy-btn.copied { border-color: var(--green); color: var(--green); }
+    .code-block pre {
+      padding: 16px 18px;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.83rem;
+      line-height: 1.65;
+      color: var(--text-primary);
+      white-space: pre;
+    }
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      background: var(--bg-elevated);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--accent);
+    }
+    .hl-green  { color: var(--green); }
+    .hl-orange { color: var(--orange); }
+    .hl-purple { color: var(--purple); }
+    .hl-red    { color: var(--red); }
+    .hl-yellow { color: var(--yellow); }
+    .hl-muted  { color: var(--text-muted); }
+    .hl-acc    { color: var(--accent); }
+
+    /* ─── TABLES ───────────────────────────────────────────────── */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 12px 0;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+    thead tr { background: var(--bg-elevated); }
+    th {
+      text-align: left;
+      padding: 10px 16px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    td {
+      padding: 9px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-primary);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: var(--bg-elevated); }
+
+    /* ─── GRID ─────────────────────────────────────────────────── */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+
+    /* ─── BINARY DEMO ──────────────────────────────────────────── */
+    .binary-table {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 4px;
+      margin: 12px 0;
+    }
+    .bin-cell {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 4px;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+      transition: all var(--transition);
+    }
+    .bin-cell:hover { border-color: var(--accent); }
+    .bin-cell .power {
+      font-size: 0.62rem;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .bin-cell .bit {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      display: block;
+      transition: color var(--transition);
+    }
+    .bin-cell.active .bit { color: var(--accent); }
+    .bin-cell.active { border-color: var(--accent); background: var(--accent-dim); }
+    .binary-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+    .bin-btn {
+      padding: 6px 14px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .bin-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .bin-result {
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+    .bin-result .val { color: var(--accent); font-weight: 700; font-size: 1rem; }
+
+    /* ─── HEX GRID ─────────────────────────────────────────────── */
+    .hex-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+      gap: 6px;
+      margin: 12px 0;
+    }
+    .hex-cell {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 8px;
+      text-align: center;
+      transition: all var(--transition);
+      cursor: default;
+    }
+    .hex-cell:hover { border-color: var(--accent); background: var(--accent-dim); }
+    .h-hex {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .h-dec {
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      margin-top: 3px;
+    }
+    .h-bin {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.58rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+      letter-spacing: 0.05em;
+    }
+
+    /* ─── STEPPER ──────────────────────────────────────────────── */
+    .stepper {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin: 14px 0;
+    }
+    .stepper-nav {
+      display: flex;
+      background: var(--bg-elevated);
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+    }
+    .step-tab {
+      flex: 1;
+      min-width: 110px;
+      padding: 10px 14px;
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all var(--transition);
+      border-right: 1px solid var(--border);
+      white-space: nowrap;
+      user-select: none;
+    }
+    .step-tab:last-child { border-right: none; }
+    .step-tab:hover { color: var(--text-primary); background: var(--bg-card); }
+    .step-tab.active { background: var(--bg-card); color: var(--accent); border-bottom: 2px solid var(--accent); }
+    .step-body { padding: 22px 24px; background: var(--bg-card); }
+    .step-pane { display: none; }
+    .step-pane.active { display: block; }
+
+    .addr-display {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 14px 18px;
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 12px;
+      letter-spacing: 0.04em;
+      word-break: break-all;
+      line-height: 1.8;
+    }
+
+    /* ─── SUBNET BAR ───────────────────────────────────────────── */
+    .subnet-bar {
+      display: flex;
+      height: 52px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin: 14px 0;
+      border: 1px solid var(--border);
+    }
+    .subnet-network {
+      background: var(--accent-dim);
+      border-right: 2px dashed var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent);
+      padding: 0 12px;
+      text-align: center;
+      flex: 1;
+    }
+    .subnet-host {
+      flex: 1;
+      background: var(--green-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--green);
+      padding: 0 12px;
+      text-align: center;
+    }
+    .subnet-sub { font-size: 0.62rem; font-weight: 400; margin-top: 2px; opacity: 0.8; }
+
+    /* ─── PROGRESS BAR ─────────────────────────────────────────── */
+    .progress-track {
+      background: var(--bg-elevated);
+      border-radius: 10px;
+      height: 5px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 10px;
+      background: linear-gradient(90deg, var(--accent), var(--purple));
+      transition: width 0.4s ease;
+      width: 0%;
+    }
+
+    /* ─── COLLAPSIBLE ──────────────────────────────────────────── */
+    details {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin: 8px 0;
+      overflow: hidden;
+    }
+    summary {
+      padding: 12px 16px;
+      background: var(--bg-elevated);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.88rem;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+      list-style: none;
+      transition: background var(--transition);
+    }
+    summary:hover { background: var(--bg-card); }
+    summary::-webkit-details-marker { display: none; }
+    .toggle-icon {
+      margin-left: auto;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      transition: transform 0.2s;
+      display: inline-block;
+    }
+    details[open] .toggle-icon { transform: rotate(180deg); }
+    details > div { padding: 16px 18px; background: var(--bg-card); }
+
+    /* ─── KEY FACT ─────────────────────────────────────────────── */
+    .key-fact {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 16px 18px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius);
+      margin: 12px 0;
+      font-size: 0.88rem;
+    }
+    .kf-icon { font-size: 1.2rem; flex-shrink: 0; }
+    .kf-body strong { display: block; color: var(--accent); margin-bottom: 4px; font-size: 0.9rem; }
+
+    /* ─── SEARCH HIGHLIGHT ─────────────────────────────────────── */
+    mark {
+      background: var(--yellow-dim);
+      color: var(--yellow);
+      border-radius: 2px;
+      padding: 0 2px;
+    }
+
+    /* ─── RESPONSIVE ───────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      .grid-3 { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .sidebar {
+        position: fixed;
+        left: 0; top: 0; bottom: 0;
+        transform: translateX(-100%);
+        z-index: 150;
+      }
+      .sidebar.open { transform: translateX(0); box-shadow: var(--shadow); }
+      .sidebar-overlay.open { display: block; }
+      .hamburger { display: flex; }
+      .topbar { padding: 12px 16px 12px 58px; }
+      .content { padding: 24px 16px; }
+      .hero { padding: 24px 20px; }
+      .hero h1 { font-size: 1.35rem; }
+      .binary-table { grid-template-columns: repeat(4, 1fr); }
+      .grid-3 { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .step-tab { font-size: 0.72rem; padding: 9px 8px; min-width: 80px; }
+      .search-wrap { max-width: 100%; }
+      .topbar { flex-direction: column; align-items: flex-start; padding-top: 52px; gap: 10px; }
+      .hex-grid { grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); }
+    }
+
+    /* ─── DIAGRAM WRAPPER ──────────────────────────────────────── */
+    .diagram-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      margin: 14px 0;
+      overflow-x: auto;
+    }
+    .diagram-caption {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 10px;
+      font-style: italic;
+    }
+    .diagram-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .diagram-wrap svg { display: block; max-width: 100%; height: auto; }
+    /* ─── ADDRESS SPACE BARS ────────────────────────────────────── */
+    .addr-space-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px 24px;
+      margin: 14px 0;
+    }
+    .addr-space-row { margin-bottom: 18px; }
+    .addr-space-label { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.82rem; }
+    .addr-space-name { font-weight: 700; }
+    .addr-space-val { font-family: 'JetBrains Mono', monospace; color: var(--text-secondary); font-size: 0.78rem; }
+    .addr-space-track { background: var(--bg-elevated); border-radius: 6px; height: 28px; overflow: hidden; border: 1px solid var(--border); }
+    .addr-space-fill { height: 100%; border-radius: 6px; display: flex; align-items: center; font-size: 0.7rem; font-weight: 700; white-space: nowrap; overflow: hidden; }
+    /* ─── HEXET ANATOMY ─────────────────────────────────────────── */
+    .anatomy-wrap { background: var(--bg-base); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; overflow-x: auto; margin: 14px 0; }
+    .hexet-row { display: flex; gap: 3px; align-items: stretch; margin-bottom: 8px; }
+    .hexet-block { flex: 1; min-width: 70px; border-radius: 6px; padding: 10px 6px; text-align: center; border: 1px solid transparent; transition: all var(--transition); }
+    .hexet-block:hover { transform: translateY(-2px); }
+    .hexet-sep { display: flex; align-items: center; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 1.2rem; font-weight: 700; padding: 0 1px; }
+    .hexet-value { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 4px; }
+    .hexet-label { font-size: 0.6rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.8; display: block; }
+    .hexet-bits { font-size: 0.58rem; opacity: 0.6; display: block; margin-top: 2px; }
+    .anatomy-legend { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 14px; font-size: 0.76rem; }
+    .legend-item { display: flex; align-items: center; gap: 6px; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+    /* ─── ABBREVIATION COMPARE ──────────────────────────────────── */
+    .abbrev-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0; }
+    .abbrev-case { border-radius: var(--radius); padding: 14px 16px; border: 1px solid; }
+    .abbrev-case.valid { background: var(--green-dim); border-color: var(--green); }
+    .abbrev-case.invalid { background: var(--red-dim); border-color: var(--red); }
+    .abbrev-case-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; }
+    .abbrev-case.valid .abbrev-case-label { color: var(--green); }
+    .abbrev-case.invalid .abbrev-case-label { color: var(--red); }
+    .abbrev-case-addr { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 600; color: var(--text-primary); margin-bottom: 5px; word-break: break-all; }
+    .abbrev-case-note { font-size: 0.75rem; color: var(--text-secondary); }
+    @media (max-width: 900px) { .abbrev-compare { grid-template-columns: 1fr; } }
+    @media (max-width: 768px) { .hexet-block { min-width: 56px; } }
+  </style>
+</head>
+<body>
+
+<button class="hamburger" id="hamburger" aria-label="Open navigation">&#9776; Menu</button>
+<div class="sidebar-overlay" id="overlay"></div>
+
+<div class="layout">
+
+  <!-- ══════════════ SIDEBAR ══════════════ -->
+  <nav class="sidebar" id="sidebar" aria-label="Study navigation">
+    <div class="sidebar-header">
+      <div class="sidebar-badge">JNCIA-Junos</div>
+      <div class="sidebar-title">IPv6 &amp; Counting Systems</div>
+      <div class="sidebar-subtitle">Session &mdash; 8 Aug &middot; 74 min</div>
+      <div style="margin-top:10px;">
+        <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:4px;">Reading Progress</div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-label">Module 1 &mdash; Counting Systems</div>
+        <a class="nav-link active" href="#binary">
+          <span class="nav-icon">&#8984;</span> Binary &amp; Bits
+          <span class="nav-num">&sect;1</span>
+        </a>
+        <a class="nav-link" href="#hexadecimal">
+          <span class="nav-icon">#</span> Hexadecimal
+          <span class="nav-num">&sect;2</span>
+        </a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Module 2 &mdash; IPv6 Addressing</div>
+        <a class="nav-link" href="#ipv6-overview">
+          <span class="nav-icon">&#127760;</span> Why IPv6?
+          <span class="nav-num">&sect;3</span>
+        </a>
+        <a class="nav-link" href="#ipv6-format">
+          <span class="nav-icon">&#128203;</span> Address Format
+          <span class="nav-num">&sect;4</span>
+        </a>
+        <a class="nav-link" href="#ipv6-abbrev">
+          <span class="nav-icon">&#9986;</span> Abbreviation Rules
+          <span class="nav-num">&sect;5</span>
+        </a>
+        <a class="nav-link" href="#ipv6-subnetting">
+          <span class="nav-icon">&#8856;</span> Subnetting
+          <span class="nav-num">&sect;6</span>
+        </a>
+        <a class="nav-link" href="#link-local">
+          <span class="nav-icon">&#128279;</span> Link-Local Addresses
+          <span class="nav-num">&sect;7</span>
+        </a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Reference</div>
+        <a class="nav-link" href="#quick-ref">
+          <span class="nav-icon">&#9889;</span> Exam Cheat Sheet
+          <span class="nav-num">&sect;8</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      JNCIA &middot; JN0-104 &middot; Routing &amp; Switching
+    </div>
+  </nav>
+
+  <!-- ══════════════ MAIN ══════════════ -->
+  <div class="main">
+
+    <!-- Top Bar -->
+    <div class="topbar">
+      <div class="topbar-info">
+        <span>Module 1 &amp; 2</span>
+        <span class="topbar-sep">&middot;</span>
+        <span>Counting Systems &amp; IPv6 Addressing</span>
+      </div>
+      <div class="search-wrap">
+        <span class="search-icon">&#9740;</span>
+        <input type="search" id="search-input" placeholder="Search this page&hellip;" autocomplete="off" spellcheck="false" />
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content" id="main-content">
+
+      <!-- HERO ─────────────────────────────────────────────────── -->
+      <div class="hero">
+        <div class="hero-tag">&#128225; JNCIA-Junos Study Material</div>
+        <h1>IPv6 Addressing &amp; Counting Systems</h1>
+        <p class="hero-desc">
+          Exam-focused technical study notes covering binary, hexadecimal, IPv6 address
+          structure and format, abbreviation rules, subnetting, and link-local addressing.
+          Derived from the 8 August lecture session (74 min).
+        </p>
+        <div class="hero-pills">
+          <span class="pill pill-blue">Binary / Bits</span>
+          <span class="pill pill-green">Hexadecimal</span>
+          <span class="pill pill-orange">IPv6 Format</span>
+          <span class="pill pill-purple">Abbreviation Rules</span>
+          <span class="pill pill-yellow">Subnetting /64 /128</span>
+          <span class="pill pill-red">Link-Local FE80</span>
+        </div>
+      </div>
+
+      <!-- ─── §1 BINARY ──────────────────────────────────────────── -->
+      <section class="section" id="binary">
+        <div class="section-header">
+          <div class="section-icon">01</div>
+          <div class="section-title">Binary &amp; Bits</div>
+          <div class="section-num">&sect;1</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="dot"></span> What Is Binary?</div>
+          <ul class="tech-list">
+            <li>Computers communicate using physical <strong>binary signals</strong>:
+              high/low electrical impulses, on/off light pulses, north/south magnetic polarities.</li>
+            <li>Each individual 1 or 0 in these signals is called a <strong>bit</strong>.</li>
+            <li>The counting system they belong to is called <strong>binary</strong> — the word means
+              "composed of two things."</li>
+            <li>A binary signal has no inherent meaning by itself. The receiving hardware interprets
+              it based on context (pixel color, file data, network packet, keyboard input, etc.).</li>
+          </ul>
+        </div>
+
+
+        <!-- Visual: Physical Signal to IP Address -->
+        <div class="diagram-wrap">
+          <div class="diagram-title"><span class="dot"></span> From Physical Signal to IP Address</div>
+          <svg viewBox="0 0 820 198" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Signal to bit to byte to IP address chain">
+            <defs><marker id="av1" markerWidth="8" markerHeight="8" refX="7" refY="3.5" orient="auto"><polygon points="0 0,8 3.5,0 7" fill="#484f58"/></marker></defs>
+            <rect x="10" y="18" width="140" height="162" rx="8" fill="#1c2330" stroke="#30363d"/>
+            <text x="80" y="38" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="#8b949e" font-weight="700">PHYSICAL SIGNAL</text>
+            <polyline points="20,118 20,78 40,78 40,118 60,118 60,78 80,78 80,118 100,118 100,78 120,78 120,118 140,118 140,78 150,78" fill="none" stroke="#58a6ff" stroke-width="2" stroke-linejoin="square"/>
+            <text x="80" y="162" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#3fb950" font-weight="600">HIGH / LOW</text>
+            <text x="80" y="176" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#484f58">voltage impulses</text>
+            <line x1="155" y1="99" x2="194" y2="99" stroke="#484f58" stroke-width="1.5" marker-end="url(#av1)"/>
+            <text x="174" y="91" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#484f58">encode</text>
+            <rect x="198" y="18" width="130" height="162" rx="8" fill="#1c2330" stroke="#30363d"/>
+            <text x="263" y="38" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="#8b949e" font-weight="700">1 BIT</text>
+            <text x="263" y="108" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="50" fill="#58a6ff" font-weight="700">1</text>
+            <text x="263" y="142" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#484f58">or 0  one decision</text>
+            <text x="263" y="164" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#484f58">high=1 / low=0</text>
+            <line x1="333" y1="99" x2="372" y2="99" stroke="#484f58" stroke-width="1.5" marker-end="url(#av1)"/>
+            <text x="352" y="91" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#484f58">x8</text>
+            <rect x="376" y="18" width="184" height="162" rx="8" fill="#1c2330" stroke="#30363d"/>
+            <text x="468" y="38" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="#8b949e" font-weight="700">8 BITS = 1 BYTE</text>
+            <g transform="translate(390,52)">
+              <rect x="0"   y="0" width="18" height="22" rx="3" fill="#1f3a5f" stroke="#58a6ff"/><text x="9"   y="15" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#58a6ff" font-weight="700">1</text>
+              <rect x="20"  y="0" width="18" height="22" rx="3" fill="#1f3a5f" stroke="#58a6ff"/><text x="29"  y="15" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#58a6ff" font-weight="700">1</text>
+              <rect x="40"  y="0" width="18" height="22" rx="3" fill="#1c2330" stroke="#30363d"/><text x="49"  y="15" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#484f58" font-weight="700">0</text>
+              <rect x="60"  y="0" width="18" height="22" rx="3" fill="#1c2330" stroke="#30363d"/><text x="69"  y="15" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#484f58" font-weight="700">0</text>
+              <rect x="80"  y="0" width="18" height="22" rx="3" fill="#1f3a5f" stroke="#58a6ff"/><text x="89"  y="15" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#58a6ff" font-weight="700">1</text>
+              <rect x="100" y="0" width="18" height="22" rx="3" fill="#1c2330" stroke="#30363d"/><text x="109" y="15" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#484f58" font-weight="700">0</text>
+              <rect x="120" y="0" width="18" height="22" rx="3" fill="#1c2330" stroke="#30363d"/><text x="129" y="15" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#484f58" font-weight="700">0</text>
+              <rect x="144" y="0" width="18" height="22" rx="3" fill="#1f3a5f" stroke="#58a6ff"/><text x="153" y="15" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#58a6ff" font-weight="700">1</text>
+            </g>
+            <text x="468" y="104" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="12" fill="#3fb950" font-weight="700">= 149 decimal</text>
+            <text x="468" y="120" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f0883e" font-weight="600">= 95 hex</text>
+            <text x="468" y="140" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#484f58">max value per byte: 255</text>
+            <text x="468" y="158" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#484f58">1 IP octet = 1 byte</text>
+            <line x1="566" y1="99" x2="604" y2="99" stroke="#484f58" stroke-width="1.5" marker-end="url(#av1)"/>
+            <text x="585" y="91" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#484f58">xN bits</text>
+            <rect x="608" y="18" width="202" height="162" rx="8" fill="#1c2330" stroke="#30363d"/>
+            <text x="709" y="38" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="#8b949e" font-weight="700">IP ADDRESS</text>
+            <rect x="620" y="50" width="178" height="34" rx="5" fill="#3a2010" stroke="#f0883e"/>
+            <text x="709" y="64" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#f0883e" font-weight="700">IPv4 - 32 bits</text>
+            <text x="709" y="78" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#f0883e">192.168.1.1</text>
+            <rect x="620" y="91" width="178" height="50" rx="5" fill="#1f3a5f" stroke="#58a6ff"/>
+            <text x="709" y="107" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#58a6ff" font-weight="700">IPv6 - 128 bits</text>
+            <text x="709" y="121" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" fill="#58a6ff">2001:db8::1</text>
+            <text x="709" y="135" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#484f58">2^96 x more addresses than IPv4</text>
+            <rect x="620" y="148" width="178" height="24" rx="5" fill="#2a1a4a" stroke="#bc8cff"/>
+            <text x="709" y="161" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#bc8cff" font-weight="700">MAC - 48 bits</text>
+            <text x="709" y="170" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#bc8cff">AA:BB:CC:DD:EE:FF</text>
+          </svg>
+          <p class="diagram-caption">Physical binary signals encode as bits, group into bytes, then assemble into addresses of fixed bit-widths. IPv6 at 128 bits is 2<sup>96</sup> times larger in address space than IPv4 at 32 bits.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="dot dot-green"></span>
+            How Numbers Are Encoded in Binary — Interactive Demo
+          </div>
+          <p style="font-size:0.87rem;color:var(--text-secondary);margin-bottom:12px;">
+            In an 8-bit number, each column position has a value that doubles as you move left.
+            <strong>Click any cell</strong> to toggle it on/off, or use the preset buttons:
+          </p>
+          <div class="binary-table" id="bin-table"></div>
+          <div class="binary-controls">
+            <button class="bin-btn" onclick="setBinary(9)">9</button>
+            <button class="bin-btn" onclick="setBinary(70)">70</button>
+            <button class="bin-btn" onclick="setBinary(128)">128</button>
+            <button class="bin-btn" onclick="setBinary(192)">192</button>
+            <button class="bin-btn" onclick="setBinary(255)">255 (max)</button>
+            <button class="bin-btn" onclick="setBinary(0)">Clear</button>
+          </div>
+          <div class="bin-result" id="bin-result">
+            Decimal: <span class="val">0</span>
+            &nbsp;&nbsp;|&nbsp;&nbsp;
+            Binary: <span class="val" id="bin-str">00000000</span>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title"><span class="dot dot-orange"></span> Bit-Width Reference</div>
+            <div class="table-wrap" style="margin:0;">
+              <table>
+                <thead><tr><th>Bit Width</th><th>Used For</th><th>Max Value</th></tr></thead>
+                <tbody>
+                  <tr><td><code>8 bits</code></td><td>One IP octet / byte</td><td>255</td></tr>
+                  <tr><td><code>16 bits</code></td><td>—</td><td>65,535</td></tr>
+                  <tr><td><code>32 bits</code></td><td><strong>IPv4 address</strong></td><td>~4.3 billion</td></tr>
+                  <tr><td><code>48 bits</code></td><td><strong>MAC address</strong></td><td>281 trillion</td></tr>
+                  <tr><td><code>128 bits</code></td><td><strong>IPv6 address</strong></td><td>3.4 &times; 10&sup3;&sup8;</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title"><span class="dot dot-purple"></span> Why 255 is the 8-bit Maximum</div>
+            <ul class="tech-list purple">
+              <li>8 columns with all bits on: <code>11111111</code></li>
+              <li>128 + 64 + 32 + 16 + 8 + 4 + 2 + 1 = <strong>255</strong></li>
+              <li>This is why 255 appears as a limit in subnet masks, IP octets, and other 8-bit fields.</li>
+              <li>More bits = exponentially more unique values encodable.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout info">
+          <span class="callout-icon">&#8505;&#65039;</span>
+          <div class="callout-content">
+            <strong>Why this matters for JNCIA</strong>
+            Understanding that IPv4 = 32 bits and IPv6 = 128 bits shows why IPv6 has an
+            astronomically larger address space. A 128-bit number is not simply 4&times; larger
+            than a 32-bit number — it is 2<sup>96</sup> times larger.
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── §2 HEXADECIMAL ─────────────────────────────────────── -->
+      <section class="section" id="hexadecimal">
+        <div class="section-header">
+          <div class="section-icon">0F</div>
+          <div class="section-title">Hexadecimal</div>
+          <div class="section-num">&sect;2</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="dot"></span> Why Hexadecimal?</div>
+          <ul class="tech-list">
+            <li>Humans struggle with long binary strings. We convert binary to more readable formats.</li>
+            <li><strong>Decimal</strong> works but is <em>inconsistent</em> — the same 8-bit byte can be
+              1, 2, or 3 decimal characters wide (e.g., 5, 99, 255).</li>
+            <li><strong>Hexadecimal (hex)</strong> represents any 8-bit byte in <em>exactly</em> two
+              characters — perfectly consistent and compact.</li>
+            <li>This makes hex the preferred format for computing. It is used in:
+              <strong>IPv6 addresses, MAC addresses, memory locations, color values, error codes.</strong>
+            </li>
+          </ul>
+        </div>
+
+
+        <!-- Visual: Why Hex beats Decimal for byte encoding -->
+        <div class="diagram-wrap">
+          <div class="diagram-title"><span class="dot dot-green"></span> One byte written three ways — why hex wins</div>
+          <svg viewBox="0 0 780 198" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Comparison showing binary (8 chars), decimal (1-3 chars), hex (always 2 chars) for values 5, 99, and 255">
+            <text x="130" y="18" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#8b949e" font-weight="700">BINARY (always 8 chars)</text>
+            <text x="390" y="18" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#8b949e" font-weight="700">DECIMAL (1-3 chars - varies!)</text>
+            <text x="648" y="18" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#8b949e" font-weight="700">HEX (always exactly 2 chars)</text>
+            <!-- Value 5 -->
+            <text x="8" y="50" font-family="Inter,sans-serif" font-size="10" fill="#484f58" font-weight="600">Value 5</text>
+            <rect x="20" y="56" width="220" height="28" rx="6" fill="#1c2330" stroke="#30363d"/>
+            <text x="130" y="75" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="14" fill="#58a6ff" font-weight="700" letter-spacing="0.1em">00000101</text>
+            <rect x="348" y="56" width="84" height="28" rx="6" fill="#1c2330" stroke="#f85149"/>
+            <text x="390" y="75" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="14" fill="#f85149" font-weight="700">5</text>
+            <text x="390" y="98" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#f85149">1 character (varies!)</text>
+            <rect x="588" y="56" width="120" height="28" rx="6" fill="#1a3a25" stroke="#3fb950"/>
+            <text x="648" y="75" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="14" fill="#3fb950" font-weight="700">05</text>
+            <text x="648" y="98" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#3fb950">always 2 chars &#10003;</text>
+            <!-- Value 99 -->
+            <text x="8" y="122" font-family="Inter,sans-serif" font-size="10" fill="#484f58" font-weight="600">Value 99</text>
+            <rect x="20" y="128" width="220" height="28" rx="6" fill="#1c2330" stroke="#30363d"/>
+            <text x="130" y="147" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="14" fill="#58a6ff" font-weight="700" letter-spacing="0.1em">01100011</text>
+            <rect x="330" y="128" width="120" height="28" rx="6" fill="#1c2330" stroke="#f85149"/>
+            <text x="390" y="147" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="14" fill="#f85149" font-weight="700">99</text>
+            <text x="390" y="170" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#f85149">2 characters (varies!)</text>
+            <rect x="588" y="128" width="120" height="28" rx="6" fill="#1a3a25" stroke="#3fb950"/>
+            <text x="648" y="147" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="14" fill="#3fb950" font-weight="700">63</text>
+            <text x="648" y="170" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#3fb950">always 2 chars &#10003;</text>
+            <!-- Value 255 -->
+            <text x="8" y="192" font-family="Inter,sans-serif" font-size="10" fill="#484f58" font-weight="600">Value 255</text>
+            <rect x="20" y="178" width="220" height="18" rx="5" fill="#1c2330" stroke="#30363d"/>
+            <text x="130" y="191" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#58a6ff" letter-spacing="0.08em">11111111</text>
+            <rect x="319" y="178" width="142" height="18" rx="5" fill="#1c2330" stroke="#f85149"/>
+            <text x="390" y="191" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#f85149">255</text>
+            <text x="390" y="198" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#f85149">3 characters (varies!)</text>
+            <rect x="588" y="178" width="120" height="18" rx="5" fill="#1a3a25" stroke="#3fb950"/>
+            <text x="648" y="191" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#3fb950">FF</text>
+          </svg>
+          <p class="diagram-caption">Decimal width for one byte varies from 1 to 3 characters. Hex is always exactly 2 characters — making it perfectly consistent and compact for structured network addressing.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="dot dot-green"></span> The Hex Counting System</div>
+          <p style="font-size:0.87rem;color:var(--text-secondary);margin-bottom:12px;">
+            Hex uses <strong>16 symbols</strong> (0&ndash;9 then A&ndash;F), versus decimal's 10 (0&ndash;9)
+            and binary's 2 (0&ndash;1):
+          </p>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang">Counting Systems Compared</span>
+            </div>
+            <pre><span class="hl-muted">Dec:  </span>  0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16
+<span class="hl-acc">Hex:  </span>  0   1   2   3   4   5   6   7   8   9   A   B   C   D   E   F  10
+<span class="hl-muted">          ────────────────────────────── single digit ──────────────────  ↑carry</span></pre>
+          </div>
+
+          <div style="margin-top:14px;">
+            <div class="callout tip">
+              <span class="callout-icon">&#128161;</span>
+              <div class="callout-content">
+                <strong>Consistency convention:</strong>
+                Single-digit hex values are always written with a leading zero for consistency:
+                decimal&nbsp;5 = <code>05</code>, decimal&nbsp;10 = <code>0A</code>, decimal&nbsp;15 = <code>0F</code>.
+                This ensures every byte is always exactly 2 hex characters wide.
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-2" style="margin-top:12px;">
+            <div class="code-block" style="margin:0;">
+              <div class="code-header"><span class="code-lang">Key Hex Values</span></div>
+              <pre><span class="hl-acc">0A</span> = dec  10  (hex A)
+<span class="hl-acc">0B</span> = dec  11  (hex B)
+<span class="hl-acc">0F</span> = dec  15  (hex F — last single digit)
+<span class="hl-acc">10</span> = dec  16  (carry: new column)
+<span class="hl-acc">11</span> = dec  17
+<span class="hl-acc">1A</span> = dec  26
+<span class="hl-acc">FF</span> = dec 255  (max 2-digit hex = max 8-bit)</pre>
+            </div>
+            <div class="code-block" style="margin:0;">
+              <div class="code-header"><span class="code-lang">Where Hex Is Used</span></div>
+              <pre><span class="hl-green">IPv6 addresses  </span>— 32 hex chars
+<span class="hl-green">MAC addresses   </span>— 12 hex chars (48-bit)
+<span class="hl-green">Memory addresses</span>— e.g. 0x7FFF
+<span class="hl-green">CSS colors      </span>— e.g. #58A6FF
+<span class="hl-green">Error codes     </span>— e.g. 0x800704CF</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="dot dot-orange"></span>
+            Hex Reference Table — Hover to Explore
+          </div>
+          <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:10px;">
+            Shows Hex &middot; Decimal &middot; 8-bit Binary for selected values:
+          </p>
+          <div class="hex-grid" id="hex-grid"></div>
+        </div>
+
+        <div class="callout note">
+          <span class="callout-icon">&#128204;</span>
+          <div class="callout-content">
+            <strong>Exam scope:</strong>
+            You do NOT need to convert hex values from memory. You only need to:
+            (1) recognise that hex represents a numerical value,
+            (2) know that A&ndash;F represent decimal 10&ndash;15,
+            (3) understand why MAC addresses and IPv6 addresses look the way they do.
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── §3 WHY IPv6 ────────────────────────────────────────── -->
+      <section class="section" id="ipv6-overview">
+        <div class="section-header">
+          <div class="section-icon">&#127760;</div>
+          <div class="section-title">Why IPv6?</div>
+          <div class="section-num">&sect;3</div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title"><span class="dot dot-red"></span> IPv4 Address Exhaustion</div>
+            <ul class="tech-list red">
+              <li>IPv4 provides ~<strong>4.3 billion</strong> theoretical addresses.</li>
+              <li>Usable public addresses: ~<strong>3 billion</strong> (private ranges, reserved blocks, broadcast reduce this).</li>
+              <li>World population &gt; 8 billion; most people own multiple network devices.</li>
+              <li>The internet has effectively <strong>exhausted the IPv4 address pool</strong>.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-title"><span class="dot dot-green"></span> IPv6 Adoption</div>
+            <ul class="tech-list green">
+              <li>IPv6 was designed decades ago but gained urgency as IPv4 exhausted.</li>
+              <li><strong>Late 2023:</strong> 45% of all Google incoming traffic came from IPv6 addresses.</li>
+              <li>Adoption continues to grow year over year.</li>
+              <li>Rate of adoption varies by country and industry.</li>
+              <li>IPv6 knowledge is increasingly required for real-world networking roles.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Visual: Address Space Comparison -->
+        <div class="addr-space-wrap">
+          <div class="card-title" style="margin-bottom:16px;"><span class="dot"></span> IPv4 vs IPv6 — Address Space Comparison</div>
+          <div class="addr-space-row">
+            <div class="addr-space-label">
+              <span class="addr-space-name" style="color:var(--orange);">IPv4 &mdash; 32 bits</span>
+              <span class="addr-space-val">2&#xB3;&#xB2; &asymp; 4.3 billion addresses</span>
+            </div>
+            <div class="addr-space-track">
+              <div class="addr-space-fill" style="min-width:66px;width:66px;background:var(--orange);padding-left:8px;color:#000;font-family:'JetBrains Mono',monospace;">4.3B</div>
+            </div>
+          </div>
+          <div class="addr-space-row">
+            <div class="addr-space-label">
+              <span class="addr-space-name" style="color:var(--accent);">IPv6 &mdash; 128 bits</span>
+              <span class="addr-space-val">2&#xB9;&#xB2;&#x2078; &asymp; 340 undecillion addresses</span>
+            </div>
+            <div class="addr-space-track">
+              <div class="addr-space-fill" style="width:100%;background:linear-gradient(90deg,var(--accent),var(--purple));padding-left:8px;color:#fff;font-family:'JetBrains Mono',monospace;font-size:0.66rem;">340,282,366,920,938,463,463,374,607,431,768,211,456</div>
+            </div>
+          </div>
+          <div style="margin-top:18px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+            <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:700;color:var(--accent);">2<sup style="font-size:0.7em;">96</sup>&times;</div>
+              <div style="font-size:0.72rem;color:var(--text-secondary);margin-top:4px;">More addresses than IPv4</div>
+            </div>
+            <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:700;color:var(--green);">45%</div>
+              <div style="font-size:0.72rem;color:var(--text-secondary);margin-top:4px;">Google traffic via IPv6 (late 2023)</div>
+            </div>
+            <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:700;color:var(--red);">~0</div>
+              <div style="font-size:0.72rem;color:var(--text-secondary);margin-top:4px;">Public IPv4 pool remaining</div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ─── §4 IPv6 FORMAT ─────────────────────────────────────── -->
+      <section class="section" id="ipv6-format">
+        <div class="section-header">
+          <div class="section-icon">&#128203;</div>
+          <div class="section-title">IPv6 Address Format</div>
+          <div class="section-num">&sect;4</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="dot"></span> Structure &amp; Terminology</div>
+          <ul class="tech-list">
+            <li>An IPv6 address is <strong>128 bits</strong> long.</li>
+            <li>Written as <strong>32 hexadecimal characters</strong>.</li>
+            <li>Colons group every 4 hex digits together — the same role that dots play in IPv4.</li>
+            <li>This creates <strong>8 groups of 4 hex digits</strong>.</li>
+            <li>Each 4-hex-digit group is called a <strong>hexet</strong> (16 bits each).</li>
+          </ul>
+
+          <div class="key-fact" style="margin-top:14px;">
+            <span class="kf-icon">&#128208;</span>
+            <div class="kf-body">
+              <strong>Full (long-form) address example:</strong>
+              <div class="addr-display" style="margin-top:8px;font-size:0.9rem;">
+                <span style="color:var(--accent)">2001</span><span style="color:var(--text-muted)">:</span><span style="color:var(--green)">0DB8</span><span style="color:var(--text-muted)">:</span><span style="color:var(--orange)">0000</span><span style="color:var(--text-muted)">:</span><span style="color:var(--purple)">0000</span><span style="color:var(--text-muted)">:</span><span style="color:var(--yellow)">0000</span><span style="color:var(--text-muted)">:</span><span style="color:var(--accent)">0000</span><span style="color:var(--text-muted)">:</span><span style="color:var(--green)">0000</span><span style="color:var(--text-muted)">:</span><span style="color:var(--orange)">0001</span>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px 14px;font-size:0.75rem;color:var(--text-muted);margin-top:6px;">
+                <span>&#8593; Hexet 1</span><span>&#8593; Hexet 2</span><span>&#8593; Hexet 3</span>
+                <span>&#8593; Hexet 4</span><span>&#8593; Hexet 5</span><span>&#8593; Hexet 6</span>
+                <span>&#8593; Hexet 7</span><span>&#8593; Hexet 8</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Property</th>
+                <th>IPv4</th>
+                <th>IPv6</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Address length</td>
+                <td>32 bits</td>
+                <td><strong>128 bits</strong></td>
+              </tr>
+              <tr>
+                <td>Written as</td>
+                <td>Decimal, dotted-quad</td>
+                <td><strong>Hexadecimal, colon-separated</strong></td>
+              </tr>
+              <tr>
+                <td>Groups</td>
+                <td>4 octets (8 bits each)</td>
+                <td><strong>8 hexets (16 bits each)</strong></td>
+              </tr>
+              <tr>
+                <td>Separator character</td>
+                <td>Dot &nbsp;<code>.</code></td>
+                <td>Colon &nbsp;<code>:</code></td>
+              </tr>
+              <tr>
+                <td>Characters written</td>
+                <td>Up to 15 decimal chars</td>
+                <td>32 hex chars (long form)</td>
+              </tr>
+              <tr>
+                <td>Address space</td>
+                <td>~4.3 billion</td>
+                <td><strong>3.4 &times; 10&sup3;&sup8; (340 undecillion)</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+
+        <!-- Visual: IPv6 Address Anatomy -->
+        <div class="diagram-wrap" style="margin-top:14px;">
+          <div class="diagram-title"><span class="dot"></span> IPv6 Address Anatomy &mdash; 8 hexets, each 16 bits</div>
+          <div class="anatomy-wrap">
+            <div class="hexet-row" id="hexet-anatomy-row"><!-- built by JS --></div>
+            <div style="display:flex;margin-top:6px;">
+              <div style="flex:1;font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-muted);">bit 127 (MSB)</div>
+              <div style="flex:1;text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-muted);">bit 0 (LSB)</div>
+            </div>
+            <div class="anatomy-legend">
+              <div class="legend-item"><div class="legend-dot" style="background:var(--accent);"></div><span style="color:var(--text-secondary);">Each hexet = 4 hex chars = 16 bits</span></div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--text-muted);width:2px;border-radius:1px;height:10px;"></div><span style="color:var(--text-secondary);">Colon &mdash; separator, not part of value</span></div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--green);"></div><span style="color:var(--text-secondary);">8 hexets &times; 16 bits = 128 bits total</span></div>
+            </div>
+          </div>
+          <p class="diagram-caption">Full example: 2001:0DB8:0000:0000:0000:0000:0000:0001 &mdash; hover each hexet to see its bit range.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="dot dot-yellow"></span> Documentation Range</div>
+          <ul class="tech-list yellow">
+            <li>Addresses starting with <code>2001:0DB8</code> are <strong>reserved for documentation, training, and examples</strong> (RFC 3849). You will see them in all Juniper and IETF material.</li>
+            <li>You will often see it written as <code>2001:db8</code> with the leading zero removed — that is abbreviation Step 1 (see &sect;5).</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ─── §5 ABBREVIATION ────────────────────────────────────── -->
+      <section class="section" id="ipv6-abbrev">
+        <div class="section-header">
+          <div class="section-icon">&#9986;</div>
+          <div class="section-title">IPv6 Abbreviation Rules</div>
+          <div class="section-num">&sect;5</div>
+        </div>
+
+        <p style="font-size:0.9rem;color:var(--text-secondary);margin-bottom:18px;">
+          Two abbreviation rules let you shorten an IPv6 address. They are applied in order.
+          You do not have to write all 32 hex characters.
+        </p>
+
+        <!-- Interactive Stepper -->
+        <div class="stepper">
+          <div class="stepper-nav">
+            <div class="step-tab active" data-step="full"  onclick="showStep('full')">Full Address</div>
+            <div class="step-tab" data-step="step1" onclick="showStep('step1')">Step 1 — Leading Zeros</div>
+            <div class="step-tab" data-step="step2" onclick="showStep('step2')">Step 2 — Double Colon</div>
+            <div class="step-tab" data-step="final" onclick="showStep('final')">Final Result</div>
+          </div>
+          <div class="step-body">
+
+            <!-- FULL -->
+            <div class="step-pane active" id="pane-full">
+              <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:10px;">
+                Starting long-form address (32 hex chars, 8 hexets):
+              </p>
+              <div class="addr-display">2001:0DB8:0000:0000:0000:0000:0000:0001</div>
+              <ul class="tech-list" style="margin-top:8px;">
+                <li>Contains leading zeros inside hexets (e.g., <code>0DB8</code>)</li>
+                <li>Contains multiple consecutive all-zero hexets (<code>0000:0000:0000:0000:0000</code>)</li>
+                <li>Both can be shortened using the two rules below</li>
+              </ul>
+            </div>
+
+            <!-- STEP 1 -->
+            <div class="step-pane" id="pane-step1">
+              <div class="callout info">
+                <span class="callout-icon">1&#65039;&#8419;</span>
+                <div class="callout-content">
+                  <strong>Rule: Remove leading zeros from within each hexet.</strong>
+                  You may suppress zeros from the LEFT of a hexet only. Trailing zeros are kept.
+                  If a hexet is all zeros, it becomes a single <code>0</code>.
+                </div>
+              </div>
+              <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:6px;">Before:</p>
+              <div class="addr-display">
+                2001:<span style="color:var(--orange)">0DB8</span>:<span style="color:var(--orange)">0000</span>:<span style="color:var(--orange)">0000</span>:<span style="color:var(--orange)">0000</span>:<span style="color:var(--orange)">0000</span>:<span style="color:var(--orange)">0000</span>:<span style="color:var(--orange)">0001</span>
+              </div>
+              <p style="font-size:0.82rem;color:var(--text-muted);margin:10px 0 6px;">After removing leading zeros from each hexet:</p>
+              <div class="addr-display">
+                2001:<span style="color:var(--green)">DB8</span>:<span style="color:var(--green)">0</span>:<span style="color:var(--green)">0</span>:<span style="color:var(--green)">0</span>:<span style="color:var(--green)">0</span>:<span style="color:var(--green)">0</span>:<span style="color:var(--green)">1</span>
+              </div>
+              <ul class="tech-list" style="margin-top:10px;">
+                <li><code>0DB8</code> &rarr; <code>DB8</code> (one leading zero removed)</li>
+                <li><code>0000</code> &rarr; <code>0</code> (three leading zeros removed; one zero remains)</li>
+                <li><code>0001</code> &rarr; <code>1</code></li>
+                <li><code>2001</code> &rarr; <code>2001</code> (no leading zeros — unchanged)</li>
+              </ul>
+            </div>
+
+            <!-- STEP 2 -->
+            <div class="step-pane" id="pane-step2">
+              <div class="callout info">
+                <span class="callout-icon">2&#65039;&#8419;</span>
+                <div class="callout-content">
+                  <strong>Rule: Replace the longest consecutive run of all-zero hexets with <code>::</code> (double colon).</strong>
+                  When reading an address, wherever you see <code>::</code>, expand it to as many
+                  all-zero hexets as needed to bring the total back to 8 hexets.
+                </div>
+              </div>
+              <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:6px;">After Step 1:</p>
+              <div class="addr-display">
+                2001:DB8:<span style="color:var(--orange)">0:0:0:0:0</span>:1
+              </div>
+              <p style="font-size:0.82rem;color:var(--text-muted);margin:10px 0 6px;">Replace the five consecutive zero-hexets with <code>::</code>:</p>
+              <div class="addr-display">
+                2001:DB8<span style="color:var(--green)">::</span>1
+              </div>
+              <ul class="tech-list" style="margin-top:10px;">
+                <li>Five hexets (<code>0:0:0:0:0</code>) collapsed to <code>::</code></li>
+                <li>To expand: this address has 3 explicit hexets (2001, DB8, 1);
+                  subtract 3 from 8 = 5 zero-hexets must fill the <code>::</code> position</li>
+              </ul>
+            </div>
+
+            <!-- FINAL -->
+            <div class="step-pane" id="pane-final">
+              <div class="grid-2">
+                <div>
+                  <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:6px;">Full original:</p>
+                  <div class="addr-display" style="font-size:0.82rem;">2001:0DB8:0000:0000:0000:0000:0000:0001</div>
+                </div>
+                <div>
+                  <p style="font-size:0.82rem;color:var(--green);margin-bottom:6px;">Shortened form:</p>
+                  <div class="addr-display" style="border-color:var(--green);color:var(--green);">2001:db8::1</div>
+                </div>
+              </div>
+              <div class="callout success" style="margin-top:12px;">
+                <span class="callout-icon">&#9989;</span>
+                <div class="callout-content">
+                  Both forms are the same address. The short form <code>2001:db8::1</code> is how you will
+                  see this address written in all documentation, training material, and Juniper examples.
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /step-body -->
+        </div><!-- /stepper -->
+
+        <!-- Strict rules -->
+        <div class="card" style="margin-top:16px;">
+          <div class="card-title"><span class="dot dot-red"></span>
+            Strict Rules for Step 2 (Double Colon <code>::</code>)
+          </div>
+
+          <details>
+            <summary>
+              &#9888;&#65039;&nbsp; Rule 1 &mdash; Always shorten the <em>longest</em> consecutive zero run
+              <span class="toggle-icon">&#9660;</span>
+            </summary>
+            <div>
+              <p style="font-size:0.88rem;color:var(--text-secondary);margin-bottom:10px;">
+                When an address has multiple separate zero runs, you must use <code>::</code>
+                on the <em>longer</em> one:
+              </p>
+              <div class="code-block">
+                <div class="code-header"><span class="code-lang">Example</span></div>
+                <pre>Address:  2001:0000:0000:AB00:0000:0000:0000:0001
+          Hexets 2-3: run of 2 zeros
+          Hexets 5-7: run of 3 zeros   ← longer
+
+<span class="hl-green">Correct:  </span>2001:0:0:AB00::1        <span class="hl-muted">(:: on the 3-hexet run)</span>
+<span class="hl-red">Incorrect:</span> 2001::AB00:0:0:0:1      <span class="hl-muted">(:: on the shorter run — wrong)</span></pre>
+              </div>
+            </div>
+          </details>
+
+          <details>
+            <summary>
+              &#9888;&#65039;&nbsp; Rule 2 &mdash; <code>::</code> may appear <em>only once</em>
+              <span class="toggle-icon">&#9660;</span>
+            </summary>
+            <div>
+              <p style="font-size:0.88rem;color:var(--text-secondary);margin-bottom:10px;">
+                Using <code>::</code> twice in one address creates ambiguity — you cannot determine
+                how many zeros each <code>::</code> represents, so it is illegal:
+              </p>
+              <div class="code-block">
+                <div class="code-header"><span class="code-lang">Example</span></div>
+                <pre>Address:  2001:0000:0000:AB00:0000:0000:0000:0001
+
+<span class="hl-red">Illegal:  </span>2001::AB00::1
+<span class="hl-muted">          ↑                ↑ — ambiguous, cannot expand</span></pre>
+              </div>
+            </div>
+          </details>
+
+          <details>
+            <summary>
+              &#9888;&#65039;&nbsp; Rule 3 &mdash; Never use <code>::</code> to replace a single all-zero hexet
+              <span class="toggle-icon">&#9660;</span>
+            </summary>
+            <div>
+              <p style="font-size:0.88rem;color:var(--text-secondary);margin-bottom:10px;">
+                A lone all-zero hexet is already shortened to <code>0</code> by Step 1.
+                Step 2's <code>::</code> requires <strong>two or more</strong> consecutive all-zero hexets:
+              </p>
+              <div class="code-block">
+                <div class="code-header"><span class="code-lang">Example</span></div>
+                <pre>Address:  2001:db8:1:2:3:4:0000:6
+
+<span class="hl-green">Correct:  </span>2001:db8:1:2:3:4:0:6     <span class="hl-muted">(Step 1 only)</span>
+<span class="hl-red">Incorrect:</span> 2001:db8:1:2:3:4::6     <span class="hl-muted">(cannot use :: for single hexet)</span></pre>
+              </div>
+            </div>
+          </details>
+        </div>
+
+
+        <!-- Visual: Abbreviation valid vs invalid -->
+        <div class="diagram-wrap" style="margin-top:4px;">
+          <div class="diagram-title"><span class="dot dot-purple"></span> :: Rules &mdash; Valid vs Invalid at a glance</div>
+          <div class="abbrev-compare">
+            <div class="abbrev-case valid">
+              <div class="abbrev-case-label">&#10003; Valid</div>
+              <div class="abbrev-case-addr">2001:0:0:AB00::1</div>
+              <div class="abbrev-case-note">:: replaces the <em>longer</em> run (3 zeros, hexets 5&ndash;7)</div>
+            </div>
+            <div class="abbrev-case invalid">
+              <div class="abbrev-case-label">&#10007; Invalid</div>
+              <div class="abbrev-case-addr">2001::AB00:0:0:0:1</div>
+              <div class="abbrev-case-note">:: replaces the <em>shorter</em> run (only 2 zeros) &mdash; must use longest run</div>
+            </div>
+            <div class="abbrev-case valid">
+              <div class="abbrev-case-label">&#10003; Valid</div>
+              <div class="abbrev-case-addr">2001:db8:1:2:3:4:0:6</div>
+              <div class="abbrev-case-note">Single zero hexet &rarr; Step&nbsp;1 only. :: cannot be used for a single hexet</div>
+            </div>
+            <div class="abbrev-case invalid">
+              <div class="abbrev-case-label">&#10007; Invalid</div>
+              <div class="abbrev-case-addr">2001::AB00::1</div>
+              <div class="abbrev-case-note">:: appears twice &mdash; ambiguous, cannot determine which group it expands</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout tip">
+          <span class="callout-icon">&#128161;</span>
+          <div class="callout-content">
+            <strong>Expanding <code>::</code> back to full form:</strong>
+            Count the visible hexets. Subtract from 8. Insert that many <code>0000</code> hexets
+            where the <code>::</code> appears.
+            Example: <code>2001:db8::1</code> &rarr; 3 visible hexets &rarr; 8 &minus; 3 = 5 zero hexets fill the <code>::</code>.
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── §6 SUBNETTING ──────────────────────────────────────── -->
+      <section class="section" id="ipv6-subnetting">
+        <div class="section-header">
+          <div class="section-icon">/64</div>
+          <div class="section-title">IPv6 Subnetting</div>
+          <div class="section-num">&sect;6</div>
+        </div>
+
+        <p style="font-size:0.9rem;color:var(--text-secondary);margin-bottom:18px;">
+          Although 128 possible prefix lengths exist in IPv6, in practice you only need to know two.
+          IPv6 subnetting is significantly simpler than IPv4.
+        </p>
+
+
+        <!-- Visual: /64 vs /128 hexet diagram -->
+        <div class="diagram-wrap">
+          <div class="diagram-title"><span class="dot dot-green"></span> /64 and /128 &mdash; Network vs Host bit allocation per hexet</div>
+          <svg viewBox="0 0 790 212" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hexet-level diagram comparing /64 (4 blue network hexets plus 4 green host hexets) and /128 (all 8 orange fixed hexets)">
+            <text x="10" y="18" font-family="Inter,sans-serif" font-size="11" fill="#3fb950" font-weight="700">/64 &mdash; LAN Standard</text>
+            <g transform="translate(10,24)">
+              <rect x="0"   y="0" width="84" height="44" rx="6" fill="#1f3a5f" stroke="#58a6ff" stroke-width="1.5"/><text x="42"  y="16" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#58a6ff" font-weight="700">XXXX</text><text x="42"  y="30" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#8b949e">Hexet 1</text><text x="42"  y="41" text-anchor="middle" font-family="Inter,sans-serif" font-size="7" fill="#484f58">bits 127-112</text>
+              <rect x="88"  y="0" width="84" height="44" rx="6" fill="#1f3a5f" stroke="#58a6ff" stroke-width="1.5"/><text x="130" y="16" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#58a6ff" font-weight="700">XXXX</text><text x="130" y="30" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#8b949e">Hexet 2</text><text x="130" y="41" text-anchor="middle" font-family="Inter,sans-serif" font-size="7" fill="#484f58">bits 111-96</text>
+              <rect x="176" y="0" width="84" height="44" rx="6" fill="#1f3a5f" stroke="#58a6ff" stroke-width="1.5"/><text x="218" y="16" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#58a6ff" font-weight="700">XXXX</text><text x="218" y="30" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#8b949e">Hexet 3</text><text x="218" y="41" text-anchor="middle" font-family="Inter,sans-serif" font-size="7" fill="#484f58">bits 95-80</text>
+              <rect x="264" y="0" width="84" height="44" rx="6" fill="#1f3a5f" stroke="#58a6ff" stroke-width="1.5"/><text x="306" y="16" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#58a6ff" font-weight="700">XXXX</text><text x="306" y="30" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#8b949e">Hexet 4</text><text x="306" y="41" text-anchor="middle" font-family="Inter,sans-serif" font-size="7" fill="#484f58">bits 79-64</text>
+              <line x1="352" y1="-4" x2="352" y2="48" stroke="#58a6ff" stroke-width="2" stroke-dasharray="4,3"/>
+              <text x="352" y="-8" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#58a6ff" font-weight="700">/64</text>
+              <rect x="356" y="0" width="84" height="44" rx="6" fill="#1a3a25" stroke="#3fb950" stroke-width="1.5"/><text x="398" y="16" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#3fb950" font-weight="700">xxxx</text><text x="398" y="30" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#8b949e">Hexet 5</text><text x="398" y="41" text-anchor="middle" font-family="Inter,sans-serif" font-size="7" fill="#484f58">bits 63-48</text>
+              <rect x="444" y="0" width="84" height="44" rx="6" fill="#1a3a25" stroke="#3fb950" stroke-width="1.5"/><text x="486" y="16" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#3fb950" font-weight="700">xxxx</text><text x="486" y="30" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#8b949e">Hexet 6</text><text x="486" y="41" text-anchor="middle" font-family="Inter,sans-serif" font-size="7" fill="#484f58">bits 47-32</text>
+              <rect x="532" y="0" width="84" height="44" rx="6" fill="#1a3a25" stroke="#3fb950" stroke-width="1.5"/><text x="574" y="16" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#3fb950" font-weight="700">xxxx</text><text x="574" y="30" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#8b949e">Hexet 7</text><text x="574" y="41" text-anchor="middle" font-family="Inter,sans-serif" font-size="7" fill="#484f58">bits 31-16</text>
+              <rect x="620" y="0" width="84" height="44" rx="6" fill="#1a3a25" stroke="#3fb950" stroke-width="1.5"/><text x="662" y="16" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#3fb950" font-weight="700">xxxx</text><text x="662" y="30" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#8b949e">Hexet 8</text><text x="662" y="41" text-anchor="middle" font-family="Inter,sans-serif" font-size="7" fill="#484f58">bits 15-0</text>
+              <rect x="0"   y="52" width="346" height="14" rx="4" fill="#1f3a5f" fill-opacity="0.5"/><text x="173" y="62" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#58a6ff" font-weight="600">Network &mdash; 64 bits fixed (routing prefix)</text>
+              <rect x="352" y="52" width="352" height="14" rx="4" fill="#1a3a25" fill-opacity="0.5"/><text x="528" y="62" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#3fb950" font-weight="600">Host &mdash; 64 bits free (2^64 approx 18.4 quintillion devices)</text>
+            </g>
+            <text x="10" y="116" font-family="Inter,sans-serif" font-size="11" fill="#f0883e" font-weight="700">/128 &mdash; Single Host / Loopback</text>
+            <g transform="translate(10,122)">
+              <rect x="0"   y="0" width="84" height="44" rx="6" fill="#3a2010" stroke="#f0883e" stroke-width="1.5"/><text x="42"  y="16" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f0883e" font-weight="700">XXXX</text><text x="42"  y="30" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#8b949e">Hexet 1</text><text x="42"  y="41" text-anchor="middle" font-family="Inter,sans-serif" font-size="7" fill="#484f58">fixed</text>
+              <rect x="88"  y="0" width="84" height="44" rx="6" fill="#3a2010" stroke="#f0883e" stroke-width="1.5"/><text x="130" y="16" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f0883e" font-weight="700">XXXX</text><text x="130" y="30" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#8b949e">Hexet 2</text><text x="130" y="41" text-anchor="middle" font-family="Inter,sans-serif" font-size="7" fill="#484f58">fixed</text>
+              <rect x="176" y="0" width="84" height="44" rx="6" fill="#3a2010" stroke="#f0883e" stroke-width="1.5"/><text x="218" y="16" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f0883e" font-weight="700">XXXX</text><text x="218" y="30" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#8b949e">Hexet 3</text><text x="218" y="41" text-anchor="middle" font-family="Inter,sans-serif" font-size="7" fill="#484f58">fixed</text>
+              <rect x="264" y="0" width="84" height="44" rx="6" fill="#3a2010" stroke="#f0883e" stroke-width="1.5"/><text x="306" y="16" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f0883e" font-weight="700">XXXX</text><text x="306" y="30" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#8b949e">Hexet 4</text><text x="306" y="41" text-anchor="middle" font-family="Inter,sans-serif" font-size="7" fill="#484f58">fixed</text>
+              <rect x="352" y="0" width="84" height="44" rx="6" fill="#3a2010" stroke="#f0883e" stroke-width="1.5"/><text x="394" y="16" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f0883e" font-weight="700">XXXX</text><text x="394" y="30" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#8b949e">Hexet 5</text><text x="394" y="41" text-anchor="middle" font-family="Inter,sans-serif" font-size="7" fill="#484f58">fixed</text>
+              <rect x="440" y="0" width="84" height="44" rx="6" fill="#3a2010" stroke="#f0883e" stroke-width="1.5"/><text x="482" y="16" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f0883e" font-weight="700">XXXX</text><text x="482" y="30" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#8b949e">Hexet 6</text><text x="482" y="41" text-anchor="middle" font-family="Inter,sans-serif" font-size="7" fill="#484f58">fixed</text>
+              <rect x="528" y="0" width="84" height="44" rx="6" fill="#3a2010" stroke="#f0883e" stroke-width="1.5"/><text x="570" y="16" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f0883e" font-weight="700">XXXX</text><text x="570" y="30" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#8b949e">Hexet 7</text><text x="570" y="41" text-anchor="middle" font-family="Inter,sans-serif" font-size="7" fill="#484f58">fixed</text>
+              <rect x="616" y="0" width="84" height="44" rx="6" fill="#3a2010" stroke="#f0883e" stroke-width="1.5"/><text x="658" y="16" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f0883e" font-weight="700">XXXX</text><text x="658" y="30" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#8b949e">Hexet 8</text><text x="658" y="41" text-anchor="middle" font-family="Inter,sans-serif" font-size="7" fill="#484f58">fixed</text>
+              <rect x="0" y="52" width="704" height="14" rx="4" fill="#3a2010" fill-opacity="0.5"/><text x="352" y="62" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#f0883e" font-weight="600">All 128 bits fixed &mdash; exactly ONE device identified &mdash; no host portion exists</text>
+            </g>
+          </svg>
+          <p class="diagram-caption">Blue hexets 1&ndash;4 are the /64 network prefix. Green hexets 5&ndash;8 are the 64-bit host field. In /128, all hexets are fixed (orange) &mdash; a single unique device is identified, no hosts can vary.</p>
+        </div>
+
+        <div class="grid-2">
+          <!-- /64 -->
+          <div class="card">
+            <div class="card-title"><span class="dot dot-green"></span> /64 &mdash; Standard LAN Subnet</div>
+            <ul class="tech-list green">
+              <li>The <strong>standard prefix for any LAN</strong> — almost universally used.</li>
+              <li>First 64 bits (first 4 hexets) = <strong>network portion</strong>.</li>
+              <li>Last 64 bits (last 4 hexets) = <strong>host portion</strong>.</li>
+              <li>The host portion (2<sup>64</sup> addresses) is so large that devices can
+                <strong>auto-generate their own unique host address</strong> with near-zero collision risk.</li>
+              <li>Eliminates all IPv4 subnet-sizing decisions (/25, /24, /23, /22, etc.).</li>
+            </ul>
+            <div class="subnet-bar" style="margin-top:14px;">
+              <div class="subnet-network">
+                Network
+                <span class="subnet-sub">First 64 bits · Hexets 1–4</span>
+              </div>
+              <div class="subnet-host">
+                Host
+                <span class="subnet-sub">Last 64 bits · Hexets 5–8</span>
+              </div>
+            </div>
+            <div class="code-block" style="margin-top:10px;">
+              <div class="code-header"><span class="code-lang">/64 Structure</span></div>
+              <pre><span class="hl-acc">2001:db8:1:1</span><span class="hl-muted">:</span><span class="hl-green">xxxx:xxxx:xxxx:xxxx</span><span class="hl-muted">/64</span>
+<span class="hl-muted">└─ network (4 hexets) ─┘ └──── host (4 hexets) ────┘</span></pre>
+            </div>
+          </div>
+
+          <!-- /128 -->
+          <div class="card">
+            <div class="card-title"><span class="dot dot-orange"></span> /128 &mdash; Single Host</div>
+            <ul class="tech-list orange">
+              <li>All 128 bits are the <strong>network portion</strong> — zero host bits.</li>
+              <li>Identifies exactly <strong>one single device</strong>; no hosts can vary.</li>
+              <li>Used for loopback addresses and host routes.</li>
+              <li>Logical: IPv6 = 128 bits, so /128 means all 128 bits are fixed.</li>
+            </ul>
+            <div class="subnet-bar" style="margin-top:14px;">
+              <div class="subnet-network" style="border-right:none;flex:1;background:var(--orange-dim);color:var(--orange);">
+                Single Host — All 128 bits fixed
+                <span class="subnet-sub">No host portion exists</span>
+              </div>
+            </div>
+            <div class="code-block" style="margin-top:10px;">
+              <div class="code-header"><span class="code-lang">/128 Structure</span></div>
+              <pre><span class="hl-acc">2001:db8::1</span><span class="hl-muted">/128</span>
+<span class="hl-muted">└─── entire 128 bits fixed — one device only ───┘</span></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout success">
+          <span class="callout-icon">&#9989;</span>
+          <div class="callout-content">
+            <strong>Almost all IPv6 LANs use /64.</strong>
+            This is effectively the global standard. The 2<sup>64</sup> host addresses per LAN
+            means you will never run out of addresses on a subnet. The IPv4 questions of
+            "how many hosts do I have now?" and "how many will I have in the future?" disappear entirely.
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Prefix</th>
+                <th>Use Case</th>
+                <th>Network Bits</th>
+                <th>Host Bits</th>
+                <th>Hosts Possible</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>/64</code></td>
+                <td><strong>LAN segment (standard)</strong></td>
+                <td>64 — hexets 1–4</td>
+                <td>64 — hexets 5–8</td>
+                <td>2<sup>64</sup> ≈ 18.4 quintillion</td>
+              </tr>
+              <tr>
+                <td><code>/128</code></td>
+                <td><strong>Single host / loopback</strong></td>
+                <td>128 — all hexets</td>
+                <td>0</td>
+                <td>1</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ─── §7 LINK-LOCAL ──────────────────────────────────────── -->
+      <section class="section" id="link-local">
+        <div class="section-header">
+          <div class="section-icon">&#128279;</div>
+          <div class="section-title">Link-Local Addresses</div>
+          <div class="section-num">&sect;7</div>
+        </div>
+
+        <div class="callout warn">
+          <span class="callout-icon">&#9889;</span>
+          <div class="callout-content">
+            <strong>Auto-assigned on IPv6 enable:</strong>
+            The moment IPv6 is enabled on any interface, the interface <em>automatically</em>
+            assigns itself a link-local address. No manual configuration is required.
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:14px;">
+          <div class="card-title"><span class="dot"></span> Key Properties</div>
+          <ul class="tech-list">
+            <li><strong>Identifying prefix:</strong> All link-local addresses begin with <code>FE80</code>
+              (range: <code>FE80::/10</code>).</li>
+            <li><strong>Scope:</strong> Valid <em>only</em> on the local link (directly connected segment).
+              Has no meaning beyond the interface it is assigned to.</li>
+            <li><strong>Never advertised:</strong> Link-local addresses are never advertised by routing
+              protocols or forwarded beyond the local link. Even if they were, they would be meaningless.</li>
+            <li><strong>Auto-generated:</strong> Created automatically by the device. You will rarely need
+              to know or manually configure the specific link-local address.</li>
+          </ul>
+        </div>
+
+
+        <!-- Visual: Link-Local scope topology -->
+        <div class="diagram-wrap" style="margin-top:14px;">
+          <div class="diagram-title"><span class="dot dot-orange"></span> Link-Local Scope &mdash; Why a Cross-Link Ping Fails</div>
+          <svg viewBox="0 0 790 248" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Topology: Router A, B, C in chain. Ping from A to B-eth1 FE80 address is dropped at B.">
+            <defs>
+              <marker id="av7g" markerWidth="8" markerHeight="8" refX="7" refY="3.5" orient="auto"><polygon points="0 0,8 3.5,0 7" fill="#3fb950"/></marker>
+              <marker id="av7r" markerWidth="8" markerHeight="8" refX="7" refY="3.5" orient="auto"><polygon points="0 0,8 3.5,0 7" fill="#f85149"/></marker>
+            </defs>
+            <!-- Router A -->
+            <rect x="18" y="82" width="132" height="82" rx="10" fill="#1f3a5f" stroke="#58a6ff" stroke-width="2"/>
+            <text x="84" y="106" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" fill="#58a6ff" font-weight="700">Router A</text>
+            <rect x="130" y="112" width="20" height="20" rx="3" fill="#1c2330" stroke="#58a6ff"/>
+            <text x="140" y="125" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#8b949e">eth0</text>
+            <text x="84" y="144" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#3fb950">FE80::A1</text>
+            <text x="84" y="156" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#484f58">on A-B link</text>
+            <!-- A-B link -->
+            <line x1="150" y1="122" x2="290" y2="122" stroke="#58a6ff" stroke-width="2"/>
+            <rect x="168" y="102" width="100" height="16" rx="4" fill="#1a3a25" stroke="#3fb950"/>
+            <text x="218" y="113" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#3fb950" font-weight="600">A-B Link (local)</text>
+            <!-- Router B -->
+            <rect x="290" y="62" width="162" height="122" rx="10" fill="#21262d" stroke="#3d444d" stroke-width="1.5"/>
+            <text x="371" y="86" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" fill="#e6edf3" font-weight="700">Router B</text>
+            <rect x="290" y="112" width="20" height="20" rx="3" fill="#1c2330" stroke="#484f58"/>
+            <text x="300" y="125" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#8b949e">eth0</text>
+            <rect x="452" y="112" width="20" height="20" rx="3" fill="#1c2330" stroke="#484f58"/>
+            <text x="462" y="125" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#8b949e">eth1</text>
+            <text x="371" y="108" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" fill="#8b949e">eth0: FE80::B1  (A-B link)</text>
+            <text x="371" y="122" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" fill="#f0883e">eth1: FE80::B2  (B-C link)</text>
+            <text x="371" y="142" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#484f58">Two interfaces = two separate link-local scopes</text>
+            <text x="371" y="154" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#484f58">FE80::B2 has no meaning on the A-B link</text>
+            <text x="371" y="166" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#484f58">Cannot be reached from Router A</text>
+            <text x="371" y="178" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#484f58">Never forwarded across links</text>
+            <!-- B-C link -->
+            <line x1="472" y1="122" x2="616" y2="122" stroke="#484f58" stroke-width="2" stroke-dasharray="5,3"/>
+            <rect x="490" y="102" width="100" height="16" rx="4" fill="#1c2330" stroke="#484f58"/>
+            <text x="540" y="113" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#484f58" font-weight="600">B-C Link (local)</text>
+            <!-- Router C -->
+            <rect x="616" y="82" width="152" height="82" rx="10" fill="#1c2330" stroke="#3d444d" stroke-width="1.5"/>
+            <text x="692" y="106" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" fill="#8b949e" font-weight="700">Router C</text>
+            <rect x="616" y="112" width="20" height="20" rx="3" fill="#1c2330" stroke="#484f58"/>
+            <text x="626" y="125" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#8b949e">eth0</text>
+            <text x="692" y="146" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#f0883e">FE80::B2</text>
+            <text x="692" y="158" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#484f58">only valid here</text>
+            <!-- Ping arrow A to B -->
+            <line x1="150" y1="118" x2="286" y2="118" stroke="#3fb950" stroke-width="2" marker-end="url(#av7g)"/>
+            <text x="218" y="112" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#3fb950">ping FE80::B2</text>
+            <!-- Drop at B -->
+            <circle cx="371" cy="206" r="17" fill="#3a1010" stroke="#f85149" stroke-width="2"/>
+            <text x="371" y="211" text-anchor="middle" font-family="Inter,sans-serif" font-size="15" fill="#f85149" font-weight="900">&#10005;</text>
+            <line x1="330" y1="187" x2="355" y2="202" stroke="#f85149" stroke-width="1.5" stroke-dasharray="3,2"/>
+            <text x="278" y="220" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#f85149">Arrives at B, DROPPED</text>
+            <text x="278" y="232" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#f85149">FE80::B2 is not on A-B link</text>
+            <text x="278" y="244" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#f85149">- has no meaning here</text>
+            <!-- Not forwarded -->
+            <line x1="387" y1="202" x2="452" y2="124" stroke="#f85149" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <text x="452" y="196" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#f85149">NOT forwarded</text>
+            <text x="452" y="208" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#f85149">to B-C link</text>
+            <!-- Scope bands -->
+            <rect x="18" y="56" width="274" height="8" rx="4" fill="#1f3a5f" fill-opacity="0.5"/>
+            <text x="155" y="62" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#58a6ff">FE80 scope: A-B link only</text>
+            <rect x="466" y="56" width="302" height="8" rx="4" fill="#3a2010" fill-opacity="0.4"/>
+            <text x="617" y="62" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#f0883e">FE80 scope: B-C link only</text>
+          </svg>
+          <p class="diagram-caption">Router A pings FE80::B2 (B&rsquo;s eth1 link-local, belonging to the B&ndash;C link). The packet arrives at Router B but is dropped &mdash; that address belongs to a different link scope. Link-local addresses are never forwarded beyond their own link.</p>
+        </div>
+
+        <div class="grid-2" style="margin-top:14px;">
+          <div class="card">
+            <div class="card-title"><span class="dot dot-green"></span> Uses of Link-Local Addresses</div>
+            <ul class="tech-list green">
+              <li><strong>Neighbor Discovery Protocol (NDP)</strong> — IPv6 replacement for ARP; discovers
+                other devices on the same link using link-local addresses.</li>
+              <li><strong>Router Discovery</strong> — Routers advertise themselves using their link-local addresses.</li>
+              <li>Any communication <em>directly between devices on the same link</em>.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-title"><span class="dot dot-red"></span> Ping Behavior Test</div>
+            <ul class="tech-list red">
+              <li>If Router A pings a link-local address that belongs to Router B's interface connecting B&ndash;C:</li>
+              <li>The ping <strong>arrives at Router B</strong> but is <strong>dropped</strong> — the address has no meaning on the A&ndash;B link.</li>
+              <li>This is <em>by design</em>: link-local scope is intentional and enforced.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="key-fact" style="margin-top:14px;">
+          <span class="kf-icon">&#128273;</span>
+          <div class="kf-body">
+            <strong>Two things you know when you see an address starting with FE80:</strong>
+            <ul class="tech-list" style="margin-top:6px;">
+              <li>It was <strong>automatically generated</strong> by the device — not manually configured.</li>
+              <li>It is only meaningful <strong>on the specific interface it is assigned to</strong>
+                — it will never be routed.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-lang">Link-Local Address — Structure &amp; Recognition</span>
+            <button class="copy-btn" onclick="copyText(this,'FE80::1')">Copy</button>
+          </div>
+          <pre><span class="hl-acc">FE80</span>::1
+<span class="hl-muted">│     └─── host portion (auto-generated by the device)</span>
+<span class="hl-acc">└─── FE80 prefix always identifies a link-local address</span>
+
+<span class="hl-muted">Full form: </span>FE80:0000:0000:0000:0000:0000:0000:0001
+<span class="hl-muted">Range:     </span>FE80:: through FEBF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF</pre>
+        </div>
+      </section>
+
+      <!-- ─── §8 QUICK REFERENCE / CHEAT SHEET ──────────────────── -->
+      <section class="section" id="quick-ref">
+        <div class="section-header">
+          <div class="section-icon">&#9889;</div>
+          <div class="section-title">Exam Cheat Sheet</div>
+          <div class="section-num">&sect;8</div>
+        </div>
+
+        <div class="grid-3">
+          <div class="card">
+            <div class="card-title"><span class="dot"></span> Binary &amp; Bits</div>
+            <ul class="tech-list" style="font-size:0.84rem;">
+              <li>1 bit = a single 0 or 1</li>
+              <li>8 bits = 1 byte, max <strong>255</strong></li>
+              <li>MAC address = <strong>48 bits</strong></li>
+              <li>IPv4 = <strong>32 bits</strong></li>
+              <li>IPv6 = <strong>128 bits</strong></li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-title"><span class="dot dot-green"></span> Hex Key Values</div>
+            <ul class="tech-list green" style="font-size:0.84rem;">
+              <li><code>A</code>=10 &nbsp; <code>B</code>=11</li>
+              <li><code>C</code>=12 &nbsp; <code>D</code>=13</li>
+              <li><code>E</code>=14 &nbsp; <code>F</code>=15</li>
+              <li><code>FF</code> = 255 (2-char max)</li>
+              <li>Always exactly 2 chars per byte</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-title"><span class="dot dot-orange"></span> IPv6 Structure</div>
+            <ul class="tech-list orange" style="font-size:0.84rem;">
+              <li><strong>128 bits</strong> total</li>
+              <li><strong>32 hex chars</strong></li>
+              <li><strong>8 hexets</strong>, 4 hex each (16 bits)</li>
+              <li>Colon <code>:</code> as separator</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-title"><span class="dot dot-purple"></span> Abbreviation Rules</div>
+            <ul class="tech-list purple" style="font-size:0.84rem;">
+              <li>Step 1: Remove <strong>leading</strong> zeros per hexet</li>
+              <li>Step 2: Replace longest all-zero run with <code>::</code></li>
+              <li><code>::</code> used <strong>only once</strong></li>
+              <li>Must shorten the <strong>longest</strong> run</li>
+              <li>Cannot shorten a <strong>single</strong> hexet with <code>::</code></li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-title"><span class="dot dot-yellow"></span> Subnets to Know</div>
+            <ul class="tech-list yellow" style="font-size:0.84rem;">
+              <li><code>/64</code> &rarr; LAN standard</li>
+              <li><code>/128</code> &rarr; Single host</li>
+              <li>/64: first half = network</li>
+              <li>/64: second half = hosts</li>
+              <li>Hosts can self-assign on /64</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-title"><span class="dot dot-red"></span> Link-Local</div>
+            <ul class="tech-list red" style="font-size:0.84rem;">
+              <li>Starts with <code>FE80</code></li>
+              <li>Auto-assigned on IPv6 enable</li>
+              <li>On-link scope only — never routed</li>
+              <li>Never advertised</li>
+              <li>Used by: NDP, router discovery</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:4px;">
+          <div class="card-title"><span class="dot dot-yellow"></span> Documentation Address Range (RFC 3849)</div>
+          <div class="code-block" style="margin-top:8px;">
+            <div class="code-header">
+              <span class="code-lang">Reserved for Documentation</span>
+              <button class="copy-btn" onclick="copyText(this,'2001:db8::/32')">Copy</button>
+            </div>
+            <pre><span class="hl-acc">2001:db8::/32</span>   <span class="hl-muted">— reserved for training material, books, RFCs</span>
+
+<span class="hl-muted">Long form: </span>2001:0DB8:0000:0000:0000:0000:0000:0000
+<span class="hl-muted">Short form:</span> 2001:db8::
+<span class="hl-muted">Example:   </span>2001:db8::1  <span class="hl-muted">(seen in all Juniper documentation)</span></pre>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /layout -->
+
+<script>
+/* ══════════════════════════════════════════════════════════════
+   BINARY DEMO
+══════════════════════════════════════════════════════════════ */
+const POWERS = [128, 64, 32, 16, 8, 4, 2, 1];
+let bits = [0,0,0,0,0,0,0,0];
+
+function renderBinTable() {
+  const table = document.getElementById('bin-table');
+  table.innerHTML = '';
+  POWERS.forEach(function(p, i) {
+    const cell = document.createElement('div');
+    cell.className = 'bin-cell' + (bits[i] ? ' active' : '');
+    cell.innerHTML =
+      '<span class="power">' + p + '</span>' +
+      '<span class="bit">' + bits[i] + '</span>';
+    cell.addEventListener('click', function() {
+      bits[i] = bits[i] ? 0 : 1;
+      renderBinTable();
+    });
+    table.appendChild(cell);
+  });
+  const val = bits.reduce(function(s,b,i){ return s + b * POWERS[i]; }, 0);
+  const binStr = bits.join('');
+  document.getElementById('bin-result').innerHTML =
+    'Decimal: <span class="val">' + val + '</span>' +
+    '&nbsp;&nbsp;|&nbsp;&nbsp;Binary: <span class="val" id="bin-str">' + binStr + '</span>';
+}
+
+function setBinary(n) {
+  var v = n;
+  bits = POWERS.map(function(p) {
+    if (v >= p) { v -= p; return 1; }
+    return 0;
+  });
+  renderBinTable();
+}
+
+renderBinTable();
+
+/* ══════════════════════════════════════════════════════════════
+   HEX REFERENCE GRID
+══════════════════════════════════════════════════════════════ */
+function toHex2(n) { return n.toString(16).toUpperCase().padStart(2, '0'); }
+function toBin8(n) { return n.toString(2).padStart(8, '0'); }
+
+var hexShowcase = [0,1,2,5,9,10,11,12,13,14,15,16,26,100,170,200,255];
+var hexGrid = document.getElementById('hex-grid');
+hexShowcase.forEach(function(n) {
+  var cell = document.createElement('div');
+  cell.className = 'hex-cell';
+  cell.innerHTML =
+    '<div class="h-hex">' + toHex2(n) + '</div>' +
+    '<div class="h-dec">= ' + n + '</div>' +
+    '<div class="h-bin">' + toBin8(n) + '</div>';
+  hexGrid.appendChild(cell);
+});
+
+/* ══════════════════════════════════════════════════════════════
+   STEP TAB NAVIGATION
+══════════════════════════════════════════════════════════════ */
+function showStep(id) {
+  document.querySelectorAll('.step-pane').forEach(function(p) {
+    p.classList.remove('active');
+  });
+  document.querySelectorAll('.step-tab').forEach(function(t) {
+    t.classList.remove('active');
+  });
+  var pane = document.getElementById('pane-' + id);
+  if (pane) pane.classList.add('active');
+  var tab = document.querySelector('[data-step="' + id + '"]');
+  if (tab) tab.classList.add('active');
+}
+
+/* ══════════════════════════════════════════════════════════════
+   COPY BUTTON
+══════════════════════════════════════════════════════════════ */
+function copyText(btn, text) {
+  var t = text || '';
+  if (!t) {
+    var block = btn.closest('.code-block');
+    if (block) {
+      var pre = block.querySelector('pre');
+      if (pre) t = pre.innerText;
+    }
+  }
+  navigator.clipboard.writeText(t).then(function() {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.textContent = 'Copy';
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(function() {
+    btn.textContent = 'Failed';
+    setTimeout(function() { btn.textContent = 'Copy'; }, 2000);
+  });
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SIDEBAR NAV ACTIVE HIGHLIGHT
+══════════════════════════════════════════════════════════════ */
+var navLinks = document.querySelectorAll('.nav-link[href^="#"]');
+var sections = Array.from(document.querySelectorAll('section.section'));
+
+function updateNav() {
+  var scrollY = window.scrollY + 130;
+  var active = sections[0];
+  sections.forEach(function(s) {
+    if (s.offsetTop <= scrollY) active = s;
+  });
+  navLinks.forEach(function(l) {
+    l.classList.toggle('active', l.getAttribute('href') === '#' + active.id);
+  });
+}
+
+function updateProgress() {
+  var docH = document.documentElement.scrollHeight - window.innerHeight;
+  var pct = docH > 0 ? Math.min(100, Math.round((window.scrollY / docH) * 100)) : 0;
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+var ticking = false;
+window.addEventListener('scroll', function() {
+  if (!ticking) {
+    requestAnimationFrame(function() {
+      updateNav();
+      updateProgress();
+      ticking = false;
+    });
+    ticking = true;
+  }
+});
+
+updateNav();
+updateProgress();
+
+/* ══════════════════════════════════════════════════════════════
+   HAMBURGER MENU
+══════════════════════════════════════════════════════════════ */
+var hamburger = document.getElementById('hamburger');
+var sidebar   = document.getElementById('sidebar');
+var overlay   = document.getElementById('overlay');
+
+hamburger.addEventListener('click', function() {
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('open');
+});
+overlay.addEventListener('click', function() {
+  sidebar.classList.remove('open');
+  overlay.classList.remove('open');
+});
+navLinks.forEach(function(l) {
+  l.addEventListener('click', function() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('open');
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════
+   PAGE SEARCH (HIGHLIGHT)
+══════════════════════════════════════════════════════════════ */
+var searchInput  = document.getElementById('search-input');
+var mainContent  = document.getElementById('main-content');
+var savedHTML    = null;
+var searchTimer  = null;
+
+searchInput.addEventListener('input', function() {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(doSearch, 200);
+});
+
+function doSearch() {
+  if (savedHTML === null) savedHTML = mainContent.innerHTML;
+
+  var q = searchInput.value.trim();
+  if (!q) {
+    mainContent.innerHTML = savedHTML;
+    reattachListeners();
+    return;
+  }
+
+  mainContent.innerHTML = savedHTML;
+  var esc = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  var regex = new RegExp('(' + esc + ')', 'gi');
+  walkText(mainContent, regex);
+
+  // scroll to first mark
+  var first = mainContent.querySelector('mark');
+  if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function walkText(node, regex) {
+  if (node.nodeType === 3) {
+    if (regex.test(node.textContent)) {
+      regex.lastIndex = 0;
+      var span = document.createElement('span');
+      span.innerHTML = node.textContent.replace(regex, '<mark>$1</mark>');
+      node.parentNode.replaceChild(span, node);
+    }
+  } else if (node.nodeType === 1) {
+    var tag = node.tagName;
+    if (tag !== 'SCRIPT' && tag !== 'STYLE' && tag !== 'MARK') {
+      Array.from(node.childNodes).forEach(function(c) { walkText(c, regex); });
+    }
+  }
+}
+
+function reattachListeners() {
+  // Re-init binary table after innerHTML reset
+  renderBinTable();
+  // Re-init hex grid
+  hexGrid = document.getElementById('hex-grid');
+  hexGrid.innerHTML = '';
+  hexShowcase.forEach(function(n) {
+    var cell = document.createElement('div');
+    cell.className = 'hex-cell';
+    cell.innerHTML =
+      '<div class="h-hex">' + toHex2(n) + '</div>' +
+      '<div class="h-dec">= ' + n + '</div>' +
+      '<div class="h-bin">' + toBin8(n) + '</div>';
+    hexGrid.appendChild(cell);
+  });
+}
+
+/* ══════════════════════════════════════════════════════════════
+   IPv6 ADDRESS ANATOMY — hexet blocks built dynamically
+══════════════════════════════════════════════════════════════ */
+(function buildAnatomy() {
+  var hexets = [
+    {val:'2001',label:'Hexet 1',bits:'bits 127-112',color:'#58a6ff',bg:'#1f3a5f',border:'#58a6ff'},
+    {val:'0DB8',label:'Hexet 2',bits:'bits 111-96', color:'#3fb950',bg:'#1a3a25',border:'#3fb950'},
+    {val:'0000',label:'Hexet 3',bits:'bits 95-80',  color:'#f0883e',bg:'#3a2010',border:'#f0883e'},
+    {val:'0000',label:'Hexet 4',bits:'bits 79-64',  color:'#bc8cff',bg:'#2a1a4a',border:'#bc8cff'},
+    {val:'0000',label:'Hexet 5',bits:'bits 63-48',  color:'#e3b341',bg:'#3a2e10',border:'#e3b341'},
+    {val:'0000',label:'Hexet 6',bits:'bits 47-32',  color:'#58a6ff',bg:'#1f3a5f',border:'#58a6ff'},
+    {val:'0000',label:'Hexet 7',bits:'bits 31-16',  color:'#3fb950',bg:'#1a3a25',border:'#3fb950'},
+    {val:'0001',label:'Hexet 8',bits:'bits 15-0',   color:'#f0883e',bg:'#3a2010',border:'#f0883e'}
+  ];
+  var row = document.getElementById('hexet-anatomy-row');
+  if (!row) return;
+  hexets.forEach(function(h, i) {
+    if (i > 0) {
+      var sep = document.createElement('div');
+      sep.className = 'hexet-sep';
+      sep.textContent = ':';
+      row.appendChild(sep);
+    }
+    var block = document.createElement('div');
+    block.className = 'hexet-block';
+    block.style.background = h.bg;
+    block.style.border = '1px solid ' + h.border;
+    block.innerHTML =
+      '<span class="hexet-value" style="color:' + h.color + ';">' + h.val + '</span>' +
+      '<span class="hexet-label" style="color:' + h.color + ';">' + h.label + '</span>' +
+      '<span class="hexet-bits">' + h.bits + '</span>';
+    row.appendChild(block);
+  });
+})();
+
+</script>
+</body>
+</html>

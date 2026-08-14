@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="JNCIA-Junos complete study guide - Junos OS architecture, hardware, CLI, product families, LLDP, SSH, version naming.">
+<title>JNCIA-Junos Study Guide | Certification Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d1117;--bg2:#161b22;--bgc:#1c2128;--bgh:#21262d;--bd:#30363d;--bda:#388bfd;--t1:#e6edf3;--t2:#8b949e;--tm:#6e7681;--blue:#58a6ff;--cyan:#79c0ff;--grn:#3fb950;--amb:#f0883e;--red:#f85149;--pur:#bc8cff;--cdbg:#161b22;--notebg:#0d2137;--notebr:#1f6feb;--warnbg:#2d1f06;--warnbr:#9e6a03;--tipbg:#0d1f0d;--tipbr:#1a7f37;--sw:280px;--hh:60px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:15px}
+body{background:var(--bg);color:var(--t1);font-family:'Inter',system-ui,sans-serif;line-height:1.7;min-height:100vh}
+/* HEADER */
+.hdr{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--hh);background:rgba(13,17,23,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 24px;gap:16px}
+.hbrand{display:flex;align-items:center;gap:10px}
+.hlogo{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#1f6feb,#388bfd);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0}
+.htitle{font-size:1rem;font-weight:700}.hsub{font-size:.72rem;color:var(--tm)}
+.hsrch{flex:1;max-width:420px;position:relative}
+#gs{width:100%;padding:8px 14px 8px 38px;background:var(--bg2);border:1px solid var(--bd);border-radius:8px;color:var(--t1);font-size:.875rem;font-family:inherit;outline:none;transition:border-color .2s}
+#gs:focus{border-color:var(--bda)}
+.si{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--tm);pointer-events:none;font-size:14px}
+#sr{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--bgc);border:1px solid var(--bd);border-radius:8px;max-height:300px;overflow-y:auto;display:none;z-index:200;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.sri{padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--bd);font-size:.85rem;transition:background .15s}
+.sri:last-child{border-bottom:none}.sri:hover{background:var(--bgh)}
+.sri .rs{font-size:.7rem;color:var(--blue);margin-bottom:2px}
+.hprog{display:flex;align-items:center;gap:10px;font-size:.8rem;color:var(--tm);white-space:nowrap}
+.pt{width:80px;height:4px;background:var(--bd);border-radius:2px}
+.pf{height:100%;background:var(--grn);border-radius:2px;transition:width .3s}
+.mbtn{display:none;background:none;border:1px solid var(--bd);color:var(--t2);padding:6px 10px;border-radius:6px;cursor:pointer;font-size:1rem}
+/* SIDEBAR */
+.sb{width:var(--sw);flex-shrink:0;position:fixed;top:var(--hh);left:0;bottom:0;overflow-y:auto;overflow-x:hidden;background:var(--bg2);border-right:1px solid var(--bd);padding:16px 0 40px;z-index:90;transition:transform .3s ease}
+.sb::-webkit-scrollbar{width:4px}.sb::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
+.ns{padding:0 12px;margin-bottom:4px}
+.nsl{font-size:.68rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--tm);padding:12px 8px 4px}
+.ni{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;cursor:pointer;font-size:.82rem;color:var(--t2);transition:all .15s;text-decoration:none;border:none;background:none;width:100%;text-align:left}
+.ni:hover{background:var(--bgh);color:var(--t1)}.ni.active{background:rgba(56,139,253,.15);color:var(--blue)}
+.nd{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.nsub{padding-left:22px}.nsub .ni{font-size:.79rem;padding:5px 8px}
+/* MAIN */
+.mc{margin-left:var(--sw);flex:1;max-width:900px;padding:40px 48px;padding-top:calc(var(--hh) + 40px)}
+/* HERO */
+.hero{background:linear-gradient(135deg,#0d2137 0%,#0d1117 60%);border:1px solid var(--bd);border-radius:16px;padding:40px;margin-bottom:48px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(56,139,253,.15),transparent 70%);pointer-events:none}
+.hbadge{display:inline-flex;align-items:center;gap:6px;background:rgba(56,139,253,.12);border:1px solid rgba(56,139,253,.3);color:var(--blue);font-size:.75rem;font-weight:600;padding:4px 10px;border-radius:20px;margin-bottom:16px;letter-spacing:.04em}
+.hero h1{font-size:2rem;font-weight:700;margin-bottom:12px}
+.hero p{color:var(--t2);max-width:600px;margin-bottom:20px;font-size:.95rem}
+.hmeta{display:flex;gap:20px;flex-wrap:wrap}
+.hmi{display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--tm)}
+.hmi span{color:var(--t2)}
+/* SECTIONS */
+.ss{margin-bottom:56px;animation:fu .4s ease both}
+@keyframes fu{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.mtag{display:inline-flex;align-items:center;gap:6px;font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;padding:3px 10px;border-radius:12px;margin-bottom:10px}
+.mtag.blue{background:rgba(88,166,255,.1);color:var(--blue);border:1px solid rgba(88,166,255,.2)}
+.mtag.green{background:rgba(63,185,80,.1);color:var(--grn);border:1px solid rgba(63,185,80,.2)}
+.mtag.amber{background:rgba(240,136,62,.1);color:var(--amb);border:1px solid rgba(240,136,62,.2)}
+.mtag.purple{background:rgba(188,140,255,.1);color:var(--pur);border:1px solid rgba(188,140,255,.2)}
+.mtag.teal{background:rgba(121,192,255,.1);color:var(--cyan);border:1px solid rgba(121,192,255,.2)}
+h2.st{font-size:1.5rem;font-weight:700;margin-bottom:6px;border-bottom:1px solid var(--bd);padding-bottom:12px}
+h3.tt{font-size:1.1rem;font-weight:600;margin:28px 0 12px;display:flex;align-items:center;gap:8px}
+h3.tt::before{content:'';display:block;width:3px;height:18px;background:var(--blue);border-radius:2px;flex-shrink:0}
+h4.sub{font-size:.95rem;font-weight:600;color:var(--cyan);margin:16px 0 8px}
+/* KEY POINTS */
+.kp{list-style:none;margin:0 0 16px}
+.kp li{padding:5px 0 5px 20px;position:relative;color:var(--t2);font-size:.88rem;line-height:1.65;border-bottom:1px solid rgba(48,54,61,.4)}
+.kp li:last-child{border-bottom:none}
+.kp li::before{content:'→';position:absolute;left:0;color:var(--blue);font-size:.75rem;top:6px}
+.kp li strong{color:var(--t1);font-weight:600}
+.kp li code{background:var(--cdbg);border:1px solid var(--bd);padding:1px 5px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--cyan)}
+/* CODE */
+.cb{background:var(--cdbg);border:1px solid var(--bd);border-radius:10px;overflow:hidden;margin:14px 0;position:relative}
+.ch{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(48,54,61,.4);border-bottom:1px solid var(--bd)}
+.cl{font-size:.72rem;color:var(--tm);font-family:'JetBrains Mono',monospace}
+.cpb{background:none;border:1px solid var(--bd);color:var(--tm);font-size:.72rem;padding:3px 8px;border-radius:5px;cursor:pointer;transition:all .15s;font-family:inherit}
+.cpb:hover{background:var(--bgh);color:var(--t1)}.cpb.ok{color:var(--grn);border-color:var(--grn)}
+pre{padding:16px;overflow-x:auto;font-size:.82rem;line-height:1.6;font-family:'JetBrains Mono',monospace}
+pre code{color:#e6edf3}
+.cmd{color:#79c0ff}.cmt{color:#6e7681}.kw{color:#ff7b72}
+/* CALLOUTS */
+.cal{border-radius:8px;padding:14px 16px;margin:16px 0;border-left:3px solid;font-size:.875rem}
+.cal.note{background:var(--notebg);border-color:var(--notebr);color:#79c0ff}
+.cal.warn{background:var(--warnbg);border-color:var(--warnbr);color:var(--amb)}
+.cal.tip{background:var(--tipbg);border-color:var(--tipbr);color:var(--grn)}
+.cal-title{font-weight:700;margin-bottom:4px;font-size:.8rem;text-transform:uppercase;letter-spacing:.05em}
+.cal p,.cal ul{color:var(--t2);margin-top:4px}.cal ul{padding-left:18px}.cal li{margin-bottom:2px}
+.cal strong{color:var(--t1)}.cal code{background:rgba(0,0,0,.3);padding:1px 4px;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:.8rem}
+/* TABLES */
+.tw{overflow-x:auto;margin:16px 0;border-radius:8px;border:1px solid var(--bd)}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+thead{background:rgba(48,54,61,.5)}
+th{padding:10px 14px;text-align:left;font-weight:600;white-space:nowrap}
+td{padding:9px 14px;border-top:1px solid var(--bd);color:var(--t2);vertical-align:top}
+tr:hover td{background:rgba(33,38,45,.5)}
+td strong{color:var(--t1)}
+td code{background:var(--cdbg);border:1px solid var(--bd);padding:1px 5px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--cyan)}
+/* KEYWORD GRID */
+.kg{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.kt{background:rgba(56,139,253,.08);border:1px solid rgba(56,139,253,.2);color:var(--cyan);font-size:.75rem;font-family:'JetBrains Mono',monospace;padding:3px 8px;border-radius:4px;cursor:default;transition:all .15s}
+.kt:hover{background:rgba(56,139,253,.18)}
+/* COLLAPSIBLES */
+.col{border:1px solid var(--bd);border-radius:8px;margin:10px 0;overflow:hidden}
+.colh{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--bgc);cursor:pointer;font-size:.9rem;font-weight:600;user-select:none;transition:background .15s}
+.colh:hover{background:var(--bgh)}
+.coli{transition:transform .25s;color:var(--tm)}
+.col.open .coli{transform:rotate(180deg)}
+.colb{display:none;padding:16px;border-top:1px solid var(--bd)}
+.col.open .colb{display:block}
+/* PRODUCT CARDS */
+.pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin:16px 0}
+.pc{background:var(--bgc);border:1px solid var(--bd);border-radius:10px;padding:16px;transition:border-color .2s,transform .2s}
+.pc:hover{border-color:var(--bda);transform:translateY(-2px)}
+.pch{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.pi{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.pn{font-weight:700;font-size:.95rem}.pt2{font-size:.68rem;color:var(--tm)}
+.pc p{font-size:.82rem;color:var(--t2);line-height:1.55}
+.pc ul{font-size:.82rem;color:var(--t2);padding-left:16px;margin-top:6px}
+.pc li{margin-bottom:2px}
+/* DIAGRAMS */
+.dw{margin:24px 0}
+.di{width:100%;max-width:720px;display:block;border-radius:12px;border:1px solid var(--bd);margin:0 auto}
+.dc{text-align:center;font-size:.78rem;color:var(--tm);margin-top:8px;font-style:italic}
+/* VERSION */
+.vbox{background:var(--bgc);border:1px solid var(--bd);border-radius:10px;padding:20px;margin:16px 0}
+.vstr{display:flex;gap:0;font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:700;margin-bottom:20px;justify-content:center;flex-wrap:wrap}
+.vp{padding:4px 8px;border-radius:4px}
+.vy{color:var(--amb)}.vd{color:var(--tm)}.vm{color:var(--blue)}.vr{color:var(--grn)}.vn{color:var(--t1)}.vb{color:var(--tm);font-size:1rem}
+/* PROMPTS */
+.pb{display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:.85rem;padding:6px 12px;border-radius:6px;font-weight:600;margin:4px 2px}
+.pop{background:rgba(88,166,255,.12);color:var(--blue);border:1px solid rgba(88,166,255,.25)}
+.pcfg{background:rgba(240,136,62,.12);color:var(--amb);border:1px solid rgba(240,136,62,.25)}
+.psh{background:rgba(248,81,73,.12);color:var(--red);border:1px solid rgba(248,81,73,.25)}
+/* MISC */
+.div{border:none;border-top:1px solid var(--bd);margin:40px 0}
+#stb{position:fixed;bottom:24px;right:24px;width:40px;height:40px;border-radius:50%;background:var(--bgc);border:1px solid var(--bd);color:var(--t2);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;opacity:0;transform:translateY(10px);z-index:50}
+#stb.vis{opacity:1;transform:translateY(0)}
+#stb:hover{background:var(--bgh);color:var(--t1);border-color:var(--bda)}
+mark{background:rgba(240,136,62,.25);color:var(--amb);border-radius:2px;padding:0 2px}
+/* RESPONSIVE */
+@media(max-width:900px){.mc{padding:28px 24px;padding-top:calc(var(--hh)+28px)}}
+@media(max-width:768px){.mbtn{display:flex;align-items:center}.sb{transform:translateX(-100%)}.sb.open{transform:translateX(0)}.mc{margin-left:0}.hprog{display:none}.pg{grid-template-columns:1fr}.hero h1{font-size:1.5rem}.mc{padding:20px 16px;padding-top:calc(var(--hh)+20px)}}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <button class="mbtn" id="sbt" aria-label="Menu">&#9776;</button>
+  <div class="hbrand">
+    <div class="hlogo">J</div>
+    <div><div class="htitle">JNCIA-Junos</div><div class="hsub">Study Guide</div></div>
+  </div>
+  <div class="hsrch">
+    <span class="si">&#128269;</span>
+    <input type="text" id="gs" placeholder="Search topics, commands, keywords&#8230;" autocomplete="off" spellcheck="false">
+    <div id="sr"></div>
+  </div>
+  <div class="hprog">
+    <span>Progress</span>
+    <div class="pt"><div class="pf" id="pf" style="width:0%"></div></div>
+    <span id="pp" style="font-size:.75rem">0%</span>
+  </div>
+</header>
+<nav class="sb" id="sb">
+  <div class="ns">
+    <div class="nsl">Modules</div>
+    <a class="ni" href="#m1" onclick="nc(this)"><span class="nd" style="background:#58a6ff"></span>Junos OS Architecture</a>
+    <a class="ni" href="#m2" onclick="nc(this)"><span class="nd" style="background:#79c0ff"></span>Hardware &amp; Chassis</a>
+    <div class="nsub">
+      <a class="ni" href="#fixed" onclick="nc(this)">Fixed Port Chassis</a>
+      <a class="ni" href="#modular" onclick="nc(this)">Modular Chassis</a>
+      <a class="ni" href="#re" onclick="nc(this)">Routing Engine</a>
+    </div>
+    <a class="ni" href="#m3" onclick="nc(this)"><span class="nd" style="background:#bc8cff"></span>Product Families</a>
+    <a class="ni" href="#m4" onclick="nc(this)"><span class="nd" style="background:#3fb950"></span>Network Topology</a>
+    <a class="ni" href="#m5" onclick="nc(this)"><span class="nd" style="background:#f0883e"></span>SSH &amp; Remote Access</a>
+    <a class="ni" href="#m6" onclick="nc(this)"><span class="nd" style="background:#f0883e"></span>CLI Operational Mode</a>
+    <div class="nsub">
+      <a class="ni" href="#modes" onclick="nc(this)">CLI Modes</a>
+      <a class="ni" href="#cmds" onclick="nc(this)">Commands Reference</a>
+    </div>
+    <a class="ni" href="#m7" onclick="nc(this)"><span class="nd" style="background:#39d353"></span>Show System Commands</a>
+    <a class="ni" href="#ver" onclick="nc(this)"><span class="nd" style="background:#79c0ff"></span>Version Naming</a>
+    <a class="ni" href="#lldp" onclick="nc(this)"><span class="nd" style="background:#bc8cff"></span>LLDP</a>
+    <a class="ni" href="#help" onclick="nc(this)"><span class="nd" style="background:#58a6ff"></span>CLI Help &amp; Hierarchy</a>
+    <a class="ni" href="#kw" onclick="nc(this)"><span class="nd" style="background:#3fb950"></span>Key Terms Reference</a>
+  </div>
+</nav>
+<main class="mc">
+  <div class="hero">
+    <div class="hbadge">&#127919; JNCIA-JN0-104 Exam Prep</div>
+    <h1>JNCIA-Junos Complete Study Guide</h1>
+    <p>Precise, exam-oriented technical study material covering Junos OS architecture, hardware, CLI, product families, protocols, and operational commands.</p>
+    <div class="hmeta">
+      <div class="hmi">&#128203; <span>8+ Modules</span></div>
+      <div class="hmi">&#9000; <span>40+ CLI Commands</span></div>
+      <div class="hmi">&#127959; <span>Architecture Diagrams</span></div>
+      <div class="hmi">&#128269; <span>Full-Text Search</span></div>
+    </div>
+  </div>
+
+  <!-- MODULE 1 -->
+  <section class="ss" id="m1">
+    <div class="mtag blue">Module 1</div>
+    <h2 class="st">Junos OS Architecture</h2>
+    <h3 class="tt">Key Architectural Advantages</h3>
+    <ul class="kp">
+      <li><strong>Modular software architecture:</strong> Junos OS is NOT a monolithic code base. Composed of many small, independent processes.</li>
+      <li>If one process crashes, all other processes <strong>continue running normally</strong>; the failed process restarts independently &mdash; no system-wide disruption.</li>
+      <li><strong>Hardware separation for transit vs. device-destined traffic:</strong> transit traffic (forwarded packets) and management/protocol traffic are handled by <em>separate hardware</em>.</li>
+      <li>This hardware separation <strong>protects transit forwarding</strong> even if the control plane is overwhelmed by management traffic or protocol events.</li>
+    </ul>
+    <div class="dw">
+      <img src="img_control_plane.png" alt="Control Plane vs Data Plane hardware separation" class="di">
+      <p class="dc">Control Plane (Routing Engine) and Data Plane (Packet Forwarding Engine) run on separate hardware &mdash; transit forwarding protected even when control plane is overwhelmed.</p>
+    </div>
+    <h3 class="tt" id="cpd">Control Plane vs. Data Plane</h3>
+    <div class="tw"><table>
+      <thead><tr><th>Plane</th><th>Hardware</th><th>Handles</th><th>Key Contents</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Control Plane</strong></td><td>Routing Engine (RE)</td><td>Management &amp; protocol traffic</td><td>Routing table, software processes (OSPF, BGP, LLDP&hellip;)</td></tr>
+        <tr><td><strong>Data Plane</strong></td><td>Packet Forwarding Engine (PFE)</td><td>Transit (forwarded) traffic</td><td>Forwarding table, line cards, high-speed packet switching</td></tr>
+      </tbody>
+    </table></div>
+    <div class="cal note"><div class="cal-title">&#128204; Why Separation Matters</div><p>If a routing protocol process enters a CPU loop or the RE is flooded with management requests, transit traffic forwarding continues uninterrupted &mdash; the PFE operates independently of the RE.</p></div>
+  </section>
+  <hr class="div">
+
+  <!-- MODULE 2 -->
+  <section class="ss" id="m2">
+    <div class="mtag teal">Module 2</div>
+    <h2 class="st">Hardware &amp; Chassis Types</h2>
+    <h3 class="tt">Chassis Fundamentals</h3>
+    <ul class="kp">
+      <li><strong>Chassis:</strong> the physical device &mdash; specifically, the <em>outer case</em> of the device.</li>
+      <li>Two primary categories: <strong>Fixed Port Chassis</strong> and <strong>Modular Chassis</strong>.</li>
+      <li><strong>U (Rack Unit):</strong> standard height measurement for rack-mountable devices. Larger U = more performance, higher port density, and sometimes more features.</li>
+    </ul>
+    <div class="dw">
+      <img src="img_chassis_types.png" alt="Fixed Port Chassis MX204 vs Modular Chassis MX480" class="di">
+      <p class="dc">MX204 (Fixed Port) vs MX480 (Modular) &mdash; key structural differences tested in the exam.</p>
+    </div>
+    <h3 class="tt" id="fixed">Fixed Port Chassis</h3>
+    <ul class="kp">
+      <li>Physical interfaces are <strong>built directly into the chassis</strong> &mdash; cannot be changed or expanded.</li>
+      <li>Contains a <strong>single built-in Routing Engine</strong> &mdash; not replaceable, not hot-swappable.</li>
+    </ul>
+    <h4 class="sub">MX-204 (Fixed Port Example)</h4>
+    <ul class="kp">
+      <li>Compact form factor (~1U); interfaces built into the faceplate.</li>
+      <li>Available interface types: <strong>QSFP</strong>, <strong>SFP+</strong>, <strong>SFP</strong> transceivers.</li>
+      <li>Dedicated out-of-band management port (RJ-45) and console port.</li>
+      <li>Common use: enterprise edge, small service provider deployments.</li>
+    </ul>
+    <h3 class="tt" id="modular">Modular Chassis</h3>
+    <ul class="kp">
+      <li>Contains large <strong>empty slots</strong> designed to accept <strong>line cards</strong>.</li>
+      <li><strong>Line cards:</strong> circuit boards inserted into slots; each adds ports and dedicated packet-processing ASICs.</li>
+      <li><strong>Services line cards:</strong> line cards providing additional services (NAT, encryption) beyond port connectivity.</li>
+      <li>Line cards are typically <strong>hot-swappable</strong> &mdash; inserted/removed without powering down the chassis.</li>
+    </ul>
+    <h4 class="sub">MX-480 (Modular Example)</h4>
+    <ul class="kp">
+      <li>Multiple line card slots; scales to very high port densities.</li>
+      <li>Routing Engine module in dedicated slot; may support redundant RE for high availability.</li>
+      <li>Slot numbering starts at <strong>0</strong> (zero-indexed).</li>
+      <li>Common use: large service provider edge/core, high-density enterprise.</li>
+    </ul>
+    <div class="cal warn"><div class="cal-title">&#9888; Exam Distinction</div><p><strong>Fixed chassis RE is NOT hot-swappable.</strong> Modular chassis Routing Engines and line cards typically ARE hot-swappable. Know this difference.</p></div>
+    <h3 class="tt" id="re">Routing Engine (RE)</h3>
+    <ul class="kp">
+      <li>The RE is the <strong>control plane CPU board</strong> running Junos OS software.</li>
+      <li>Manages: routing protocols, routing/forwarding table creation, system management, chassis management.</li>
+      <li>RE communicates with the PFE to <strong>download the forwarding table</strong> derived from the routing table.</li>
+      <li>In <strong>fixed chassis:</strong> one RE, built in, not removable.</li>
+      <li>In <strong>modular chassis:</strong> RE is a separate module; supports redundant RE.</li>
+      <li>RE connects directly to the <strong>management and console ports</strong>.</li>
+    </ul>
+  </section>
+  <hr class="div">
+
+  <!-- MODULE 3 -->
+  <section class="ss" id="m3">
+    <div class="mtag purple">Module 3</div>
+    <h2 class="st">Juniper Networks Product Families</h2>
+    <ul class="kp">
+      <li>All product families run <strong>Junos OS</strong> &mdash; same OS, same CLI structure across all platforms.</li>
+      <li>Additional families: <strong>EX Series</strong> (campus switches), <strong>QFX Series</strong> (data center switches), <strong>Mist</strong> (AI-driven wireless), <strong>Apstra</strong> (DC automation).</li>
+    </ul>
+    <div class="pg">
+      <div class="pc"><div class="pch"><div class="pi" style="background:rgba(88,166,255,.15)">&#127760;</div><div><div class="pn">MX Series</div><div class="pt2">Edge &amp; Core Routers</div></div></div><ul><li>Service Providers and large enterprises.</li><li><strong>PE (Provider Edge) routers</strong> in MPLS/VPN networks.</li><li>Supports VPNs, aggregation, complex L3 services.</li><li>Fixed (MX204) and modular (MX480, MX960) forms.</li></ul></div>
+      <div class="pc"><div class="pch"><div class="pi" style="background:rgba(188,140,255,.15)">&#9889;</div><div><div class="pn">PTX Series</div><div class="pt2">Core/Backbone Routers</div></div></div><ul><li>Service provider <strong>core/backbone</strong> networks.</li><li>Optimized for <strong>ultra-high throughput</strong> packet forwarding.</li><li>Raw forwarding speed over complex service features.</li></ul></div>
+      <div class="pc"><div class="pch"><div class="pi" style="background:rgba(121,192,255,.15)">&#127751;</div><div><div class="pn">ACX Series</div><div class="pt2">Access &amp; Aggregation</div></div></div><ul><li>Targets <strong>central office</strong> and <strong>telephone exchange</strong> environments.</li><li>Metro/carrier aggregation and access routing.</li><li>Carrier timing/synchronization requirements.</li></ul></div>
+      <div class="pc"><div class="pch"><div class="pi" style="background:rgba(240,136,62,.15)">&#128274;</div><div><div class="pn">SRX Series</div><div class="pt2">Next-Gen Firewalls</div></div></div><ul><li>Juniper's <strong>NGFW</strong> (Next-Generation Firewall) line.</li><li>Includes <strong>ATP</strong> (Advanced Threat Protection).</li><li>Perimeter security, campus edge, data center security.</li></ul></div>
+      <div class="pc"><div class="pch"><div class="pi" style="background:rgba(63,185,80,.15)">&#9729;</div><div><div class="pn">Virtual Appliances</div><div class="pt2">vMX &middot; vJunos Switch</div></div></div><ul><li><strong>vMX:</strong> virtual MX router; Junos OS as VM; cloud/lab use.</li><li><strong>vJunos Switch:</strong> virtual switch; replaces older vQFX.</li><li>Testing and development without physical hardware.</li></ul></div>
+    </div>
+  </section>
+  <hr class="div">
+
+  <!-- MODULE 4 -->
+  <section class="ss" id="m4">
+    <div class="mtag green">Module 4</div>
+    <h2 class="st">Customer Network Topology (Lab Scenario)</h2>
+    <h3 class="tt">Topology Overview</h3>
+    <ul class="kp">
+      <li>Lab uses MX204 (fixed) and MX480 (modular) routers in the same topology.</li>
+      <li>Two distinct topologies: <strong>logical topology</strong> (device connections) and <strong>management topology</strong> (management access paths).</li>
+      <li>Management uses a <strong>dedicated management network</strong> separate from production traffic.</li>
+    </ul>
+    <h3 class="tt">IP Addressing &mdash; /24 Subnet</h3>
+    <ul class="kp">
+      <li><strong>/24 subnet mask</strong> = 255.255.255.0 &mdash; 24 bits network, 8 bits for hosts.</li>
+      <li>/24 provides <strong>254 usable host addresses</strong> (256 &minus; network address &minus; broadcast).</li>
+      <li><strong>Default gateway:</strong> router IP used by hosts to reach external networks.</li>
+      <li>In lab: SSH to <strong>any router IP</strong> on the management network &mdash; all reachable via the management default gateway.</li>
+    </ul>
+    <div class="cal note"><div class="cal-title">&#128161; SSH to Any Router IP</div><p>All lab routers are on the same management /24. SSH to any of them using their management IP. The management default gateway routes within the management network.</p></div>
+  </section>
+  <hr class="div">
+
+  <!-- MODULE 5 -->
+  <section class="ss" id="m5">
+    <div class="mtag amber">Module 5</div>
+    <h2 class="st">SSH &amp; Remote Access</h2>
+    <h3 class="tt">Remote Connection Protocols</h3>
+    <div class="tw"><table>
+      <thead><tr><th>Protocol</th><th>Full Name</th><th>TCP Port</th><th>Encryption</th><th>Use</th></tr></thead>
+      <tbody>
+        <tr><td><strong>SSH</strong></td><td>Secure Shell</td><td><code>22</code></td><td>&#10003; Encrypted</td><td>Standard remote CLI access &mdash; always preferred</td></tr>
+        <tr><td><strong>Telnet</strong></td><td>Teletype Network</td><td><code>23</code></td><td>&#10007; Clear text</td><td>Legacy; all data unencrypted &mdash; avoid in production</td></tr>
+      </tbody>
+    </table></div>
+    <div class="cal warn"><div class="cal-title">&#9888; Telnet Security Risk</div><p>Telnet sends <strong>usernames and passwords in clear text</strong>. Anyone on the network path can capture credentials. Always use SSH.</p></div>
+    <h3 class="tt">SSH Connection Details</h3>
+    <ul class="kp">
+      <li>SSH version in use: <strong>SSHv2</strong>. Default TCP port: <strong>22</strong>.</li>
+      <li>Provides: encrypted session, remote command execution, SCP/SFTP file transfer.</li>
+      <li><strong>Shared login:</strong> lab environments may share a single username/password. Production: individual accounts per user.</li>
+      <li>Authentication: password OR <strong>SSH key pair</strong> (public/private key &mdash; more secure).</li>
+      <li><strong>Remote authentication server:</strong> production networks use RADIUS or TACACS+ for centralized user management.</li>
+    </ul>
+    <h4 class="sub">SSH Commands (workstation)</h4>
+    <div class="cb"><div class="ch"><span class="cl">bash &mdash; terminal</span><button class="cpb" onclick="cc(this)">Copy</button></div>
+    <pre><code><span class="cmd">ssh</span> user@192.168.1.1          <span class="cmt"># SSH to router management IP</span>
+<span class="cmd">ssh</span> -p 22 user@10.0.0.1       <span class="cmt"># explicit port (default is 22)</span></code></pre></div>
+    <h3 class="tt">Terminal Applications</h3>
+    <ul class="kp">
+      <li><strong>Linux/macOS:</strong> built-in Terminal app; native SSH client.</li>
+      <li><strong>Windows:</strong> built-in OpenSSH (Windows 10/11) or <strong>PuTTY</strong>, <strong>SecureCRT</strong>, <strong>Windows Terminal</strong>.</li>
+      <li>Log terminal sessions to a local file during lab work to capture all output.</li>
+    </ul>
+    <div class="kg">
+      <span class="kt">SSH</span><span class="kt">Secure Shell</span><span class="kt">TCP port 22</span><span class="kt">Telnet</span><span class="kt">TCP port 23</span><span class="kt">clear text</span><span class="kt">encrypted</span><span class="kt">shared login</span><span class="kt">remote auth server</span><span class="kt">SSH key pair</span><span class="kt">PuTTY</span>
+    </div>
+  </section>
+  <hr class="div">
+
+  <!-- MODULE 6 -->
+  <section class="ss" id="m6">
+    <div class="mtag amber">Module 6</div>
+    <h2 class="st">Junos CLI &mdash; Operational Mode</h2>
+    <h3 class="tt">User Accounts &amp; Login</h3>
+    <ul class="kp">
+      <li>Upon SSH login: placed at a shell prompt or directly into operational mode (depends on account config).</li>
+      <li>A <strong>blank line separator</strong> in CLI output separates logical output sections.</li>
+      <li>If the CLI hostname in the prompt doesn&rsquo;t match the network diagram, <strong>fix the router hostname</strong> (not the diagram) during configuration exercises.</li>
+    </ul>
+    <h3 class="tt" id="modes">CLI Modes</h3>
+    <div class="dw">
+      <img src="img_cli_modes.png" alt="Junos CLI Modes: Operational, Configuration, Shell" class="di">
+      <p class="dc">Three Junos CLI modes and how to navigate between them.</p>
+    </div>
+    <div class="tw"><table>
+      <thead><tr><th>Mode</th><th>Prompt</th><th>Purpose</th><th>Access</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Operational Mode</strong></td><td><span class="pb pop">user@router&gt;</span></td><td>View system state; show/monitor/clear/request commands. Read-only view.</td><td>Default after login</td></tr>
+        <tr><td><strong>Configuration Mode</strong></td><td><span class="pb pcfg">user@router#</span></td><td>Modify device configuration. Changes staged in candidate config until committed.</td><td>Type <code>configure</code></td></tr>
+        <tr><td><strong>Shell</strong></td><td><span class="pb psh">%</span></td><td>Unix/BSD shell &mdash; direct OS access. Restricted; advanced troubleshooting only.</td><td><code>request system shell</code></td></tr>
+      </tbody>
+    </table></div>
+    <h4 class="sub">Mode Transition Commands</h4>
+    <div class="cb"><div class="ch"><span class="cl">junos &mdash; operational mode</span><button class="cpb" onclick="cc(this)">Copy</button></div>
+    <pre><code>user@router&gt; <span class="cmd">configure</span>              <span class="cmt"># enter configuration mode</span>
+user@router# <span class="cmd">exit</span>                   <span class="cmt"># return to operational mode</span>
+user@router# <span class="cmd">quit</span>                   <span class="cmt"># also exits configuration mode</span>
+user@router&gt; <span class="cmd">request system shell</span>   <span class="cmt"># enter Unix shell</span>
+%            <span class="cmd">exit</span>                   <span class="cmt"># return from shell to operational mode</span></code></pre></div>
+    <div class="cal note"><div class="cal-title">&#128204; Prompt Characters</div><p><strong><code>&gt;</code></strong> = operational mode &nbsp;|&nbsp; <strong><code>#</code></strong> = configuration mode &nbsp;|&nbsp; <strong><code>%</code></strong> = shell. Memorize these.</p></div>
+    <h3 class="tt" id="cmds">Operational Mode &mdash; Command Prefixes</h3>
+    <ul class="kp">
+      <li><strong><code>show</code></strong> &mdash; static snapshot of system/protocol/interface state. Most common exam prefix.</li>
+      <li><strong><code>monitor</code></strong> &mdash; real-time, continuously updating output (refreshed every second).</li>
+      <li><strong><code>clear</code></strong> &mdash; reset counters, clear tables, or clear specific protocol state.</li>
+      <li><strong><code>request</code></strong> &mdash; system-level operations (reboot, software upgrade, shell access).</li>
+    </ul>
+    <h3 class="tt">Key Operational Commands</h3>
+    <div class="cb"><div class="ch"><span class="cl">junos &mdash; operational mode commands</span><button class="cpb" onclick="cc(this)">Copy</button></div>
+    <pre><code><span class="cmd">show version</span>                    <span class="cmt"># Junos version, model, RE info</span>
+<span class="cmd">show version and haiku</span>           <span class="cmt"># version + Juniper haiku (fun easter egg)</span>
+<span class="cmd">show system uptime</span>               <span class="cmt"># current time, boot time, uptime duration</span>
+<span class="cmd">show system information</span>          <span class="cmt"># model, family, Junos version, hostname</span>
+<span class="cmd">show system users</span>                <span class="cmt"># currently logged-in users</span>
+<span class="cmd">show system alarms</span>               <span class="cmt"># system-level alarms</span>
+<span class="cmd">show system audit</span>                <span class="cmt"># system audit log</span>
+<span class="cmd">show route</span>                       <span class="cmt"># routing table</span>
+<span class="cmd">show interfaces</span>                  <span class="cmt"># all interfaces (status, counters)</span>
+<span class="cmd">show interfaces xe-0/1/1</span>         <span class="cmt"># snapshot of one interface (NOT real-time)</span>
+<span class="cmd">monitor interface xe-0/1/1</span>       <span class="cmt"># REAL-TIME interface stats (updates/sec)</span>
+<span class="cmd">show lldp neighbors</span>              <span class="cmt"># LLDP-discovered neighbors</span>
+<span class="cmd">show chassis</span>                     <span class="cmt"># hardware/chassis state</span>
+<span class="cmd">show ospf neighbor</span>               <span class="cmt"># OSPF neighbor state</span>
+<span class="cmd">show bgp summary</span>                 <span class="cmt"># BGP peer summary</span>
+<span class="cmd">show spanning-tree interface</span>     <span class="cmt"># STP interface state</span></code></pre></div>
+    <div class="cal tip"><div class="cal-title">&#128161; show vs. monitor</div><p><code>show interfaces xe-0/1/1</code> &rarr; static snapshot (point-in-time).<br><code>monitor interface xe-0/1/1</code> &rarr; real-time, refreshes every second. Use monitor for live troubleshooting.</p></div>
+  </section>
+  <hr class="div">
+
+  <!-- MODULE 7 -->
+  <section class="ss" id="m7">
+    <div class="mtag green">Module 7</div>
+    <h2 class="st">Show System Commands &mdash; Detailed Output</h2>
+    <h3 class="tt">show system uptime</h3>
+    <div class="tw"><table>
+      <thead><tr><th>Field</th><th>Meaning</th><th>Exam Note</th></tr></thead>
+      <tbody>
+        <tr><td><code>Current time</code></td><td>Current system clock time</td><td>May be wrong if NTP not configured</td></tr>
+        <tr><td><code>System booted</code></td><td>Date/time of last reboot; uptime in brackets</td><td>Uptime accurate even if clock is wrong</td></tr>
+        <tr><td><code>[1 week, 3 days&hellip;]</code></td><td>Duration since last boot</td><td>Verify customer rebooted the correct device</td></tr>
+      </tbody>
+    </table></div>
+    <div class="cal tip"><div class="cal-title">&#128161; Practical Use</div><p>To verify a customer actually rebooted the correct router: check <code>show system uptime</code>. Uptime is <strong>accurate even if the system clock is incorrect</strong> (e.g., NTP not configured).</p></div>
+    <h3 class="tt">show system information</h3>
+    <div class="tw"><table>
+      <thead><tr><th>Field</th><th>Example</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><code>Model</code></td><td>MX204</td><td>Device model</td></tr>
+        <tr><td><code>Family</code></td><td>Junos</td><td>Always "Junos" for Juniper products</td></tr>
+        <tr><td><code>Junos version</code></td><td>22.4R1.10</td><td>Full version string</td></tr>
+        <tr><td><code>Hostname</code></td><td>Router1</td><td>If mismatched with diagram, fix the router (not the diagram)</td></tr>
+      </tbody>
+    </table></div>
+    <div class="cal warn"><div class="cal-title">&#9888; Hostname Mismatch</div><p>If CLI hostname doesn&rsquo;t match the network diagram, <strong>correct the router&rsquo;s hostname via configuration</strong>. The diagram is correct.</p></div>
+
+    <!-- VERSION NAMING -->
+    <h3 class="tt" id="ver">Junos OS Version Naming Convention</h3>
+    <div class="dw">
+      <img src="img_version_naming.jpg" alt="Junos OS Version Naming Convention breakdown" class="di">
+      <p class="dc">Junos OS version string breakdown: Year (YY) &middot; Major Release Quarter &middot; Release Type (FR, MR, SR) &middot; Release Number &middot; Build Number.</p>
+    </div>
+    <h4 class="sub">Release Types</h4>
+    <div class="tw"><table>
+      <thead><tr><th>Suffix</th><th>Type</th><th>Contains</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><code>R1</code></td><td><strong>Feature Release (FR)</strong></td><td>First edition of a major release; new features included</td><td>22.4R1</td></tr>
+        <tr><td><code>R2, R3&hellip;</code></td><td><strong>Maintenance Release (MR)</strong></td><td>Bug fixes only; rarely new features</td><td>22.4R2</td></tr>
+        <tr><td><code>R1-S1&hellip;</code></td><td><strong>Service Release (SR)</strong></td><td>Urgent/critical fixes; cannot wait for next MR</td><td>22.4R1-S1</td></tr>
+      </tbody>
+    </table></div>
+    <h4 class="sub">Release Cadence</h4>
+    <ul class="kp">
+      <li><strong>Pre-2023:</strong> Four major releases per year (quarters .1, .2, .3, .4)</li>
+      <li><strong>2023 onward:</strong> Two major releases per year (23.2 and 23.4); numbering convention kept consistent.</li>
+    </ul>
+    <div class="cb"><div class="ch"><span class="cl">junos version examples</span><button class="cpb" onclick="cc(this)">Copy</button></div>
+    <pre><code>21.3R1       <span class="cmt">&rarr; 2021, major 3 (Q3), Feature Release 1</span>
+22.4R1.10    <span class="cmt">&rarr; 2022, major 4 (Q4), Feature Release 1, build 10</span>
+22.4R2       <span class="cmt">&rarr; 2022, Q4, Maintenance Release 2</span>
+22.4R1-S1    <span class="cmt">&rarr; 2022, Q4, FR1, Service Release 1</span>
+23.2R1       <span class="cmt">&rarr; 2023, first major (new biannual cadence)</span>
+23.4R1       <span class="cmt">&rarr; 2023, second major</span></code></pre></div>
+  </section>
+  <hr class="div">
+
+  <!-- LLDP -->
+  <section class="ss" id="lldp">
+    <div class="mtag purple">LLDP</div>
+    <h2 class="st">LLDP &mdash; Link Layer Discovery Protocol</h2>
+    <h3 class="tt">Overview</h3>
+    <ul class="kp">
+      <li><strong>LLDP (Link Layer Discovery Protocol):</strong> IEEE 802.1AB standard; allows devices to advertise identity and capabilities to directly connected neighbors.</li>
+      <li>Operates at <strong>Layer 2</strong> &mdash; discovers devices on the <strong>local link only</strong> (directly connected, no routing needed).</li>
+      <li>Both devices must have LLDP enabled on the connecting interface to exchange messages.</li>
+    </ul>
+    <h3 class="tt">Information Discovered</h3>
+    <ul class="kp">
+      <li><strong>Neighbor hostname</strong></li>
+      <li><strong>Remote port name/ID</strong> (which port the neighbor is connected on)</li>
+      <li><strong>MAC address</strong> of the neighbor interface</li>
+      <li><strong>PoE (Power over Ethernet) capability</strong> &mdash; whether neighbor can supply/receive power via Ethernet cable</li>
+      <li><strong>Vendor name</strong> / system description</li>
+    </ul>
+    <div class="cal note"><div class="cal-title">&#128204; PoE Definition</div><p><strong>PoE (Power over Ethernet):</strong> technology delivering electrical power over standard Ethernet cabling alongside data. Common for IP phones, wireless APs, IP cameras.</p></div>
+    <h3 class="tt">LLDP Commands</h3>
+    <div class="cb"><div class="ch"><span class="cl">junos &mdash; operational mode</span><button class="cpb" onclick="cc(this)">Copy</button></div>
+    <pre><code><span class="cmd">show lldp neighbors</span>              <span class="cmt"># local interface + remote hostname for all neighbors</span>
+<span class="cmd">show lldp neighbors interface</span> xe-0/0/0  <span class="cmt"># LLDP info for a specific interface</span>
+<span class="cmd">show lldp</span>                        <span class="cmt"># LLDP global status (timers, enabled/disabled)</span></code></pre></div>
+    <div class="cal tip"><div class="cal-title">&#128161; General Rule</div><p>To verify any protocol: <code>show &lt;protocol-name&gt;</code>. LLDP: <code>show lldp</code>. OSPF: <code>show ospf</code>. BGP: <code>show bgp</code>. Pattern applies universally.</p></div>
+    <div class="kg">
+      <span class="kt">LLDP</span><span class="kt">Link Layer Discovery Protocol</span><span class="kt">IEEE 802.1AB</span><span class="kt">Layer 2</span><span class="kt">local link</span><span class="kt">PoE</span><span class="kt">Power over Ethernet</span><span class="kt">MAC address</span><span class="kt">neighbor hostname</span><span class="kt">remote port</span>
+    </div>
+  </section>
+  <hr class="div">
+
+  <!-- CLI HELP -->
+  <section class="ss" id="help">
+    <div class="mtag blue">CLI Mastery</div>
+    <h2 class="st">CLI &mdash; Built-in Help, Auto-completion &amp; Hierarchy</h2>
+    <h3 class="tt">Navigation Shortcuts</h3>
+    <div class="tw"><table>
+      <thead><tr><th>Key</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td><code>&#8593; / &#8595;</code> arrows</td><td>Scroll through CLI session history</td></tr>
+        <tr><td><code>?</code> (question mark)</td><td>At any point &mdash; shows all matching sub-commands with descriptions, alphabetically</td></tr>
+        <tr><td><code>Space</code></td><td>Auto-complete built-in command keywords only</td></tr>
+        <tr><td><code>Tab</code></td><td>Auto-complete built-in keywords <strong>and</strong> user-defined names (policy names, filter names, etc.)</td></tr>
+        <tr><td><code>Space</code> (in --More--)</td><td>Advance one full screen of paginated output</td></tr>
+        <tr><td><code>Enter</code> (in --More--)</td><td>Scroll one line at a time</td></tr>
+        <tr><td><code>q</code> (in --More--)</td><td>Quit pager, return to prompt</td></tr>
+      </tbody>
+    </table></div>
+    <h3 class="tt">Question Mark Help</h3>
+    <div class="cb"><div class="ch"><span class="cl">junos &mdash; help examples</span><button class="cpb" onclick="cc(this)">Copy</button></div>
+    <pre><code>user@router&gt; <span class="cmd">show ?</span>               <span class="cmt"># all top-level show sub-commands</span>
+user@router&gt; <span class="cmd">show system ?</span>        <span class="cmt"># all commands starting with "show system"</span>
+user@router&gt; <span class="cmd">show interfaces ?</span>    <span class="cmt"># interface-level options</span></code></pre></div>
+    <h3 class="tt">Auto-Completion Details</h3>
+    <ul class="kp">
+      <li>Type first letters, press <strong>Space</strong> or <strong>Tab</strong> to auto-complete.</li>
+      <li>If input is <strong>ambiguous</strong> (matches multiple options), Junos shows all matching completions immediately.</li>
+      <li>Junos stores the <strong>fully expanded command</strong> in history (not the abbreviation) &mdash; making output readable.</li>
+    </ul>
+    <div class="cb"><div class="ch"><span class="cl">junos &mdash; autocomplete examples</span><button class="cpb" onclick="cc(this)">Copy</button></div>
+    <pre><code>sh&lt;space&gt;          <span class="cmt">&rarr; expands to: show</span>
+sh sys&lt;space&gt;      <span class="cmt">&rarr; expands to: show system</span>
+sh sys up&lt;space&gt;   <span class="cmt">&rarr; expands to: show system uptime</span>
+show system a      <span class="cmt">&rarr; ambiguous: shows alarms | audit</span></code></pre></div>
+    <h3 class="tt">Junos CLI Hierarchy</h3>
+    <ul class="kp">
+      <li>All Junos CLI commands and the <strong>configuration file</strong> follow a <strong>tree-like hierarchical structure</strong>.</li>
+      <li>Top-level operational keywords: <code>show</code>, <code>monitor</code>, <code>clear</code>, <code>request</code>.</li>
+      <li>Use <code>?</code> at any level &mdash; the CLI is fully self-documenting; no need to memorize everything.</li>
+    </ul>
+    <div class="col">
+      <div class="colh" onclick="tc(this)"><span>&#128193; Junos CLI Hierarchy &mdash; <code>show</code> Branch (partial)</span><span class="coli">&#9660;</span></div>
+      <div class="colb">
+        <div class="cb" style="margin:0">
+        <pre><code style="color:var(--cyan);font-weight:700">show
+</code><code><span style="color:var(--cyan)">&#9500;&#9472;&#9472; system</span>
+&#9474;   <span style="color:var(--t2)">&#9500;&#9472;&#9472; information</span>       <span class="cmt"># model, family, version, hostname</span>
+&#9474;   <span style="color:var(--t2)">&#9500;&#9472;&#9472; uptime</span>            <span class="cmt"># current time, boot time, uptime</span>
+&#9474;   <span style="color:var(--t2)">&#9500;&#9472;&#9472; users</span>             <span class="cmt"># logged-in users</span>
+&#9474;   <span style="color:var(--t2)">&#9500;&#9472;&#9472; alarms</span>            <span class="cmt"># system alarms</span>
+&#9474;   <span style="color:var(--t2)">&#9492;&#9472;&#9472; audit</span>             <span class="cmt"># audit log</span>
+<span style="color:var(--cyan)">&#9500;&#9472;&#9472; version</span>               <span class="cmt"># Junos version + RE info</span>
+<span style="color:var(--cyan)">&#9500;&#9472;&#9472; interfaces</span>            <span class="cmt"># all interfaces</span>
+<span style="color:var(--cyan)">&#9500;&#9472;&#9472; chassis</span>               <span class="cmt"># hardware state</span>
+<span style="color:var(--cyan)">&#9500;&#9472;&#9472; route</span>                 <span class="cmt"># routing table</span>
+<span style="color:var(--cyan)">&#9500;&#9472;&#9472; lldp</span>
+&#9474;   <span style="color:var(--t2)">&#9492;&#9472;&#9472; neighbors</span>         <span class="cmt"># LLDP neighbor table</span>
+<span style="color:var(--cyan)">&#9500;&#9472;&#9472; ospf</span>
+&#9474;   <span style="color:var(--t2)">&#9492;&#9472;&#9472; neighbor</span>          <span class="cmt"># OSPF neighbor state</span>
+<span style="color:var(--cyan)">&#9500;&#9472;&#9472; bgp</span>
+&#9474;   <span style="color:var(--t2)">&#9492;&#9472;&#9472; summary</span>           <span class="cmt"># BGP peer summary</span>
+<span style="color:var(--cyan)">&#9492;&#9472;&#9472; spanning-tree</span>
+    <span style="color:var(--t2)">&#9492;&#9472;&#9472; interface</span>         <span class="cmt"># STP per-interface state</span></code></pre></div>
+      </div>
+    </div>
+  </section>
+  <hr class="div">
+
+  <!-- KEY TERMS -->
+  <section class="ss" id="kw">
+    <div class="mtag green">Reference</div>
+    <h2 class="st">Key Terms &amp; Acronyms Reference</h2>
+    <p style="color:var(--tm);font-size:.85rem;margin-bottom:16px">All important terms from the course material. Click headers to expand/collapse.</p>
+    <div class="col open" id="kwa">
+      <div class="colh" onclick="tc(this)"><span>&#127959; Architecture &amp; Hardware</span><span class="coli">&#9660;</span></div>
+      <div class="colb">
+        <div class="tw"><table>
+          <thead><tr><th>Term</th><th>Definition</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Junos OS</strong></td><td>Juniper Networks operating system; modular, not monolithic; runs on all Juniper hardware.</td></tr>
+            <tr><td><strong>Modular software</strong></td><td>OS composed of independent processes; one process failure = only that process restarts.</td></tr>
+            <tr><td><strong>Control Plane</strong></td><td>Routing Engine (RE) side; manages routing protocols and routing table.</td></tr>
+            <tr><td><strong>Data Plane</strong></td><td>Packet Forwarding Engine (PFE); performs high-speed transit packet forwarding.</td></tr>
+            <tr><td><strong>Transit traffic</strong></td><td>Traffic forwarded through the device (not destined for the device itself).</td></tr>
+            <tr><td><strong>Routing Engine (RE)</strong></td><td>Control plane CPU board running Junos OS; manages routing tables and protocols.</td></tr>
+            <tr><td><strong>PFE</strong></td><td>Packet Forwarding Engine; data plane hardware performing high-speed packet forwarding.</td></tr>
+            <tr><td><strong>Chassis</strong></td><td>Physical device outer case/enclosure.</td></tr>
+            <tr><td><strong>Fixed Port Chassis</strong></td><td>Interfaces built into chassis; single non-swappable RE. Example: MX204.</td></tr>
+            <tr><td><strong>Modular Chassis</strong></td><td>Empty slots accepting line cards; hot-swappable components. Example: MX480.</td></tr>
+            <tr><td><strong>Line card</strong></td><td>Circuit board inserted into modular chassis slot; adds interfaces and packet processing.</td></tr>
+            <tr><td><strong>Services line card</strong></td><td>Line card providing services (NAT, encryption) beyond port connectivity.</td></tr>
+            <tr><td><strong>Hot-swappable</strong></td><td>Can be removed/inserted without powering down the chassis.</td></tr>
+            <tr><td><strong>U (Rack Unit)</strong></td><td>Standard height unit for rack-mountable equipment. 1U &approx; 1.75 inches.</td></tr>
+            <tr><td><strong>Port density</strong></td><td>Number of ports available on a device or line card.</td></tr>
+            <tr><td><strong>QSFP / SFP+ / SFP</strong></td><td>Transceiver form factors for 100G/40G, 10G, and 1G interfaces respectively.</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+    <div class="col" id="kwp">
+      <div class="colh" onclick="tc(this)"><span>&#128230; Products &amp; Series</span><span class="coli">&#9660;</span></div>
+      <div class="colb">
+        <div class="tw"><table>
+          <thead><tr><th>Term</th><th>Definition</th></tr></thead>
+          <tbody>
+            <tr><td><strong>MX Series</strong></td><td>Edge/core routers; SP and enterprise; PE/VPN roles; fixed and modular forms.</td></tr>
+            <tr><td><strong>PTX Series</strong></td><td>SP backbone core routers; optimized for ultra-high throughput forwarding.</td></tr>
+            <tr><td><strong>ACX Series</strong></td><td>Access/aggregation routers; central office and telephone exchange environments.</td></tr>
+            <tr><td><strong>SRX Series</strong></td><td>Next-Generation Firewalls (NGFW) with ATP (Advanced Threat Protection).</td></tr>
+            <tr><td><strong>EX Series</strong></td><td>Campus and enterprise switches.</td></tr>
+            <tr><td><strong>QFX Series</strong></td><td>Data center switches.</td></tr>
+            <tr><td><strong>vMX</strong></td><td>Virtual MX router &mdash; Junos OS as a virtual machine; cloud/lab deployments.</td></tr>
+            <tr><td><strong>vJunos Switch</strong></td><td>Virtual switch appliance; replaces the older vQFX.</td></tr>
+            <tr><td><strong>Mist</strong></td><td>AI-driven wireless access point management platform.</td></tr>
+            <tr><td><strong>Apstra</strong></td><td>Data center automation and intent-based networking platform.</td></tr>
+            <tr><td><strong>NGFW</strong></td><td>Next-Generation Firewall &mdash; stateful firewall + application awareness, IPS, user-ID.</td></tr>
+            <tr><td><strong>ATP</strong></td><td>Advanced Threat Protection &mdash; detects and blocks advanced malware and threats.</td></tr>
+            <tr><td><strong>PE (Provider Edge)</strong></td><td>Router at SP network edge; connects to customer CE routers; handles MPLS/VPN.</td></tr>
+            <tr><td><strong>VPN</strong></td><td>Virtual Private Network &mdash; logical private network over shared infrastructure.</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+    <div class="col" id="kwc">
+      <div class="colh" onclick="tc(this)"><span>&#9000; CLI, Protocols &amp; Commands</span><span class="coli">&#9660;</span></div>
+      <div class="colb">
+        <div class="tw"><table>
+          <thead><tr><th>Term / Command</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>&gt;</code></td><td>Operational mode prompt indicator</td></tr>
+            <tr><td><code>#</code></td><td>Configuration mode prompt indicator</td></tr>
+            <tr><td><code>%</code></td><td>Unix shell prompt indicator</td></tr>
+            <tr><td><strong>Operational mode</strong></td><td>CLI mode for viewing system state; show/monitor/clear/request commands.</td></tr>
+            <tr><td><strong>Configuration mode</strong></td><td>CLI mode for modifying device configuration; changes staged until committed.</td></tr>
+            <tr><td><code>configure</code></td><td>Enter configuration mode from operational mode.</td></tr>
+            <tr><td><code>exit</code> / <code>quit</code></td><td>Exit current mode.</td></tr>
+            <tr><td><code>show</code></td><td>Static snapshot of system/protocol state.</td></tr>
+            <tr><td><code>monitor</code></td><td>Real-time continuously updating output.</td></tr>
+            <tr><td><code>clear</code></td><td>Reset counters, tables, or protocol state.</td></tr>
+            <tr><td><code>request</code></td><td>System-level operations (reboot, upgrade, shell).</td></tr>
+            <tr><td><code>?</code></td><td>Context-sensitive help at any cursor position.</td></tr>
+            <tr><td>Space auto-complete</td><td>Completes built-in CLI keywords only.</td></tr>
+            <tr><td>Tab auto-complete</td><td>Completes keywords AND user-defined variable names.</td></tr>
+            <tr><td>--More-- pagination</td><td>Space = full page, Enter = one line, q = quit.</td></tr>
+            <tr><td><strong>SSH</strong></td><td>Secure Shell &mdash; TCP port 22, encrypted remote access.</td></tr>
+            <tr><td><strong>Telnet</strong></td><td>Legacy remote access &mdash; TCP port 23, clear text (insecure).</td></tr>
+            <tr><td><strong>LLDP</strong></td><td>Link Layer Discovery Protocol &mdash; Layer 2 neighbor discovery.</td></tr>
+            <tr><td><strong>PoE</strong></td><td>Power over Ethernet &mdash; power delivery via Ethernet cable.</td></tr>
+            <tr><td><strong>OSPF</strong></td><td>Open Shortest Path First &mdash; link-state routing protocol.</td></tr>
+            <tr><td><strong>BGP</strong></td><td>Border Gateway Protocol &mdash; inter-AS path-vector routing.</td></tr>
+            <tr><td><strong>STP</strong></td><td>Spanning Tree Protocol &mdash; loop prevention in Layer 2.</td></tr>
+            <tr><td><strong>FR (Feature Release)</strong></td><td>First edition of a major release; contains new features. Example: 22.4R1.</td></tr>
+            <tr><td><strong>MR (Maintenance Release)</strong></td><td>Bug fixes only; no new features. Example: 22.4R2.</td></tr>
+            <tr><td><strong>SR (Service Release)</strong></td><td>Urgent/critical hotfixes between MRs. Example: 22.4R1-S1.</td></tr>
+            <tr><td><strong>/24 subnet</strong></td><td>255.255.255.0 mask; 254 usable host addresses.</td></tr>
+            <tr><td><strong>Default gateway</strong></td><td>Router IP hosts use to reach external networks.</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+    <h3 class="tt" style="margin-top:28px">Complete Keyword Cloud</h3>
+    <div class="kg">
+      <span class="kt">Junos OS</span><span class="kt">modular software</span><span class="kt">process</span><span class="kt">transit traffic</span><span class="kt">control plane</span><span class="kt">data plane</span><span class="kt">routing engine (RE)</span><span class="kt">PFE</span><span class="kt">fixed port chassis</span><span class="kt">modular chassis</span><span class="kt">line card</span><span class="kt">services line card</span><span class="kt">hot-swappable</span><span class="kt">MX Series</span><span class="kt">PTX Series</span><span class="kt">ACX Series</span><span class="kt">SRX Series</span><span class="kt">NGFW</span><span class="kt">ATP</span><span class="kt">vMX</span><span class="kt">vJunos Switch</span><span class="kt">virtual appliance</span><span class="kt">PE (Provider Edge)</span><span class="kt">VPN</span><span class="kt">aggregation</span><span class="kt">central office</span><span class="kt">telephone exchange</span><span class="kt">PoE</span><span class="kt">LLDP</span><span class="kt">MAC address</span><span class="kt">SSH</span><span class="kt">Secure Shell</span><span class="kt">TCP port 22</span><span class="kt">Telnet</span><span class="kt">clear text</span><span class="kt">TCP port 23</span><span class="kt">operational mode</span><span class="kt">configuration mode</span><span class="kt">shell prompt</span><span class="kt">hostname</span><span class="kt">show</span><span class="kt">monitor</span><span class="kt">clear</span><span class="kt">request</span><span class="kt">hierarchy</span><span class="kt">? (question mark)</span><span class="kt">auto-complete</span><span class="kt">Tab key</span><span class="kt">Space key</span><span class="kt">--More-- pagination</span><span class="kt">Feature Release (FR)</span><span class="kt">Maintenance Release (MR)</span><span class="kt">Service Release (SR)</span><span class="kt">build number</span><span class="kt">year.quarter format</span><span class="kt">STP</span><span class="kt">OSPF</span><span class="kt">BGP</span><span class="kt">show route</span><span class="kt">show version</span><span class="kt">show system uptime</span><span class="kt">show system information</span><span class="kt">show lldp neighbors</span><span class="kt">show interfaces</span><span class="kt">monitor interface</span><span class="kt">show system alarms</span><span class="kt">show system audit</span><span class="kt">show chassis</span><span class="kt">configure</span><span class="kt">exit</span><span class="kt">MX204</span><span class="kt">MX480</span><span class="kt">QSFP</span><span class="kt">SFP+</span><span class="kt">SFP</span><span class="kt">slot number</span><span class="kt">U (rack unit)</span><span class="kt">port density</span><span class="kt">EX Series</span><span class="kt">QFX Series</span><span class="kt">Mist</span><span class="kt">Apstra</span><span class="kt">shared login</span><span class="kt">remote auth server</span><span class="kt">default gateway</span><span class="kt">/24 subnet</span><span class="kt">254 usable addresses</span><span class="kt">hostname mismatch</span><span class="kt">show version and haiku</span>
+    </div>
+  </section>
+
+  <div style="margin-top:60px;padding:24px 0;border-top:1px solid var(--bd);text-align:center;color:var(--tm);font-size:.78rem;">
+    JNCIA-Junos Study Guide &mdash; Based on Junos OS Fundamentals Training Material<br>
+    Generated for JN0-104 exam preparation &middot; Juniper Networks Certified Internet Associate
+  </div>
+</main>
+<button id="stb" aria-label="Scroll to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
+<script>
+const idx=[
+  {id:'#m1',title:'Junos OS Architecture',c:'modular software process crash control plane data plane transit traffic routing engine RE PFE separation hardware'},
+  {id:'#cpd',title:'Control Plane vs Data Plane',c:'RE PFE forwarding table routing table OSPF BGP LLDP hardware separation'},
+  {id:'#m2',title:'Hardware & Chassis Types',c:'chassis fixed port modular line card slot rack unit U hot-swappable services'},
+  {id:'#fixed',title:'Fixed Port Chassis MX204',c:'MX204 fixed port QSFP SFP+ SFP management console built-in RE not hot-swappable 1U'},
+  {id:'#modular',title:'Modular Chassis MX480',c:'MX480 modular chassis line cards slots hot-swappable slot zero-indexed port density'},
+  {id:'#re',title:'Routing Engine RE',c:'routing engine RE control plane routing table forwarding table CPU board fixed modular redundant'},
+  {id:'#m3',title:'Product Families',c:'MX PTX ACX SRX EX QFX vMX vJunos NGFW ATP PE provider edge VPN virtual Mist Apstra'},
+  {id:'#m4',title:'Network Topology Lab',c:'lab topology management network /24 subnet 254 usable addresses default gateway SSH any router IP'},
+  {id:'#m5',title:'SSH & Remote Access',c:'SSH secure shell TCP port 22 Telnet TCP port 23 clear text encrypted PuTTY shared login remote auth key pair'},
+  {id:'#m6',title:'CLI Operational Mode',c:'operational mode configuration mode shell prompt configure exit quit > # % show monitor clear request'},
+  {id:'#modes',title:'CLI Modes',c:'configure exit quit shell % > # operational configuration mode prompt indicator'},
+  {id:'#cmds',title:'Operational Commands',c:'show version interfaces lldp route bgp ospf chassis uptime users alarms audit spanning-tree monitor interface'},
+  {id:'#m7',title:'Show System Commands',c:'show system uptime current time booted model family Junos version hostname show version information'},
+  {id:'#ver',title:'Version Naming Convention',c:'feature release FR maintenance release MR service release SR build number year quarter 22.4R1 21.3R1 biannual'},
+  {id:'#lldp',title:'LLDP Protocol',c:'LLDP link layer discovery protocol 802.1AB neighbor hostname remote port MAC address PoE power over ethernet vendor'},
+  {id:'#help',title:'CLI Help & Autocomplete',c:'question mark ? auto-complete Tab Space arrow keys history More pagination hierarchy tree show system'},
+  {id:'#kw',title:'Key Terms Reference',c:'keyword acronym RE PFE MX SRX PTX ACX SSH Telnet LLDP PoE OSPF BGP STP FR MR SR /24 subnet'},
+];
+const gs=document.getElementById('gs'),sr=document.getElementById('sr');
+gs.addEventListener('input',function(){
+  const q=this.value.trim().toLowerCase();
+  if(q.length<2){sr.style.display='none';return}
+  const h=idx.filter(x=>x.title.toLowerCase().includes(q)||x.c.toLowerCase().includes(q)).slice(0,8);
+  if(!h.length){sr.style.display='none';return}
+  sr.innerHTML=h.map(x=>`<div class="sri" onclick="gt('${x.id}')"><div class="rs">${x.id.replace('#','').toUpperCase()}</div><strong>${x.title}</strong></div>`).join('');
+  sr.style.display='block';
+});
+document.addEventListener('click',e=>{if(!e.target.closest('.hsrch'))sr.style.display='none';});
+gs.addEventListener('keydown',e=>{if(e.key==='Escape'){sr.style.display='none';gs.blur();}});
+function gt(id){sr.style.display='none';gs.value='';const el=document.querySelector(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
+const sb=document.getElementById('sb');
+document.getElementById('sbt').addEventListener('click',()=>sb.classList.toggle('open'));
+document.addEventListener('click',e=>{if(window.innerWidth<=768&&!e.target.closest('#sb')&&!e.target.closest('#sbt'))sb.classList.remove('open');});
+function nc(el){document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));el.classList.add('active');if(window.innerWidth<=768)sb.classList.remove('open');}
+function tc(h){h.parentElement.classList.toggle('open');}
+function cc(btn){
+  const pre=btn.closest('.cb').querySelector('pre');
+  const txt=pre.innerText||pre.textContent;
+  if(navigator.clipboard){navigator.clipboard.writeText(txt).then(()=>{btn.textContent='Copied!';btn.classList.add('ok');setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('ok');},1800);});}
+  else{const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);btn.textContent='Copied!';btn.classList.add('ok');setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('ok');},1800);}
+}
+const stb=document.getElementById('stb'),pf=document.getElementById('pf'),pp=document.getElementById('pp');
+window.addEventListener('scroll',()=>{
+  const dh=document.documentElement.scrollHeight-window.innerHeight;
+  const pct=dh>0?Math.round(window.scrollY/dh*100):0;
+  pf.style.width=pct+'%';pp.textContent=pct+'%';
+  stb.classList.toggle('vis',window.scrollY>400);
+  const secs=document.querySelectorAll('.ss,[id]');let cur='';
+  secs.forEach(s=>{if(s.getBoundingClientRect().top<120)cur='#'+s.id;});
+  if(cur)document.querySelectorAll('.ni').forEach(n=>n.classList.toggle('active',n.getAttribute('href')===cur));
+},{passive:true});
+</script>
+</body>
+</html>

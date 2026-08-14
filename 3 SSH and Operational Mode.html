@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Junos CLI Operational Mode, Remote SSH Access & Network Fundamentals Study Notes | JNCIA-Junos</title>
+<style>
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.7;
+    color: #1e293b;
+    background-color: #f8fafc;
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 32px 24px;
+  }
+  .content-wrapper {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 44px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  }
+  h1 {
+    font-size: 2.35rem;
+    font-weight: 800;
+    color: #0f172a;
+    border-bottom: 3px solid #2563eb;
+    padding-bottom: 14px;
+    margin-top: 0;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+  .subtitle {
+    font-size: 1.15rem;
+    color: #64748b;
+    margin-bottom: 32px;
+    font-weight: 500;
+  }
+  h2 {
+    font-size: 1.65rem;
+    font-weight: 700;
+    color: #1e3a8a;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 10px;
+    margin-top: 48px;
+    letter-spacing: -0.01em;
+  }
+  h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-top: 28px;
+    color: #1d4ed8;
+  }
+  h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 22px;
+    color: #334155;
+  }
+  nav.toc {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 24px 28px;
+    margin-bottom: 40px;
+  }
+  nav.toc h2 {
+    margin-top: 0;
+    font-size: 1.35rem;
+    border-bottom: none;
+    padding-bottom: 0;
+    color: #0f172a;
+  }
+  nav.toc ol {
+    margin: 0;
+    padding-left: 22px;
+  }
+  nav.toc li {
+    margin: 8px 0;
+  }
+  nav.toc a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  nav.toc a:hover {
+    text-decoration: underline;
+    color: #1d4ed8;
+  }
+  .diagram-container {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 24px;
+    margin: 28px 0;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.04);
+    overflow-x: auto;
+  }
+  .diagram-caption {
+    font-size: 0.95rem;
+    color: #334155;
+    margin-top: 16px;
+    font-weight: 600;
+    text-align: center;
+  }
+  .walkthrough-box {
+    background-color: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-left: 4px solid #2563eb;
+    border-radius: 0 8px 8px 0;
+    padding: 20px 24px;
+    margin: 20px 0 28px 0;
+  }
+  .walkthrough-box h4 {
+    margin-top: 0;
+    color: #1e3a8a;
+    font-size: 1.08rem;
+    margin-bottom: 12px;
+  }
+  .walkthrough-box ol {
+    margin: 0;
+    padding-left: 20px;
+  }
+  .walkthrough-box li {
+    margin-bottom: 10px;
+    color: #334155;
+  }
+  .walkthrough-box li:last-child {
+    margin-bottom: 0;
+  }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    background-color: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    color: #7c3aed;
+    border: 1px solid #e2e8f0;
+  }
+  pre {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    background-color: #0f172a;
+    color: #f8fafc;
+    padding: 18px 20px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    border: 1px solid #1e293b;
+  }
+  pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    border: none;
+  }
+  .prompt { color: #4ade80; font-weight: bold; }
+  .comment { color: #94a3b8; font-style: italic; }
+  .highlight { color: #facc15; font-weight: bold; }
+  .output { color: #e2e8f0; }
+  
+  blockquote.added-context {
+    border-left: 4px solid #3b82f6;
+    background-color: #eff6ff;
+    padding: 16px 22px;
+    margin: 24px 0;
+    color: #1e40af;
+    border-radius: 0 8px 8px 0;
+  }
+  blockquote.added-context p {
+    margin: 0 0 8px 0;
+  }
+  blockquote.added-context p:last-child {
+    margin: 0;
+  }
+  
+  .key-terms {
+    background-color: #f8fafc;
+    border-left: 4px solid #64748b;
+    padding: 18px 22px;
+    margin: 24px 0;
+    border-radius: 0 8px 8px 0;
+  }
+  .key-terms h4 {
+    margin-top: 0;
+    color: #1e293b;
+  }
+  .key-terms dt {
+    font-weight: 700;
+    color: #0f172a;
+    margin-top: 10px;
+  }
+  .key-terms dt:first-child {
+    margin-top: 0;
+  }
+  .key-terms dd {
+    margin-left: 0;
+    margin-bottom: 10px;
+    color: #475569;
+  }
+  
+  .gotchas {
+    background-color: #fffbeb;
+    border-left: 4px solid #f59e0b;
+    padding: 18px 22px;
+    margin: 24px 0;
+    border-radius: 0 8px 8px 0;
+  }
+  .gotchas h4 {
+    color: #b45309;
+    margin-top: 0;
+  }
+  
+  .hands-on {
+    background-color: #f0fdf4;
+    border: 1px solid #86efac;
+    border-radius: 8px;
+    padding: 22px 26px;
+    margin: 28px 0;
+  }
+  .hands-on h4 {
+    color: #166534;
+    margin-top: 0;
+    margin-bottom: 14px;
+    font-size: 1.15rem;
+  }
+  .task-item {
+    margin-bottom: 18px;
+  }
+  .task-item:last-child {
+    margin-bottom: 0;
+  }
+  .task-title {
+    font-weight: 700;
+    color: #15803d;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 0.94rem;
+  }
+  th, td {
+    border: 1px solid #cbd5e1;
+    padding: 12px 16px;
+    text-align: left;
+  }
+  th {
+    background-color: #f1f5f9;
+    color: #0f172a;
+    font-weight: 700;
+  }
+  tr:nth-child(even) {
+    background-color: #f8fafc;
+  }
+  
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+  svg text {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    user-select: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="content-wrapper">
+
+<h1>Junos CLI Operational Mode, Remote SSH Access & Network Fundamentals Study Notes</h1>
+<div class="subtitle">Complete Illustrated Reference for JNCIA-Junos Certification Preparation</div>
+
+<nav class="toc">
+  <h2>Table of Contents</h2>
+  <ol>
+    <li><a href="#topic-1">Understanding the Customer Network Architecture & Hardware</a>
+      <ol>
+        <li><a href="#topic-1-1">The Customer Scenario & Role of the On-Site Network Engineer</a></li>
+        <li><a href="#topic-1-2">Customer Network Topology (LAN Subnets & WAN Edge Gateway)</a></li>
+        <li><a href="#topic-1-3">Routers vs. Switches: Why the WAN Plugs into the Router</a></li>
+        <li><a href="#topic-1-4">The 3-Cable Legacy Inefficiency vs. 802.1Q VLAN Trunking</a></li>
+        <li><a href="#topic-1-5">The Juniper Networks MX204 Fixed-Port Edge Router</a></li>
+      </ol>
+    </li>
+    <li><a href="#topic-2">Connecting Remotely to the Junos CLI via SSH</a>
+      <ol>
+        <li><a href="#topic-2-1">The 4 Requirements for Remote Network Management</a></li>
+        <li><a href="#topic-2-2">Protocol Security: SSH (TCP Port 22) vs. Telnet (TCP Port 23)</a></li>
+        <li><a href="#topic-2-3">User Authentication & Security Risks of Shared Generic Accounts</a></li>
+        <li><a href="#topic-2-4">IPv4 Subnetting Basics & Default Gateway Mechanics (/24 Calculations)</a></li>
+        <li><a href="#topic-2-5">Terminal Software, SSH Client Execution & Host Key Verification</a></li>
+      </ol>
+    </li>
+    <li><a href="#topic-3">Junos CLI Operational Mode Fundamentals & Command Hierarchy</a>
+      <ol>
+        <li><a href="#topic-3-1">CLI Modes: Operational Mode (>) vs. Configuration Mode (#)</a></li>
+        <li><a href="#topic-3-2">The 4 Root Operational Command Keywords (show, monitor, clear, request)</a></li>
+        <li><a href="#topic-3-3">Operational Snapshot (show) vs. Live Real-Time Telemetry (monitor)</a></li>
+        <li><a href="#topic-3-4">Administrative & Maintenance Commands (clear & request)</a></li>
+      </ol>
+    </li>
+    <li><a href="#topic-4">System Verification Commands & The 6 Manager Diagnostic Tasks</a>
+      <ol>
+        <li><a href="#topic-4-1">The Manager's 6 Diagnostic Verification Tasks</a></li>
+        <li><a href="#topic-4-2">Task 1: Hostname Identification & Consistency Auditing</a></li>
+        <li><a href="#topic-4-3">Tasks 2 & 3: Device Uptime & Date/Time Verification (show system uptime)</a></li>
+        <li><a href="#topic-4-4">Tasks 4 & 5: Hardware Model & OS Identification (show system information)</a></li>
+        <li><a href="#topic-4-5">Junos OS Release Naming Schema & Lifecycles (FR, MR, SR)</a></li>
+        <li><a href="#topic-4-6">Task 6: Neighbor Discovery Verification via LLDP (show lldp neighbors)</a></li>
+      </ol>
+    </li>
+    <li><a href="#topic-5">CLI Navigation, Built-in Help & Keyboard Productivity Tools</a>
+      <ol>
+        <li><a href="#topic-5-1">Command History Navigation (Up/Down Arrow Keys)</a></li>
+        <li><a href="#topic-5-2">Context-Sensitive Help with the Question Mark (?)</a></li>
+        <li><a href="#topic-5-3">Screen Pagination & Scrolling Navigation (---(more)---)</a></li>
+        <li><a href="#topic-5-4">Command Auto-Completion: Spacebar vs. Tab Key</a></li>
+        <li><a href="#topic-5-5">Ambiguity Handling & Partial Command Suggestions</a></li>
+        <li><a href="#topic-5-6">The Hierarchical Command Tree Structure</a></li>
+        <li><a href="#topic-5-7">Junos Easter Egg: <code>show version and haiku</code></a></li>
+      </ol>
+    </li>
+    <li><a href="#topic-6">Hands-On Lab Walkthrough & Step-by-Step CLI Scenarios</a>
+      <ol>
+        <li><a href="#topic-6-1">Lab Topology & Management Plane Architecture</a></li>
+        <li><a href="#topic-6-2">Step-by-Step Lab Tasks & Command Execution</a></li>
+      </ol>
+    </li>
+    <li><a href="#topic-7">Command Quick Reference & Common Beginner Pitfalls</a>
+      <ol>
+        <li><a href="#topic-7-1">Junos Operational CLI Command Reference Table</a></li>
+        <li><a href="#topic-7-2">Common Beginner Mistakes & Gotchas</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+
+<!-- ========================================================================= -->
+<!-- TOPIC 1 -->
+<!-- ========================================================================= -->
+<section id="topic-1">
+  <h2>1. Understanding the Customer Network Architecture & Hardware</h2>
+  
+  <p>In this module, you assume the role of an on-site network engineer taking responsibility for a customer's production enterprise network. Before executing operational commands, you must understand how traffic flows between the local subnets, the access switch, the edge router, and the public Internet.</p>
+
+  <div class="diagram-container">
+    <!-- SVG 1: Redesigned Visual Network Topology -->
+    <svg viewBox="0 0 960 400" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="glow" x="-10%" y="-10%" width="120%" height="120%">
+          <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0f172a" flood-opacity="0.1"/>
+        </filter>
+      </defs>
+
+      <!-- Background -->
+      <rect width="960" height="400" fill="#f8fafc" rx="10" stroke="#cbd5e1" stroke-width="1.5"/>
+      <text x="480" y="32" font-size="17" font-weight="800" fill="#0f172a" text-anchor="middle">Figure 1: Customer Production Network & Device Topology</text>
+
+      <!-- 1. LAN Endpoints (Left) -->
+      <g transform="translate(35, 60)" filter="url(#glow)">
+        <rect width="210" height="305" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5" rx="8"/>
+        <rect x="0" y="0" width="210" height="32" fill="#334155" rx="6"/>
+        <text x="105" y="21" font-size="11.5" font-weight="800" fill="#ffffff" text-anchor="middle">[1] 3 LAN SEGMENTS</text>
+
+        <!-- Corp LAN -->
+        <g transform="translate(15, 45)">
+          <rect width="180" height="70" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5" rx="6"/>
+          <!-- Laptop Vector Icon -->
+          <rect x="12" y="15" width="28" height="18" fill="#1e40af" rx="2"/>
+          <path d="M 8 33 L 44 33 L 40 37 L 12 37 Z" fill="#64748b"/>
+          <text x="50" y="26" font-size="11" font-weight="800" fill="#1e40af">Corporate LAN</text>
+          <text x="50" y="42" font-size="10" font-weight="700" fill="#0f172a">172.16.10.0/24</text>
+          <text x="50" y="56" font-size="9" fill="#3b82f6">Workstations</text>
+        </g>
+
+        <!-- Server LAN -->
+        <g transform="translate(15, 128)">
+          <rect width="180" height="70" fill="#fefce8" stroke="#eab308" stroke-width="1.5" rx="6"/>
+          <!-- Server Rack Icon -->
+          <rect x="12" y="15" width="28" height="24" fill="#854d0e" rx="2"/>
+          <line x1="16" y1="21" x2="36" y2="21" stroke="#fef08a" stroke-width="2"/>
+          <line x1="16" y1="27" x2="36" y2="27" stroke="#fef08a" stroke-width="2"/>
+          <line x1="16" y1="33" x2="36" y2="33" stroke="#fef08a" stroke-width="2"/>
+          <text x="50" y="26" font-size="11" font-weight="800" fill="#854d0e">Server LAN</text>
+          <text x="50" y="42" font-size="10" font-weight="700" fill="#0f172a">172.16.20.0/24</text>
+          <text x="50" y="56" font-size="9" fill="#a16207">DB / App Servers</text>
+        </g>
+
+        <!-- Guest LAN -->
+        <g transform="translate(15, 212)">
+          <rect width="180" height="70" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5" rx="6"/>
+          <!-- Wi-Fi Icon -->
+          <circle cx="26" cy="35" r="3" fill="#dc2626"/>
+          <path d="M 18 28 A 12 12 0 0 1 34 28" fill="none" stroke="#dc2626" stroke-width="2"/>
+          <path d="M 14 22 A 18 18 0 0 1 38 22" fill="none" stroke="#dc2626" stroke-width="2"/>
+          <text x="50" y="26" font-size="11" font-weight="800" fill="#991b1b">Guest LAN</text>
+          <text x="50" y="42" font-size="10" font-weight="700" fill="#0f172a">172.16.30.0/24</text>
+          <text x="50" y="56" font-size="9" fill="#dc2626">Visitor Wi-Fi</text>
+        </g>
+      </g>
+
+      <!-- 2. Switch 1 (Center-Left) -->
+      <g transform="translate(300, 100)" filter="url(#glow)">
+        <rect width="160" height="210" fill="#ffffff" stroke="#0d9488" stroke-width="2" rx="8"/>
+        <rect x="0" y="0" width="160" height="34" fill="#0d9488" rx="6"/>
+        <text x="80" y="22" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">[2] SWITCH 1</text>
+        
+        <!-- Switch Graphic Symbol (Layer 2 ⇄) -->
+        <circle cx="80" cy="72" r="24" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.5"/>
+        <path d="M 68 68 L 92 68 M 86 63 L 92 68 L 86 73" fill="none" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M 92 76 L 68 76 M 74 71 L 68 76 L 74 81" fill="none" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round"/>
+
+        <text x="80" y="115" font-size="10.5" font-weight="700" fill="#0f766e" text-anchor="middle">Layer 2 Switch</text>
+        <text x="80" y="130" font-size="9" fill="#64748b" text-anchor="middle">Bridges MAC frames</text>
+        <text x="80" y="142" font-size="9" fill="#64748b" text-anchor="middle">within single subnets</text>
+
+        <!-- Port status -->
+        <rect x="12" y="156" width="136" height="42" fill="#fff1f2" stroke="#fecdd3" rx="4"/>
+        <text x="80" y="172" font-size="8.5" font-weight="800" fill="#9f1239" text-anchor="middle">⚠️ 3 Physical Cables</text>
+        <text x="80" y="186" font-size="8" fill="#e11d48" text-anchor="middle">(Wastes Router Ports)</text>
+      </g>
+
+      <!-- Connectors: LAN to Switch -->
+      <line x1="245" y1="140" x2="300" y2="160" stroke="#3b82f6" stroke-width="2.5"/>
+      <line x1="245" y1="223" x2="300" y2="215" stroke="#eab308" stroke-width="2.5"/>
+      <line x1="245" y1="305" x2="300" y2="265" stroke="#ef4444" stroke-width="2.5"/>
+
+      <!-- 3 Physical Cables (Switch to Router) -->
+      <g transform="translate(460, 145)">
+        <line x1="0" y1="20" x2="110" y2="0" stroke="#3b82f6" stroke-width="3"/>
+        <rect x="15" y="-3" width="80" height="18" fill="#ffffff" stroke="#bfdbfe" rx="3"/>
+        <text x="55" y="10" font-size="8" font-weight="700" fill="#1d4ed8" text-anchor="middle">xe-0/1/1 (Corp)</text>
+
+        <line x1="0" y1="65" x2="110" y2="65" stroke="#eab308" stroke-width="3"/>
+        <rect x="15" y="55" width="80" height="18" fill="#ffffff" stroke="#fef08a" rx="3"/>
+        <text x="55" y="68" font-size="8" font-weight="700" fill="#854d0e" text-anchor="middle">xe-0/1/2 (Server)</text>
+
+        <line x1="0" y1="110" x2="110" y2="130" stroke="#ef4444" stroke-width="3"/>
+        <rect x="15" y="115" width="80" height="18" fill="#ffffff" stroke="#fecdd3" rx="3"/>
+        <text x="55" y="128" font-size="8" font-weight="700" fill="#991b1b" text-anchor="middle">xe-0/1/3 (Guest)</text>
+      </g>
+
+      <!-- 3. Router 1 (Center-Right) -->
+      <g transform="translate(570, 100)" filter="url(#glow)">
+        <rect width="180" height="210" fill="#ffffff" stroke="#2563eb" stroke-width="2" rx="8"/>
+        <rect x="0" y="0" width="180" height="34" fill="#2563eb" rx="6"/>
+        <text x="90" y="22" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">[3] ROUTER 1 (MX204)</text>
+        
+        <!-- Router Graphic Symbol (Layer 3 Cross-Arrows ⤧) -->
+        <circle cx="90" cy="72" r="24" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+        <path d="M 75 72 L 105 72 M 100 67 L 105 72 L 100 77" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M 90 57 L 90 87 M 85 62 L 90 57 L 95 62" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round"/>
+
+        <text x="90" y="115" font-size="10.5" font-weight="700" fill="#1e40af" text-anchor="middle">Layer 3 Edge Router</text>
+        <text x="90" y="130" font-size="9" fill="#64748b" text-anchor="middle">Routes between subnets</text>
+        
+        <!-- Gateways Box -->
+        <rect x="10" y="142" width="160" height="56" fill="#f8fafc" stroke="#cbd5e1" rx="4"/>
+        <text x="90" y="156" font-size="8.5" font-weight="700" fill="#0f172a" text-anchor="middle">Default Gateway IPs:</text>
+        <text x="90" y="170" font-size="8" fill="#334155" text-anchor="middle">Corp: 172.16.10.1</text>
+        <text x="90" y="182" font-size="8" fill="#334155" text-anchor="middle">Server: 172.16.20.1 | Guest: .30.1</text>
+      </g>
+
+      <!-- 4. WAN Cloud (Far Right) -->
+      <g transform="translate(800, 130)" filter="url(#glow)">
+        <!-- Cloud Shape -->
+        <path d="M 35 60 A 25 25 0 0 1 65 30 A 35 35 0 0 1 115 35 A 25 25 0 0 1 135 60 A 20 20 0 0 1 125 90 L 40 90 A 20 20 0 0 1 35 60 Z" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+        <text x="85" y="58" font-size="12" font-weight="800" fill="#1e40af" text-anchor="middle">[4] WAN</text>
+        <text x="85" y="74" font-size="9.5" font-weight="700" fill="#2563eb" text-anchor="middle">INTERNET</text>
+        <text x="85" y="108" font-size="8.5" font-weight="700" fill="#64748b" text-anchor="middle">Port: xe-0/1/0</text>
+      </g>
+      <line x1="750" y1="190" x2="805" y2="190" stroke="#2563eb" stroke-width="3.5"/>
+    </svg>
+    <div class="diagram-caption">Figure 1: Customer network architecture showing three LAN subnets connected via Switch 1 to the Juniper MX204 router, which acts as the default gateway and WAN edge.</div>
+  </div>
+
+  <div class="walkthrough-box">
+    <h4>🔍 Detailed Walkthrough of Figure 1 (Visual Diagram Breakdown)</h4>
+    <ol>
+      <li><strong>[1] Customer LAN Segments (Left Column):</strong>
+        <ul>
+          <li><strong>Corporate LAN (Blue, <code>172.16.10.0/24</code>):</strong> Depicted by the laptop workstation symbol. Contains employee desktop PCs and administrative management stations.</li>
+          <li><strong>Server LAN (Yellow, <code>172.16.20.0/24</code>):</strong> Depicted by the server rack icon. Houses internal database servers, file shares, and local application hosts.</li>
+          <li><strong>Guest LAN (Red, <code>172.16.30.0/24</code>):</strong> Depicted by the Wi-Fi icon. Provides guest visitors with isolated internet access without access to internal corporate databases.</li>
+        </ul>
+      </li>
+      <li><strong>[2] Switch 1 — Layer 2 Access Switch (Center-Left):</strong>
+        Illustrated with the standard bidirectional switching symbol (<code>⇄</code>). Switch 1 operates strictly at Layer 2, bridging frames based on destination MAC addresses between hosts within the same subnet. It does not perform cross-subnet routing.
+      </li>
+      <li><strong>⚠️ The 3-Cable Legacy Interconnect (Center Wires):</strong>
+        Notice the three distinct physical cables (blue, yellow, red) running between Switch 1 and Router 1 into ports <code>xe-0/1/1</code>, <code>xe-0/1/2</code>, and <code>xe-0/1/3</code>. This legacy 1-cable-per-subnet approach wastes valuable 10Gbps router ports. In later modules, this is upgraded to an **802.1Q VLAN Trunk** where one physical cable carries all subnets using tagged logical units (<code>.10</code>, <code>.20</code>, <code>.30</code>).
+      </li>
+      <li><strong>[3] Router 1 — Juniper MX204 Edge Gateway (Center-Right):</strong>
+        Illustrated with the Layer 3 routing symbol (<code>⤧</code>). Router 1 holds the **Default Gateway** IP addresses (<code>172.16.10.1</code>, <code>172.16.20.1</code>, <code>172.16.30.1</code>) for each LAN subnet, inspecting IP packet headers to route traffic between internal subnets and outward to the WAN.
+      </li>
+      <li><strong>[4] WAN Internet Cloud (Far Right):</strong>
+        The ISP internet link connects directly to interface <code>xe-0/1/0</code> on Router 1. The Internet connection plugs into the router rather than the switch because only the router maintains routing tables and NAT capabilities to interface private RFC 1918 subnets with the global Internet.
+      </li>
+    </ol>
+  </div>
+
+  <h3 id="topic-1-1">1.1 The Customer Scenario & Role of the On-Site Network Engineer</h3>
+  <p>As the newly hired on-site network engineer, you have direct physical and CLI access to the infrastructure. Your responsibilities include verifying system health, auditing configurations against network diagrams, troubleshooting link anomalies, and optimizing legacy designs.</p>
+
+  <h3 id="topic-1-2">1.2 Customer Network Topology (LAN Subnets & WAN Edge Gateway)</h3>
+  <ul>
+    <li><strong>Corporate LAN:</strong> <code>172.16.10.0/24</code> (Hosts employee workstations and management laptops).</li>
+    <li><strong>Server LAN:</strong> <code>172.16.20.0/24</code> (Hosts internal application and database servers).</li>
+    <li><strong>Guest LAN:</strong> <code>172.16.30.0/24</code> (Provides isolated guest Internet connectivity).</li>
+  </ul>
+
+  <h3 id="topic-1-3">1.3 Routers vs. Switches: Why the WAN Plugs into the Router</h3>
+  <ul>
+    <li><strong>Layer 2 Switches:</strong> Forward frames based on MAC addresses <em>within</em> a single broadcast domain / subnet. A switch does not have routing tables to determine cross-network paths.</li>
+    <li><strong>Layer 3 Routers:</strong> Inspect Layer 3 IP headers to route packets <em>between</em> disparate subnets and across wide-area networks (WAN). The Internet service provider (ISP) handoff must always plug into the router.</li>
+  </ul>
+
+  <h3 id="topic-1-4">1.4 The 3-Cable Legacy Inefficiency vs. 802.1Q VLAN Trunking</h3>
+  <p>The legacy network currently runs three separate physical cables between Switch 1 and Router 1 (one cable dedicated per subnet). This design does not scale: adding subnets quickly exhausts expensive router ports. In modern networking, an <strong>802.1Q VLAN Trunk</strong> uses a single physical cable carrying multiple tagged logical sub-interfaces (e.g., <code>unit 10</code>, <code>unit 20</code>, <code>unit 30</code>).</p>
+
+  <h3 id="topic-1-5">1.5 The Juniper Networks MX204 Fixed-Port Edge Router</h3>
+  <p>The customer uses a <strong>Juniper MX204</strong>, a high-performance, 1-rack-unit (1U) fixed-configuration router running Junos OS. It features 400 Gbps throughput, onboard 100GbE / 10GbE ports, and is widely deployed as an edge router in enterprise and service provider networks.</p>
+
+  <div class="key-terms">
+    <h4>Key Terminology & Definitions</h4>
+    <dl>
+      <dt>Default Gateway</dt>
+      <dd>The router IP address on a local subnet to which hosts forward packets destined for outside networks.</dd>
+      <dt>VLAN Trunking (IEEE 802.1Q)</dt>
+      <dd>A Layer 2 standard that inserts a 4-byte VLAN tag into Ethernet frames, allowing one physical link to transport multiple subnets.</dd>
+      <dt>Broadcast Domain</dt>
+      <dd>The logical boundary within which all devices receive Layer 2 broadcast frames.</dd>
+    </dl>
+  </div>
+
+  <div class="gotchas">
+    <h4>⚠️ Common Beginner Mistakes & Gotchas</h4>
+    <ul>
+      <li><strong>Plugging the WAN into a Layer 2 Switch:</strong> Connecting an ISP cable to an unmanaged Layer 2 switch port will fail to route traffic across the enterprise subnets.</li>
+      <li><strong>Assuming 1 cable per subnet is standard:</strong> While simple in training labs, 1-cable-per-subnet is an anti-pattern in production that is replaced by 802.1Q VLAN sub-interfaces.</li>
+    </ul>
+  </div>
+
+  <div class="hands-on">
+    <h4>🛠️ Hands-On Practice & Scenarios</h4>
+    <div class="task-item">
+      <div class="task-title">Task 1: Gateway Identification Scenario</div>
+      <p><em>Scenario:</em> A workstation on the Corporate LAN has IP <code>172.16.10.45/24</code>. What IP address must be configured as its default gateway to reach the Server LAN (<code>172.16.20.0/24</code>) and the Internet?</p>
+      <p><strong>Answer:</strong> <code>172.16.10.1</code> (The router's IP address on the Corporate LAN interface <code>xe-0/1/1</code>).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================================= -->
+<!-- TOPIC 2 -->
+<!-- ========================================================================= -->
+<section id="topic-2">
+  <h2>2. Connecting Remotely to the Junos CLI via SSH</h2>
+  
+  <p>Managing Junos devices remotely over an IP network requires understanding communication protocols, authentication credentials, network addressing, and terminal emulation software.</p>
+
+  <div class="diagram-container">
+    <!-- SVG 2: Redesigned Visual SSH vs Telnet -->
+    <svg viewBox="0 0 960 320" xmlns="http://www.w3.org/2000/svg">
+      <rect width="960" height="320" fill="#f8fafc" rx="10" stroke="#cbd5e1" stroke-width="1.5"/>
+      <text x="480" y="28" font-size="16" font-weight="800" fill="#0f172a" text-anchor="middle">Figure 2: Protocol Security Comparison: SSH (Encrypted) vs. Telnet (Cleartext)</text>
+
+      <!-- Upper Pathway: SSH (Secure) -->
+      <g transform="translate(40, 50)">
+        <rect width="880" height="110" fill="#f0fdf4" stroke="#16a34a" stroke-width="2" rx="8"/>
+        
+        <!-- Client Laptop Icon -->
+        <g transform="translate(20, 20)">
+          <rect width="110" height="70" fill="#ffffff" stroke="#16a34a" rx="5"/>
+          <rect x="35" y="15" width="40" height="26" fill="#15803d" rx="2"/>
+          <path d="M 25 41 L 85 41 L 80 47 L 30 47 Z" fill="#64748b"/>
+          <text x="55" y="60" font-size="9.5" font-weight="800" fill="#15803d" text-anchor="middle">Admin Laptop</text>
+        </g>
+
+        <!-- Glowing Encrypted Tunnel -->
+        <g transform="translate(150, 25)">
+          <rect width="560" height="60" fill="#dcfce7" stroke="#22c55e" stroke-width="2" rx="30"/>
+          
+          <!-- Padlock Vector Graphic -->
+          <g transform="translate(30, 16)">
+            <rect x="4" y="12" width="20" height="16" fill="#eab308" stroke="#ca8a04" rx="3"/>
+            <path d="M 8 12 L 8 7 A 6 6 0 0 1 20 7 L 20 12" fill="none" stroke="#ca8a04" stroke-width="2.5"/>
+            <circle cx="14" cy="19" r="2" fill="#713f12"/>
+          </g>
+
+          <text x="290" y="28" font-size="12" font-weight="800" fill="#166534" text-anchor="middle">SSH (TCP PORT 22) - AES ENCRYPTED TUNNEL</text>
+          <text x="290" y="46" font-size="10" font-family="monospace" fill="#15803d" text-anchor="middle">🔒 Ciphertext: %9A#f!8x@Lp0$qW9 (Credentials & Commands Immune to Sniffing)</text>
+        </g>
+
+        <!-- Target Router Icon -->
+        <g transform="translate(735, 20)">
+          <rect width="115" height="70" fill="#ffffff" stroke="#16a34a" rx="5"/>
+          <circle cx="57" cy="30" r="16" fill="#dcfce7" stroke="#16a34a"/>
+          <path d="M 47 30 L 67 30 M 63 26 L 67 30 L 63 34" fill="none" stroke="#16a34a" stroke-width="2"/>
+          <text x="57" y="58" font-size="9.5" font-weight="800" fill="#15803d" text-anchor="middle">Router 1 (Junos)</text>
+        </g>
+      </g>
+
+      <!-- Lower Pathway: Telnet (Insecure) -->
+      <g transform="translate(40, 180)">
+        <rect width="880" height="110" fill="#fef2f2" stroke="#ef4444" stroke-width="2" rx="8"/>
+        
+        <!-- Client Laptop Icon -->
+        <g transform="translate(20, 20)">
+          <rect width="110" height="70" fill="#ffffff" stroke="#ef4444" rx="5"/>
+          <rect x="35" y="15" width="40" height="26" fill="#991b1b" rx="2"/>
+          <path d="M 25 41 L 85 41 L 80 47 L 30 47 Z" fill="#64748b"/>
+          <text x="55" y="60" font-size="9.5" font-weight="800" fill="#991b1b" text-anchor="middle">Admin Laptop</text>
+        </g>
+
+        <!-- Unencrypted Stream with Eavesdropper -->
+        <g transform="translate(150, 25)">
+          <rect width="560" height="60" fill="#fee2e2" stroke="#f87171" stroke-dasharray="6,4" stroke-width="1.5" rx="6"/>
+          
+          <!-- Eavesdropper Icon 🕵️ -->
+          <circle cx="40" cy="30" r="15" fill="#fca5a5"/>
+          <text x="40" y="35" font-size="14" text-anchor="middle">🕵️</text>
+
+          <text x="290" y="26" font-size="12" font-weight="800" fill="#991b1b" text-anchor="middle">❌ TELNET (TCP PORT 23) - UNENCRYPTED CLEARTEXT STREAM</text>
+          <text x="290" y="46" font-size="10.5" font-family="monospace" font-weight="700" fill="#b91c1c" text-anchor="middle">Leaked: user="employee" | pass="Juniper123" (Vulnerable to Wireshark Capture)</text>
+        </g>
+
+        <!-- Target Router Icon -->
+        <g transform="translate(735, 20)">
+          <rect width="115" height="70" fill="#ffffff" stroke="#ef4444" rx="5"/>
+          <circle cx="57" cy="30" r="16" fill="#fee2e2" stroke="#ef4444"/>
+          <path d="M 47 30 L 67 30 M 63 26 L 67 30 L 63 34" fill="none" stroke="#ef4444" stroke-width="2"/>
+          <text x="57" y="58" font-size="9.5" font-weight="800" fill="#991b1b" text-anchor="middle">Router 1 (Junos)</text>
+        </g>
+      </g>
+    </svg>
+    <div class="diagram-caption">Figure 2: Visual comparison between secure encrypted SSH communication and insecure cleartext Telnet transmission.</div>
+  </div>
+
+  <div class="walkthrough-box">
+    <h4>🔍 Detailed Walkthrough of Figure 2 (Visual Diagram Breakdown)</h4>
+    <ol>
+      <li><strong>The Secure SSH Pathway (Top Green Tunnel):</strong>
+        When connecting via SSH (<strong>TCP Port 22</strong>), the client and router establish an encrypted cryptographic session pipe (depicted by the green rounded tunnel and golden padlock). Key exchange algorithms negotiate symmetric AES encryption. All transmitted data—including user credentials (<code>employee</code> / <code>Juniper123</code>), CLI commands, and system output—is transformed into unreadable ciphertext. Packet sniffers intercept only scrambled binary noise.
+      </li>
+      <li><strong>The Insecure Telnet Pathway (Bottom Red Dashed Wire):</strong>
+        Connecting via Telnet (<strong>TCP Port 23</strong>) transmits unencrypted ASCII text across the wire (depicted by the red dashed line). An eavesdropper running a packet sniffer (depicted by the spy icon 🕵️) on any transit switch or router can intercept the plaintext strings <code>employee</code> and <code>Juniper123</code>. Enterprise networks disable Telnet on all production devices.
+      </li>
+    </ol>
+  </div>
+
+  <h3 id="topic-2-1">2.1 The 4 Requirements for Remote Network Management</h3>
+  <ol>
+    <li><strong>Management Protocol:</strong> SSH (Secure Shell) or Telnet.</li>
+    <li><strong>User Account Name:</strong> Identifies the user on Junos (e.g., <code>employee</code> or <code>lab</code>).</li>
+    <li><strong>Password / Private Key:</strong> Authenticates the session.</li>
+    <li><strong>Target IP Address:</strong> Reachable IP assigned to an active interface on the router.</li>
+  </ol>
+
+  <h3 id="topic-2-2">2.2 Protocol Security: SSH (TCP Port 22) vs. Telnet (TCP Port 23)</h3>
+  <ul>
+    <li><strong>Telnet (Port 23):</strong> Sends all keystrokes, passwords, and device responses in plain text. Vulnerable to network sniffing (e.g. Wireshark). <em>Strictly disabled in enterprise production.</em></li>
+    <li><strong>SSH (Port 22):</strong> Establishes an asymmetric cryptographic handshake (Diffie-Hellman / RSA) followed by symmetric AES encryption. Protects credentials and command telemetry.</li>
+  </ul>
+
+  <h3 id="topic-2-3">2.3 User Authentication & Security Risks of Shared Generic Accounts</h3>
+  <p>Using shared generic accounts like <code>employee</code> with static passwords (<code>Juniper123</code>) introduces severe operational and compliance risks:
+  <ul>
+    <li><strong>Lack of Accountability:</strong> Audit logs cannot distinguish which individual administrator executed a command or caused an outage.</li>
+    <li><strong>Best Practice:</strong> Implement individual named user accounts or integrate Junos with centralized <strong>RADIUS</strong> or <strong>TACACS+</strong> authentication servers.</li>
+  </ul>
+
+  <h3 id="topic-2-4">2.4 IPv4 Subnetting Basics & Default Gateway Mechanics (/24 Calculations)</h3>
+  <ul>
+    <li>A <code>/24</code> subnet mask (<code>255.255.255.0</code>) contains <strong>256 total IP addresses</strong> (2<sup>8</sup> = 256).</li>
+    <li><strong>254 usable addresses:</strong> The first address (<code>.0</code>) is the Network ID; the last address (<code>.255</code>) is the Subnet Broadcast address.</li>
+    <li><strong>Arbitrary IP Management:</strong> Once a default gateway is set, an administrator can SSH to <em>any</em> active interface IP on the router (including loopback <code>lo0</code> or other LAN interfaces), not just the directly connected gateway IP.</li>
+  </ul>
+
+  <h3 id="topic-2-5">2.5 Terminal Software, SSH Client Execution & Host Key Verification</h3>
+  <p>To connect from your local terminal application (macOS/Linux Terminal, iTerm2, Windows Terminal, PuTTY):</p>
+  <pre><code><span class="prompt">admin@workstation:~$</span> <span class="highlight">ssh employee@172.16.10.1</span>
+<span class="output">The authenticity of host '172.16.10.1 (172.16.10.1)' can't be established.
+ECDSA key fingerprint is SHA256:7vQxM5p9Yt1N...
+Are you sure you want to continue connecting (yes/no)?</span> <span class="highlight">yes</span>
+<span class="output">Warning: Permanently added '172.16.10.1' (ECDSA) to the list of known hosts.
+Password:</span> <span class="comment">[Password entered silently without screen echo]</span>
+<span class="prompt">employee@R1></span></code></pre>
+
+  <blockquote class="added-context">
+    <p><strong>📘 Added context: Understanding SSH Host Key Warnings</strong></p>
+    <p>On initial connection, the SSH client records the router's public host key in <code>~/.ssh/known_hosts</code>. If this warning appears on a previously trusted device, it signifies either a hardware replacement or a potential Man-in-the-Middle (MITM) spoofing attempt.</p>
+  </blockquote>
+
+  <div class="key-terms">
+    <h4>Key Terminology & Definitions</h4>
+    <dl>
+      <dt>SSH (Secure Shell)</dt>
+      <dd>A cryptographic network protocol running over TCP port 22 for secure remote CLI management.</dd>
+      <dt>Known Hosts File</dt>
+      <dd>A local client database storing public cryptographic host keys of previously accessed remote servers.</dd>
+      <dt>AAA (Authentication, Authorization, Accounting)</dt>
+      <dd>Security framework providing centralized identity management (via RADIUS or TACACS+).</dd>
+    </dl>
+  </div>
+
+  <div class="hands-on">
+    <h4>🛠️ Hands-On Practice & Scenarios</h4>
+    <div class="task-item">
+      <div class="task-title">Task 1: SSH Remote Connection Command</div>
+      <p>Write the exact CLI command to connect to Router 1 at IP <code>172.25.11.1</code> with username <code>lab</code>.</p>
+      <pre><code><span class="prompt">$</span> <span class="highlight">ssh lab@172.25.11.1</span></code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================================= -->
+<!-- TOPIC 3 -->
+<!-- ========================================================================= -->
+<section id="topic-3">
+  <h2>3. Junos CLI Operational Mode Fundamentals & Command Hierarchy</h2>
+  
+  <p>Junos CLI enforces a strict separation between operational status analysis and configuration changes.</p>
+
+  <div class="diagram-container">
+    <!-- SVG 3: Redesigned State Machine Diagram -->
+    <svg viewBox="0 0 960 300" xmlns="http://www.w3.org/2000/svg">
+      <rect width="960" height="300" fill="#f8fafc" rx="10" stroke="#cbd5e1" stroke-width="1.5"/>
+      <text x="480" y="28" font-size="16" font-weight="800" fill="#0f172a" text-anchor="middle">Figure 3: Junos CLI Operational Mode vs. Configuration Mode State Transition</text>
+
+      <!-- Operational Mode Pod (Left) -->
+      <g transform="translate(50, 55)">
+        <rect width="360" height="210" fill="#eff6ff" stroke="#2563eb" stroke-width="2" rx="12"/>
+        <rect x="0" y="0" width="360" height="38" fill="#2563eb" rx="10"/>
+        <text x="180" y="24" font-size="13" font-weight="800" fill="#ffffff" text-anchor="middle">OPERATIONAL MODE (Prompt: user@host>)</text>
+
+        <g transform="translate(20, 52)">
+          <text x="0" y="16" font-size="11" font-weight="700" fill="#1e40af">• Default landing mode on login</text>
+          <text x="0" y="34" font-size="11" fill="#334155">• Read-only status & diagnostics</text>
+          <text x="0" y="52" font-size="11" font-weight="700" fill="#dc2626">• Cannot modify configuration</text>
+        </g>
+
+        <!-- 4 Action Badges -->
+        <g transform="translate(15, 125)">
+          <rect x="0" y="0" width="75" height="30" fill="#dcfce7" stroke="#16a34a" rx="4"/>
+          <text x="37" y="19" font-size="10" font-weight="800" fill="#15803d" text-anchor="middle">show</text>
+
+          <rect x="85" y="0" width="75" height="30" fill="#f0fdfa" stroke="#0d9488" rx="4"/>
+          <text x="122" y="19" font-size="10" font-weight="800" fill="#0f766e" text-anchor="middle">monitor</text>
+
+          <rect x="170" y="0" width="75" height="30" fill="#fffbeb" stroke="#d97706" rx="4"/>
+          <text x="207" y="19" font-size="10" font-weight="800" fill="#b45309" text-anchor="middle">clear</text>
+
+          <rect x="255" y="0" width="75" height="30" fill="#faf5ff" stroke="#7c3aed" rx="4"/>
+          <text x="292" y="19" font-size="10" font-weight="800" fill="#6b21a8" text-anchor="middle">request</text>
+        </g>
+      </g>
+
+      <!-- Center Flow Arrows -->
+      <g transform="translate(430, 110)">
+        <!-- Forward Arrow (configure) -->
+        <path d="M 0 20 C 40 5, 60 5, 100 20" fill="none" stroke="#2563eb" stroke-width="3"/>
+        <polygon points="98,13 106,21 96,25" fill="#2563eb"/>
+        <rect x="20" y="-3" width="65" height="20" fill="#ffffff" stroke="#2563eb" rx="4"/>
+        <text x="52" y="11" font-size="9.5" font-weight="800" fill="#2563eb" text-anchor="middle">configure</text>
+
+        <!-- Backward Arrow (exit) -->
+        <path d="M 100 70 C 60 85, 40 85, 0 70" fill="none" stroke="#475569" stroke-width="3"/>
+        <polygon points="4,65 -4,71 6,77" fill="#475569"/>
+        <rect x="20" y="72" width="65" height="20" fill="#ffffff" stroke="#475569" rx="4"/>
+        <text x="52" y="86" font-size="9.5" font-weight="800" fill="#475569" text-anchor="middle">exit</text>
+      </g>
+
+      <!-- Configuration Mode Pod (Right) -->
+      <g transform="translate(550, 55)">
+        <rect width="360" height="210" fill="#faf5ff" stroke="#7c3aed" stroke-width="2" rx="12"/>
+        <rect x="0" y="0" width="360" height="38" fill="#7c3aed" rx="10"/>
+        <text x="180" y="24" font-size="13" font-weight="800" fill="#ffffff" text-anchor="middle">CONFIGURATION MODE (Prompt: user@host#)</text>
+
+        <g transform="translate(20, 52)">
+          <text x="0" y="16" font-size="11" font-weight="700" fill="#6b21a8">• Staged candidate configuration</text>
+          <text x="0" y="34" font-size="11" fill="#334155">• Changes stored in RAM until committed</text>
+          <text x="0" y="52" font-size="11" font-weight="700" fill="#15803d">• Commands: set, delete, edit, commit</text>
+        </g>
+
+        <!-- Key Commands Pill -->
+        <g transform="translate(15, 125)">
+          <rect x="0" y="0" width="105" height="30" fill="#ffffff" stroke="#ddd6fe" rx="4"/>
+          <text x="52" y="19" font-size="10" font-weight="700" fill="#6b21a8" text-anchor="middle">set / delete</text>
+
+          <rect x="115" y="0" width="105" height="30" fill="#ffffff" stroke="#ddd6fe" rx="4"/>
+          <text x="167" y="19" font-size="10" font-weight="700" fill="#6b21a8" text-anchor="middle">edit / show</text>
+
+          <rect x="230" y="0" width="100" height="30" fill="#dcfce7" stroke="#16a34a" rx="4"/>
+          <text x="280" y="19" font-size="10" font-weight="800" fill="#15803d" text-anchor="middle">commit</text>
+        </g>
+      </g>
+    </svg>
+    <div class="diagram-caption">Figure 3: Junos CLI state machine illustrating mode transitions between Operational Mode (&gt;) and Configuration Mode (#).</div>
+  </div>
+
+  <div class="walkthrough-box">
+    <h4>🔍 Detailed Walkthrough of Figure 3 (Visual Diagram Breakdown)</h4>
+    <ol>
+      <li><strong>Operational Mode (Left Blue Box):</strong> Logging in with non-root credentials places the user directly into Operational Mode (<code>user@host&gt;</code>). This mode is used for monitoring, telemetry, and diagnostics via four primary action verbs: <code>show</code> (snapshot), <code>monitor</code> (live streaming), <code>clear</code> (reset counters), and <code>request</code> (system administration).</li>
+      <li><strong>Mode Transition (<code>configure</code>):</strong> Executing <code>configure</code> transitions the CLI to Configuration Mode, changing the delimiter from <code>&gt;</code> to <code>#</code>.</li>
+      <li><strong>Configuration Mode (Right Purple Box):</strong> In this mode (<code>user@host#</code>), administrators edit the <em>Candidate Configuration</em> in memory. Changes do not alter live forwarding until validated and activated via the <code>commit</code> command.</li>
+      <li><strong>Mode Return (<code>exit</code>):</strong> Executing <code>exit</code> returns to Operational Mode, discarding uncommitted candidate edits.</li>
+    </ol>
+  </div>
+
+  <h3 id="topic-3-1">3.1 CLI Modes: Operational Mode (<code>&gt;</code>) vs. Configuration Mode (<code>#</code>)</h3>
+  <ul>
+    <li><strong>Operational Mode (Prompt ends in <code>&gt;</code>):</strong> Used to monitor device health, verify protocols, inspect routing tables, clear counters, and reboot. <em>No modifications to the active configuration can be made in this mode.</em></li>
+    <li><strong>Configuration Mode (Prompt ends in <code>#</code>):</strong> Entered via the <code>configure</code> command. Used to create, edit, and delete configuration statements in candidate memory. Exited with <code>exit</code>.</li>
+  </ul>
+
+  <h3 id="topic-3-2">3.2 The 4 Root Operational Command Keywords</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Root Keyword</th>
+        <th>Primary Function</th>
+        <th>Standard Examples</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong><code>show</code></strong></td>
+        <td>Displays a static, point-in-time status snapshot.</td>
+        <td><code>show system uptime</code>, <code>show interfaces terse</code>, <code>show route</code></td>
+      </tr>
+      <tr>
+        <td><strong><code>monitor</code></strong></td>
+        <td>Displays real-time, continuously refreshing telemetry and packet traffic.</td>
+        <td><code>monitor interface xe-0/1/1</code>, <code>monitor traffic</code></td>
+      </tr>
+      <tr>
+        <td><strong><code>clear</code></strong></td>
+        <td>Resets counters, flushes log buffers, or clears protocol peerings.</td>
+        <td><code>clear interfaces statistics xe-0/1/1</code>, <code>clear log messages</code></td>
+      </tr>
+      <tr>
+        <td><strong><code>request</code></strong></td>
+        <td>Executes high-impact administrative actions on the operating system.</td>
+        <td><code>request system reboot</code>, <code>request system storage cleanup</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 id="topic-3-3">3.3 Operational Snapshot (<code>show</code>) vs. Live Real-Time Telemetry (<code>monitor</code>)</h3>
+  <ul>
+    <li><code>show interfaces xe-0/1/1</code> captures counters at the microsecond the command is executed. Output is static.</li>
+    <li><code>monitor interface xe-0/1/1</code> monopolizes the terminal screen, dynamically refreshing throughput counters (bps and pps) every 1 second until terminated (<kbd>Ctrl</kbd> + <kbd>C</kbd> or <kbd>q</kbd>).</li>
+  </ul>
+
+  <div class="gotchas">
+    <h4>⚠️ Common Beginner Mistakes & Gotchas</h4>
+    <ul>
+      <li><strong>Attempting to configure in operational mode:</strong> Typing <code>set interfaces ...</code> in operational mode yields a syntax error. You must type <code>configure</code> first.</li>
+      <li><strong>Assuming <code>exit</code> saves configuration changes:</strong> Typing <code>exit</code> in configuration mode leaves the mode without committing changes. You must type <code>commit</code> to activate candidate configuration changes.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ========================================================================= -->
+<!-- TOPIC 4 -->
+<!-- ========================================================================= -->
+<section id="topic-4">
+  <h2>4. System Verification Commands & The 6 Manager Diagnostic Tasks</h2>
+
+  <h3 id="topic-4-1">4.1 The Manager's 6 Diagnostic Verification Tasks</h3>
+  <p>Upon logging into Router 1, your manager requests verification of 6 fundamental properties:</p>
+
+  <h3 id="topic-4-2">4.2 Task 1: Hostname Identification & Consistency Auditing</h3>
+  <p>The hostname is visible directly in the CLI prompt: <code>employee@R1&gt;</code>.
+  <br><em>Diagnostic Finding:</em> The prompt reports <code>R1</code>, whereas the official network diagram labels the device as <code>Router 1</code>. This inconsistency will be corrected during configuration mode labs.</p>
+
+  <h3 id="topic-4-3">4.3 Tasks 2 & 3: Device Uptime & Date/Time Verification</h3>
+  <pre><code><span class="prompt">employee@R1></span> <span class="highlight">show system uptime</span>
+<span class="output">Current time: 2026-08-14 11:42:10 UTC
+System booted: 2026-08-04 02:14:00 UTC (1w3d 09:28 ago)
+Protocols started: 2026-08-04 02:15:30 UTC (1w3d 09:26 ago)
+Last configured: 2026-08-04 03:10:12 UTC (1w3d 08:32 ago) by admin</span></code></pre>
+  <ul>
+    <li><strong>Current time:</strong> Displays internal system clock.</li>
+    <li><strong>System booted:</strong> Exact boot timestamp and elapsed relative uptime (<code>1w3d 09:28 ago</code>). Solves Tasks 2 and 3.</li>
+  </ul>
+
+  <h3 id="topic-4-4">4.4 Tasks 4 & 5: Hardware Model & OS Identification</h3>
+  <pre><code><span class="prompt">employee@R1></span> <span class="highlight">show system information</span>
+<span class="output">Model: mx204
+Family: junos
+Junos: 22.4R1.10
+Hostname: R1</span></code></pre>
+  <p>Solves Task 4 (Model: <code>mx204</code>) and Task 5 (OS: <code>22.4R1.10</code>).</p>
+
+  <h3 id="topic-4-5">4.5 Junos OS Release Naming Schema & Lifecycles (FR, MR, SR)</h3>
+
+  <div class="diagram-container">
+    <!-- SVG 4: Redesigned Visual Banner for Versioning -->
+    <svg viewBox="0 0 960 200" xmlns="http://www.w3.org/2000/svg">
+      <rect width="960" height="200" fill="#f8fafc" rx="10" stroke="#cbd5e1" stroke-width="1.5"/>
+      <text x="480" y="26" font-size="16" font-weight="800" fill="#0f172a" text-anchor="middle">Figure 4: Junos OS Version Release Syntax Structure</text>
+
+      <!-- Main Banner Row -->
+      <g transform="translate(100, 45)">
+        <!-- 22 Box -->
+        <rect x="0" y="0" width="160" height="60" fill="#eff6ff" stroke="#3b82f6" stroke-width="2" rx="8"/>
+        <text x="80" y="40" font-size="24" font-weight="800" fill="#1d4ed8" text-anchor="middle">22</text>
+        <text x="80" y="85" font-size="11" font-weight="700" fill="#1e40af" text-anchor="middle">Release Year</text>
+        <text x="80" y="102" font-size="10" fill="#64748b" text-anchor="middle">Year 2022</text>
+
+        <!-- Dot -->
+        <circle cx="175" cy="30" r="4" fill="#64748b"/>
+
+        <!-- 4 Box -->
+        <rect x="190" y="0" width="160" height="60" fill="#f0fdf4" stroke="#16a34a" stroke-width="2" rx="8"/>
+        <text x="270" y="40" font-size="24" font-weight="800" fill="#15803d" text-anchor="middle">4</text>
+        <text x="270" y="85" font-size="11" font-weight="700" fill="#15803d" text-anchor="middle">Major Release</text>
+        <text x="270" y="102" font-size="10" fill="#64748b" text-anchor="middle">Q4 Major Cycle</text>
+
+        <!-- R1 Box -->
+        <rect x="370" y="0" width="200" height="60" fill="#fefce8" stroke="#eab308" stroke-width="2" rx="8"/>
+        <text x="470" y="40" font-size="24" font-weight="800" fill="#a16207" text-anchor="middle">R1</text>
+        <text x="470" y="85" font-size="11" font-weight="700" fill="#854d0e" text-anchor="middle">Feature Release (FR)</text>
+        <text x="470" y="102" font-size="10" fill="#64748b" text-anchor="middle">R2+: Maintenance | S: Service</text>
+
+        <!-- Dot -->
+        <circle cx="585" cy="30" r="4" fill="#64748b"/>
+
+        <!-- 10 Box -->
+        <rect x="600" y="0" width="160" height="60" fill="#faf5ff" stroke="#7c3aed" stroke-width="2" rx="8"/>
+        <text x="680" y="40" font-size="24" font-weight="800" fill="#6b21a8" text-anchor="middle">10</text>
+        <text x="680" y="85" font-size="11" font-weight="700" fill="#6b21a8" text-anchor="middle">Build Revision</text>
+        <text x="680" y="102" font-size="10" fill="#64748b" text-anchor="middle">Internal Build #10</text>
+      </g>
+    </svg>
+    <div class="diagram-caption">Figure 4: Junos OS version release syntax breakdown showing Year, Major Cycle, Release Type (Feature vs. Maintenance), and Build number.</div>
+  </div>
+
+  <div class="walkthrough-box">
+    <h4>🔍 Detailed Walkthrough of Figure 4 (Visual Diagram Breakdown)</h4>
+    <ol>
+      <li><strong>Release Year (<code>22</code>):</strong> Defines the calendar year of publication (2022).</li>
+      <li><strong>Major Release Number (<code>4</code>):</strong> Historically, Juniper released 4 versions annually (<code>.1</code> to <code>.4</code>). Starting in 2023, Juniper transitioned to **two major releases per year: <code>.2</code> and <code>.4</code>**.</li>
+      <li><strong>Release Type Identifier (<code>R1</code>):</strong>
+        <ul>
+          <li><strong><code>R1</code> (Feature Release - FR):</strong> Foundational release containing all newly introduced protocols, CLI syntax, and platform drivers.</li>
+          <li><strong><code>R2</code>, <code>R3</code>, <code>R4</code> (Maintenance Release - MR):</strong> Subsequent stability releases with bug fixes only (no new features). Preferred by enterprises.</li>
+          <li><strong><code>S1</code>, <code>S2</code> (Service Release - SR):</strong> Out-of-cycle emergency hotfix packages for critical vulnerabilities.</li>
+        </ul>
+      </li>
+      <li><strong>Build Revision (<code>10</code>):</strong> Internal compilation tracking tag.</li>
+    </ol>
+  </div>
+
+  <h3 id="topic-4-6">4.6 Task 6: Neighbor Discovery Verification via LLDP</h3>
+  <p><strong>LLDP (Link Layer Discovery Protocol - IEEE 802.1AB)</strong> is a vendor-neutral Layer 2 discovery protocol that allows directly connected devices to advertise identity, capabilities, management IP, and port IDs.</p>
+
+  <div class="diagram-container">
+    <!-- SVG 5: Redesigned Visual LLDP Exchange -->
+    <svg viewBox="0 0 960 250" xmlns="http://www.w3.org/2000/svg">
+      <rect width="960" height="250" fill="#f8fafc" rx="10" stroke="#cbd5e1" stroke-width="1.5"/>
+      <text x="480" y="28" font-size="16" font-weight="800" fill="#0f172a" text-anchor="middle">Figure 5: IEEE 802.1AB LLDP Type-Length-Value (TLV) Information Exchange</text>
+
+      <!-- Router 1 (Left) -->
+      <g transform="translate(40, 50)">
+        <rect width="210" height="160" fill="#ffffff" stroke="#2563eb" stroke-width="2" rx="8"/>
+        <rect x="0" y="0" width="210" height="32" fill="#2563eb" rx="6"/>
+        <text x="105" y="21" font-size="11.5" font-weight="800" fill="#ffffff" text-anchor="middle">ROUTER 1 (MX204)</text>
+        <circle cx="105" cy="65" r="18" fill="#eff6ff" stroke="#2563eb"/>
+        <path d="M 95 65 L 115 65 M 110 60 L 115 65 L 110 70" fill="none" stroke="#2563eb" stroke-width="2"/>
+        <text x="105" y="105" font-size="10.5" font-weight="700" fill="#1e40af" text-anchor="middle">Ports: xe-0/1/1, 2, 3</text>
+        <text x="105" y="125" font-size="9" fill="#64748b" text-anchor="middle">Transmits LLDP Multicast</text>
+        <text x="105" y="142" font-size="9" font-weight="600" fill="#2563eb" text-anchor="middle">Role: Router</text>
+      </g>
+
+      <!-- Flow Lines & TLVs -->
+      <g transform="translate(270, 50)">
+        <rect width="420" height="160" fill="#f1f5f9" stroke="#cbd5e1" rx="8"/>
+        <text x="210" y="24" font-size="11" font-weight="800" fill="#0f172a" text-anchor="middle">Periodic Layer 2 Multicast Frames (30s Interval)</text>
+
+        <!-- TLV Cards Grid -->
+        <g transform="translate(15, 38)">
+          <rect x="0" y="0" width="185" height="30" fill="#ffffff" stroke="#94a3b8" rx="4"/>
+          <text x="92" y="19" font-size="9.5" font-weight="700" fill="#0f172a" text-anchor="middle">🏷️ System Name: "Switch1"</text>
+
+          <rect x="200" y="0" width="185" height="30" fill="#ffffff" stroke="#94a3b8" rx="4"/>
+          <text x="292" y="19" font-size="9.5" font-weight="700" fill="#0f172a" text-anchor="middle">🔌 Port ID: "ge-0/0/1"</text>
+
+          <rect x="0" y="38" width="185" height="30" fill="#ffffff" stroke="#94a3b8" rx="4"/>
+          <text x="92" y="57" font-size="9.5" font-weight="700" fill="#0f172a" text-anchor="middle">🆔 MAC: 00:05:86:71:3d:40</text>
+
+          <rect x="200" y="38" width="185" height="30" fill="#ffffff" stroke="#94a3b8" rx="4"/>
+          <text x="292" y="57" font-size="9.5" font-weight="700" fill="#0f172a" text-anchor="middle">⚙️ Capabilities: Bridge</text>
+
+          <rect x="0" y="76" width="385" height="30" fill="#f0fdf4" stroke="#86efac" rx="4"/>
+          <text x="192" y="95" font-size="9.5" font-weight="800" fill="#15803d" text-anchor="middle">⚡ PoE Power Allocation: Supported & Enabled</text>
+        </g>
+      </g>
+
+      <!-- Switch 1 (Right) -->
+      <g transform="translate(710, 50)">
+        <rect width="210" height="160" fill="#ffffff" stroke="#0d9488" stroke-width="2" rx="8"/>
+        <rect x="0" y="0" width="210" height="32" fill="#0d9488" rx="6"/>
+        <text x="105" y="21" font-size="11.5" font-weight="800" fill="#ffffff" text-anchor="middle">SWITCH 1 (EX-Series)</text>
+        <circle cx="105" cy="65" r="18" fill="#f0fdfa" stroke="#0d9488"/>
+        <path d="M 95 62 L 115 62 M 110 58 L 115 62 L 110 66" fill="none" stroke="#0d9488" stroke-width="2"/>
+        <path d="M 115 68 L 95 68 M 100 64 L 95 68 L 100 72" fill="none" stroke="#0d9488" stroke-width="2"/>
+        <text x="105" y="105" font-size="10.5" font-weight="700" fill="#0f766e" text-anchor="middle">Ports: ge-0/0/1, 2, 3</text>
+        <text x="105" y="125" font-size="9" fill="#64748b" text-anchor="middle">Discovered via LLDP</text>
+        <text x="105" y="142" font-size="9" font-weight="600" fill="#0d9488" text-anchor="middle">Role: Layer 2 Switch</text>
+      </g>
+    </svg>
+    <div class="diagram-caption">Figure 5: LLDP Type-Length-Value (TLV) frame exchange between Router 1 and Switch 1 across local Ethernet links.</div>
+  </div>
+
+  <div class="walkthrough-box">
+    <h4>🔍 Detailed Walkthrough of Figure 5 (Visual Diagram Breakdown)</h4>
+    <ol>
+      <li><strong>Router 1 Local Interfaces (Left Block):</strong> Router 1 runs LLDP on physical interfaces <code>xe-0/1/1</code>, <code>xe-0/1/2</code>, and <code>xe-0/1/3</code>, transmitting periodic Layer 2 multicast frames.</li>
+      <li><strong>LLDP TLV Payload Exchange (Center Container):</strong> Frames carry structured **Type-Length-Value (TLV)** attributes: System Name (<code>Switch1</code>), connecting Port ID (<code>ge-0/0/1</code>), chassis MAC address (<code>00:05:86:71:3d:40</code>), capabilities (Bridge/Switch), and PoE support.</li>
+      <li><strong>Switch 1 Discovery (Right Block):</strong> Switch 1 receives the frames and builds an entry in its neighbor database. Running <code>show lldp neighbors</code> on Router 1 parses this data, instantly confirming direct link connectivity.</li>
+    </ol>
+  </div>
+
+  <p>To verify that Router 1 recognizes its direct physical links to Switch 1:</p>
+  <pre><code><span class="prompt">employee@R1></span> <span class="highlight">show lldp neighbors</span>
+<span class="output">Local Interface    Parent Interface    Chassis Id           Port info          System Name
+xe-0/1/1           -                   00:05:86:71:3d:40    ge-0/0/1           Switch1
+xe-0/1/2           -                   00:05:86:71:3d:40    ge-0/0/2           Switch1
+xe-0/1/3           -                   00:05:86:71:3d:40    ge-0/0/3           Switch1</span></code></pre>
+  <p>Solves Task 6: Confirms all 3 LAN links directly connect to <code>Switch1</code>.</p>
+</section>
+
+<!-- ========================================================================= -->
+<!-- TOPIC 5 -->
+<!-- ========================================================================= -->
+<section id="topic-5">
+  <h2>5. CLI Navigation, Built-in Help & Keyboard Productivity Tools</h2>
+
+  <h3 id="topic-5-1">5.1 Command History Navigation (Up/Down Arrow Keys)</h3>
+  <p>Junos maintains an active per-session command history. Pressing the <kbd>Up</kbd> arrow key cycles backwards through previously typed commands; the <kbd>Down</kbd> arrow key moves forward.</p>
+
+  <h3 id="topic-5-2">5.2 Context-Sensitive Help with the Question Mark (<code>?</code>)</h3>
+  <p>Typing <code>?</code> at any point in the CLI immediately lists all valid completions and a one-line description without needing to press Enter:</p>
+  <pre><code><span class="prompt">employee@R1></span> <span class="highlight">show system ?</span>
+<span class="output">Possible completions:
+  alarms               Show active system alarms
+  boot-messages        Show system boot messages
+  commit               Show information about commit history
+  connections          Show active network connections
+  information          Show system software and hardware info
+  processes            Show system process information
+  storage              Show system storage space
+  uptime               Show system uptime and current time
+  users                Show users currently logged in</span></code></pre>
+
+  <h3 id="topic-5-3">5.3 Screen Pagination & Scrolling Navigation (<code>---(more)---</code>)</h3>
+  <p>When output exceeds terminal height, Junos displays <code>---(more 60%)---</code>:</p>
+  <ul>
+    <li><kbd>Spacebar</kbd>: Advance one full screen.</li>
+    <li><kbd>Enter</kbd> / <kbd>Return</kbd>: Advance one single line.</li>
+    <li><kbd>Up</kbd> / <kbd>Down</kbd> arrows: Scroll line-by-line.</li>
+    <li><kbd>q</kbd>: Terminate output immediately.</li>
+  </ul>
+
+  <h3 id="topic-5-4">5.4 Command Auto-Completion: Spacebar vs. Tab Key</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Key</th>
+        <th>Auto-Completion Behavior</th>
+        <th>Applicable Syntax</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong><kbd>Spacebar</kbd></strong></td>
+        <td>Auto-completes unambiguous built-in Junos command keywords.</td>
+        <td>System commands (e.g. <code>sh</code> + <kbd>Space</kbd> ➔ <code>show </code>)</td>
+      </tr>
+      <tr>
+        <td><strong><kbd>Tab</kbd></strong></td>
+        <td>Auto-completes built-in keywords <strong>PLUS</strong> user-defined variables/objects.</td>
+        <td>Interface names (<code>xe-0/1/1</code>), Policy names, Firewall filter objects</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 id="topic-5-5">5.5 Ambiguity Handling & Partial Command Suggestions</h3>
+  <p>If an entered prefix matches multiple commands (e.g., <code>show system a</code> matches both <code>alarms</code> and <code>audit</code>), pressing <kbd>Space</kbd> prompts Junos to display all matching options rather than erroring out.</p>
+
+  <h3 id="topic-5-6">5.6 The Hierarchical Command Tree Structure</h3>
+
+  <div class="diagram-container">
+    <!-- SVG 6: Redesigned Visual Command Tree -->
+    <svg viewBox="0 0 960 280" xmlns="http://www.w3.org/2000/svg">
+      <rect width="960" height="280" fill="#f8fafc" rx="10" stroke="#cbd5e1" stroke-width="1.5"/>
+      <text x="480" y="28" font-size="16" font-weight="800" fill="#0f172a" text-anchor="middle">Figure 6: Junos CLI Hierarchical Command Tree Architecture</text>
+
+      <!-- Level 0: Shell Prompt -->
+      <g transform="translate(30, 110)">
+        <rect width="130" height="50" fill="#0f172a" rx="8"/>
+        <text x="65" y="30" font-size="12" font-family="monospace" font-weight="800" fill="#4ade80" text-anchor="middle">user@host></text>
+      </g>
+
+      <!-- Level 1: 4 Core Verbs -->
+      <g transform="translate(210, 50)">
+        <line x1="-50" y1="85" x2="0" y2="25" stroke="#3b82f6" stroke-width="2"/>
+        <line x1="-50" y1="85" x2="0" y2="75" stroke="#0d9488" stroke-width="2"/>
+        <line x1="-50" y1="85" x2="0" y2="125" stroke="#d97706" stroke-width="2"/>
+        <line x1="-50" y1="85" x2="0" y2="175" stroke="#7c3aed" stroke-width="2"/>
+
+        <rect x="0" y="10" width="100" height="32" fill="#eff6ff" stroke="#3b82f6" stroke-width="2" rx="6"/>
+        <text x="50" y="31" font-size="11" font-weight="800" fill="#1d4ed8" text-anchor="middle">show</text>
+
+        <rect x="0" y="60" width="100" height="32" fill="#f0fdfa" stroke="#0d9488" stroke-width="2" rx="6"/>
+        <text x="50" y="81" font-size="11" font-weight="800" fill="#0f766e" text-anchor="middle">monitor</text>
+
+        <rect x="0" y="110" width="100" height="32" fill="#fffbeb" stroke="#d97706" stroke-width="2" rx="6"/>
+        <text x="50" y="131" font-size="11" font-weight="800" fill="#b45309" text-anchor="middle">clear</text>
+
+        <rect x="0" y="160" width="100" height="32" fill="#faf5ff" stroke="#7c3aed" stroke-width="2" rx="6"/>
+        <text x="50" y="181" font-size="11" font-weight="800" fill="#6b21a8" text-anchor="middle">request</text>
+      </g>
+
+      <!-- Level 2: Subsystems -->
+      <g transform="translate(380, 20)">
+        <line x1="-70" y1="45" x2="0" y2="25" stroke="#3b82f6" stroke-width="1.5"/>
+        <line x1="-70" y1="45" x2="0" y2="75" stroke="#3b82f6" stroke-width="1.5"/>
+        <line x1="-70" y1="45" x2="0" y2="125" stroke="#3b82f6" stroke-width="1.5"/>
+        <line x1="-70" y1="45" x2="0" y2="175" stroke="#3b82f6" stroke-width="1.5"/>
+
+        <rect x="0" y="10" width="130" height="30" fill="#ffffff" stroke="#3b82f6" rx="4"/>
+        <text x="65" y="30" font-size="11" font-weight="700" fill="#1e40af" text-anchor="middle">system ...</text>
+
+        <rect x="0" y="60" width="130" height="30" fill="#ffffff" stroke="#3b82f6" rx="4"/>
+        <text x="65" y="80" font-size="11" font-weight="700" fill="#1e40af" text-anchor="middle">interfaces ...</text>
+
+        <rect x="0" y="110" width="130" height="30" fill="#ffffff" stroke="#3b82f6" rx="4"/>
+        <text x="65" y="130" font-size="11" font-weight="700" fill="#1e40af" text-anchor="middle">chassis ...</text>
+
+        <rect x="0" y="160" width="130" height="30" fill="#ffffff" stroke="#3b82f6" rx="4"/>
+        <text x="65" y="180" font-size="11" font-weight="700" fill="#1e40af" text-anchor="middle">route / lldp ...</text>
+      </g>
+
+      <!-- Level 3: Terminal Executable Metrics -->
+      <g transform="translate(580, 10)">
+        <line x1="-70" y1="40" x2="0" y2="20" stroke="#3b82f6" stroke-width="1.5"/>
+        <line x1="-70" y1="40" x2="0" y2="55" stroke="#3b82f6" stroke-width="1.5"/>
+        <line x1="-70" y1="40" x2="0" y2="90" stroke="#3b82f6" stroke-width="1.5"/>
+        <line x1="-70" y1="40" x2="0" y2="125" stroke="#3b82f6" stroke-width="1.5"/>
+
+        <rect x="0" y="5" width="340" height="28" fill="#dcfce7" stroke="#16a34a" rx="4"/>
+        <text x="170" y="23" font-size="10.5" font-family="monospace" font-weight="700" fill="#15803d" text-anchor="middle">uptime (Uptime & Date/Time - Task 2/3)</text>
+
+        <rect x="0" y="40" width="340" height="28" fill="#dcfce7" stroke="#16a34a" rx="4"/>
+        <text x="170" y="58" font-size="10.5" font-family="monospace" font-weight="700" fill="#15803d" text-anchor="middle">information (Model & OS - Task 4/5)</text>
+
+        <rect x="0" y="75" width="340" height="28" fill="#f1f5f9" stroke="#cbd5e1" rx="4"/>
+        <text x="170" y="93" font-size="10.5" font-family="monospace" fill="#334155" text-anchor="middle">alarms (Hardware Defect Alarms)</text>
+
+        <rect x="0" y="110" width="340" height="28" fill="#f1f5f9" stroke="#cbd5e1" rx="4"/>
+        <text x="170" y="128" font-size="10.5" font-family="monospace" fill="#334155" text-anchor="middle">users (Active SSH/CLI Sessions)</text>
+      </g>
+    </svg>
+    <div class="diagram-caption">Figure 6: Junos hierarchical command tree illustrating branching logic from root operational mode to specific subsystem telemetry.</div>
+  </div>
+
+  <div class="walkthrough-box">
+    <h4>🔍 Detailed Walkthrough of Figure 6 (Visual Diagram Breakdown)</h4>
+    <ol>
+      <li><strong>Root Operational Prompt (Left Block):</strong> All CLI commands originate from the operational prompt (<code>user@host&gt;</code>).</li>
+      <li><strong>Branch Tier 1 (4 Core Verbs):</strong> Commands branch into four primary actions: <code>show</code>, <code>monitor</code>, <code>clear</code>, or <code>request</code>.</li>
+      <li><strong>Branch Tier 2 (Subsystems):</strong> Under <code>show</code>, commands categorize logically by device subsystem: <code>system</code>, <code>interfaces</code>, <code>chassis</code>, and <code>route</code> / <code>lldp</code>.</li>
+      <li><strong>Branch Tier 3 (Terminal Metrics):</strong> Under <code>show system</code>, the tree terminates at specific metrics: <code>uptime</code>, <code>information</code>, <code>alarms</code>, and <code>users</code>. Exploring the hierarchy using the <code>?</code> key eliminates the need to memorize thousands of flat commands.</li>
+    </ol>
+  </div>
+
+  <h3 id="topic-5-7">5.7 Junos Easter Egg: <code>show version and haiku</code></h3>
+  <pre><code><span class="prompt">employee@R1></span> <span class="highlight">show version and haiku</span>
+<span class="output">Hostname: R1
+Model: mx204
+Junos: 22.4R1.10
+... [software module output] ...
+
+IS-IS routes packets
+BGP connects the world
+Packets find their way</span></code></pre>
+</section>
+
+<!-- ========================================================================= -->
+<!-- TOPIC 6 -->
+<!-- ========================================================================= -->
+<section id="topic-6">
+  <h2>6. Hands-On Lab Walkthrough & Step-by-Step CLI Scenarios</h2>
+
+  <h3 id="topic-6-1">6.1 Lab Topology & Management Plane Architecture</h3>
+
+  <div class="diagram-container">
+    <!-- SVG 7: Redesigned Visual Lab Topology -->
+    <svg viewBox="0 0 960 220" xmlns="http://www.w3.org/2000/svg">
+      <rect width="960" height="220" fill="#f8fafc" rx="10" stroke="#cbd5e1" stroke-width="1.5"/>
+      <text x="480" y="28" font-size="16" font-weight="800" fill="#0f172a" text-anchor="middle">Figure 7: Out-of-Band Lab Management Network Architecture</text>
+
+      <!-- Student Desktop -->
+      <g transform="translate(50, 55)">
+        <rect width="230" height="120" fill="#ffffff" stroke="#2563eb" stroke-width="2" rx="8"/>
+        <!-- Monitor Icon -->
+        <rect x="95" y="15" width="40" height="26" fill="#1e40af" rx="2"/>
+        <path d="M 85 41 L 145 41 L 140 47 L 90 47 Z" fill="#64748b"/>
+        <text x="115" y="66" font-size="11.5" font-weight="800" fill="#1d4ed8" text-anchor="middle">Virtual Student Desktop</text>
+        <text x="115" y="84" font-size="10.5" font-weight="700" fill="#0f172a" text-anchor="middle">IP: 172.25.11.100</text>
+        <rect x="20" y="92" width="190" height="20" fill="#eff6ff" stroke="#bfdbfe" rx="3"/>
+        <text x="115" y="106" font-size="8.5" font-weight="700" fill="#2563eb" text-anchor="middle">Runs: lab1 baseline script</text>
+      </g>
+
+      <!-- Connectors -->
+      <line x1="280" y1="115" x2="380" y2="115" stroke="#2563eb" stroke-width="3"/>
+      <text x="330" y="105" font-size="9" font-weight="700" fill="#2563eb" text-anchor="middle">SSH (TCP 22)</text>
+
+      <!-- Mgmt Switch -->
+      <g transform="translate(380, 55)">
+        <rect width="200" height="120" fill="#ffffff" stroke="#64748b" stroke-width="1.5" rx="8"/>
+        <circle cx="100" cy="40" r="18" fill="#f1f5f9" stroke="#64748b"/>
+        <path d="M 90 38 L 110 38 M 105 34 L 110 38 L 105 42" fill="none" stroke="#64748b" stroke-width="2"/>
+        <path d="M 110 44 L 90 44 M 95 40 L 90 44 L 95 48" fill="none" stroke="#64748b" stroke-width="2"/>
+        <text x="100" y="76" font-size="11.5" font-weight="800" fill="#334155" text-anchor="middle">Management Switch</text>
+        <text x="100" y="94" font-size="9.5" fill="#64748b" text-anchor="middle">Dedicated OOB VLAN 11</text>
+        <text x="100" y="108" font-size="9" font-weight="600" fill="#2563eb" text-anchor="middle">Subnet: 172.25.11.0/24</text>
+      </g>
+
+      <line x1="580" y1="115" x2="680" y2="115" stroke="#2563eb" stroke-width="3"/>
+
+      <!-- Router 1 Mgmt Port -->
+      <g transform="translate(680, 55)">
+        <rect width="230" height="120" fill="#fff7ed" stroke="#ea580c" stroke-width="2" rx="8"/>
+        <!-- Router Icon -->
+        <circle cx="115" cy="36" r="18" fill="#ffedd5" stroke="#ea580c"/>
+        <path d="M 105 36 L 125 36 M 120 31 L 125 36 L 120 41" fill="none" stroke="#ea580c" stroke-width="2"/>
+        <text x="115" y="68" font-size="11.5" font-weight="800" fill="#c2410c" text-anchor="middle">Router 1: fxp0 Interface</text>
+        <text x="115" y="86" font-size="10.5" font-weight="700" fill="#0f172a" text-anchor="middle">Management IP: 172.25.11.1</text>
+        <rect x="20" y="94" width="190" height="20" fill="#ffffff" stroke="#fed7aa" rx="3"/>
+        <text x="115" y="108" font-size="8.5" font-weight="700" fill="#ea580c" text-anchor="middle">Credentials: lab / lab123</text>
+      </g>
+    </svg>
+    <div class="diagram-caption">Figure 7: Course lab connection topology showing SSH access from the Virtual Student Desktop to Router 1 fxp0 management interface.</div>
+  </div>
+
+  <div class="walkthrough-box">
+    <h4>🔍 Detailed Walkthrough of Figure 7 (Visual Diagram Breakdown)</h4>
+    <ol>
+      <li><strong>Virtual Student Desktop (Left Block):</strong> The student terminal workstation at IP <code>172.25.11.100</code>. Prior to logging into the router, running <code>lab1</code> automatically connects over the management plane to bootstrap Router 1 with its starting baseline configuration.</li>
+      <li><strong>Out-of-Band Management Switch (Center Block):</strong> Provides isolated Layer 2 connectivity across the dedicated management subnet (<code>172.25.11.0/24</code>), segregated from production data traffic.</li>
+      <li><strong>Router 1 fxp0 Interface (Right Block):</strong> The student initiates an SSH session to Router 1's dedicated management port (<code>fxp0</code>) at IP <code>172.25.11.1</code> (user <code>lab</code>, password <code>lab123</code>). Because <code>fxp0</code> connects directly to the Routing Engine CPU, administrative access remains operational regardless of transit link states.</li>
+    </ol>
+  </div>
+
+  <h3 id="topic-6-2">6.2 Step-by-Step Lab Tasks & Command Execution</h3>
+  
+  <h4>Task 1: Load starting base configuration</h4>
+  <pre><code><span class="prompt">student@desktop:~$</span> <span class="highlight">lab1</span>  <span class="comment"># Alias script deploying base configuration to Router 1</span></code></pre>
+
+  <h4>Task 2: Connect to Router 1 via SSH</h4>
+  <pre><code><span class="prompt">student@desktop:~$</span> <span class="highlight">ssh lab@172.25.11.1</span>
+<span class="output">Password: lab123</span>
+<span class="prompt">lab@R1></span></code></pre>
+
+  <h4>Task 3: Verify system uptime & boot statistics</h4>
+  <pre><code><span class="prompt">lab@R1></span> <span class="highlight">show system uptime</span></code></pre>
+
+  <h4>Task 4: Verify Junos model & software version</h4>
+  <pre><code><span class="prompt">lab@R1></span> <span class="highlight">show system information</span></code></pre>
+
+  <h4>Task 5: Inspect LLDP neighbor connectivity</h4>
+  <pre><code><span class="prompt">lab@R1></span> <span class="highlight">show lldp neighbors</span></code></pre>
+
+  <h4>Task 6: Audit active user sessions</h4>
+  <pre><code><span class="prompt">lab@R1></span> <span class="highlight">show system users</span>
+<span class="output">11:50AM  up 10 days,  9:35, 1 user, load averages: 0.12, 0.08, 0.02
+USER     TTY      FROM                              LOGIN@  IDLE WHAT
+lab      p0       172.25.11.100                    11:48AM     - -cli</span></code></pre>
+
+  <h4>Task 7: Test auto-completion & context-sensitive help</h4>
+  <pre><code><span class="prompt">lab@R1></span> <span class="highlight">sh</span><kbd>[Space]</kbd><span class="highlight">sys</span><kbd>[Space]</kbd><span class="highlight">up</span><kbd>[Space]</kbd>  <span class="comment"># Auto-completes to 'show system uptime'</span></code></pre>
+</section>
+
+<!-- ========================================================================= -->
+<!-- TOPIC 7 -->
+<!-- ========================================================================= -->
+<section id="topic-7">
+  <h2>7. Command Quick Reference & Common Beginner Pitfalls</h2>
+
+  <h3 id="topic-7-1">7.1 Junos Operational CLI Command Reference Table</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Command String</th>
+        <th>CLI Mode</th>
+        <th>Functional Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>ssh &lt;user&gt;@&lt;ip&gt;</code></td>
+        <td>Client Shell</td>
+        <td>Establishes an encrypted SSH session (TCP port 22) to a remote Junos device.</td>
+      </tr>
+      <tr>
+        <td><code>configure</code></td>
+        <td>Operational (<code>&gt;</code>)</td>
+        <td>Enters Configuration Mode (<code>#</code>) to edit the candidate configuration.</td>
+      </tr>
+      <tr>
+        <td><code>exit</code></td>
+        <td>Configuration (<code>#</code>)</td>
+        <td>Exits Configuration Mode back to Operational Mode without committing changes.</td>
+      </tr>
+      <tr>
+        <td><code>show system uptime</code></td>
+        <td>Operational</td>
+        <td>Displays system clock, boot timestamp, protocol start times, and elapsed uptime.</td>
+      </tr>
+      <tr>
+        <td><code>show system information</code></td>
+        <td>Operational</td>
+        <td>Displays hardware model, Junos OS version, software family, and hostname.</td>
+      </tr>
+      <tr>
+        <td><code>show system users</code></td>
+        <td>Operational</td>
+        <td>Lists all active CLI terminal sessions, source IP addresses, and login times.</td>
+      </tr>
+      <tr>
+        <td><code>show system alarms</code></td>
+        <td>Operational</td>
+        <td>Displays active hardware alarms, chassis defects, and environmental warnings.</td>
+      </tr>
+      <tr>
+        <td><code>show lldp neighbors</code></td>
+        <td>Operational</td>
+        <td>Displays directly connected Layer 2 neighbors, remote hostnames, and interface IDs.</td>
+      </tr>
+      <tr>
+        <td><code>monitor interface &lt;name&gt;</code></td>
+        <td>Operational</td>
+        <td>Opens a real-time, continuously updating 1-second interval throughput display.</td>
+      </tr>
+      <tr>
+        <td><code>show version and haiku</code></td>
+        <td>Operational</td>
+        <td>Displays full software module versions along with a whimsical Junos poetry easter egg.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 id="topic-7-2">7.2 Common Beginner Mistakes & Gotchas</h3>
+  <div class="gotchas">
+    <h4>Key Traps to Avoid on the JNCIA-Junos Exam</h4>
+    <ol>
+      <li><strong>Confusing <code>show</code> and <code>monitor</code>:</strong> <code>show</code> outputs a static one-time snapshot; <code>monitor</code> takes over the screen to refresh live metrics continuously.</li>
+      <li><strong>Typing configuration statements in operational mode:</strong> Operational mode (<code>&gt;</code>) will reject commands like <code>set system host-name ...</code>. You must enter configuration mode (<code>#</code>) first via <code>configure</code>.</li>
+      <li><strong>Missing the difference between <kbd>Spacebar</kbd> and <kbd>Tab</kbd>:</strong> The spacebar only completes built-in Junos command keywords; the Tab key completes keywords <em>and</em> user-defined configuration object names (e.g. interface names).</li>
+      <li><strong>Overlooking FR vs. MR release differences:</strong> <code>R1</code> releases introduce new features; <code>R2+</code> releases represent bug-fix maintenance releases.</li>
+    </ol>
+  </div>
+</section>
+
+</div>
+</body>
+</html>

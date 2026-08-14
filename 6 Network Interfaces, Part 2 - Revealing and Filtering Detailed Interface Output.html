@@ -1,0 +1,1589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Junos Network Interfaces, Command Output Analysis & CLI Filtering Study Notes | JNCIA-Junos</title>
+<style>
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.65;
+    color: #1e293b;
+    background-color: #f8fafc;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 32px 24px;
+  }
+  .content-wrapper {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 40px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  }
+  h1 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #0f172a;
+    border-bottom: 3px solid #3b82f6;
+    padding-bottom: 14px;
+    margin-top: 0;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+  .subtitle {
+    font-size: 1.15rem;
+    color: #64748b;
+    margin-bottom: 32px;
+    font-weight: 500;
+  }
+  h2 {
+    font-size: 1.65rem;
+    font-weight: 700;
+    color: #1e3a8a;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 10px;
+    margin-top: 48px;
+    letter-spacing: -0.01em;
+  }
+  h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-top: 28px;
+    color: #1d4ed8;
+  }
+  h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 20px;
+    color: #334155;
+  }
+  nav.toc {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 24px 28px;
+    margin-bottom: 40px;
+  }
+  nav.toc h2 {
+    margin-top: 0;
+    font-size: 1.35rem;
+    border-bottom: none;
+    padding-bottom: 0;
+    color: #0f172a;
+  }
+  nav.toc ol {
+    margin: 0;
+    padding-left: 22px;
+  }
+  nav.toc li {
+    margin: 8px 0;
+  }
+  nav.toc a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  nav.toc a:hover {
+    text-decoration: underline;
+    color: #1d4ed8;
+  }
+  .diagram-container {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 28px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+    overflow-x: auto;
+  }
+  .diagram-caption {
+    font-size: 0.92rem;
+    color: #475569;
+    margin-top: 14px;
+    font-weight: 500;
+    text-align: center;
+  }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    background-color: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    color: #7c3aed;
+    border: 1px solid #e2e8f0;
+  }
+  pre {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    background-color: #0f172a;
+    color: #f8fafc;
+    padding: 18px 20px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    border: 1px solid #1e293b;
+  }
+  pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    border: none;
+  }
+  .prompt { color: #4ade80; font-weight: bold; }
+  .comment { color: #94a3b8; font-style: italic; }
+  .highlight { color: #facc15; font-weight: bold; }
+  .output { color: #e2e8f0; }
+  
+  blockquote.added-context {
+    border-left: 4px solid #3b82f6;
+    background-color: #eff6ff;
+    padding: 14px 20px;
+    margin: 22px 0;
+    color: #1e40af;
+    border-radius: 0 8px 8px 0;
+  }
+  blockquote.added-context p {
+    margin: 0 0 8px 0;
+  }
+  blockquote.added-context p:last-child {
+    margin: 0;
+  }
+  
+  .key-terms {
+    background-color: #f8fafc;
+    border-left: 4px solid #64748b;
+    padding: 16px 20px;
+    margin: 22px 0;
+    border-radius: 0 8px 8px 0;
+  }
+  .key-terms h4 {
+    margin-top: 0;
+    color: #1e293b;
+  }
+  .key-terms dt {
+    font-weight: 700;
+    color: #0f172a;
+    margin-top: 10px;
+  }
+  .key-terms dt:first-child {
+    margin-top: 0;
+  }
+  .key-terms dd {
+    margin-left: 0;
+    margin-bottom: 10px;
+    color: #475569;
+  }
+  
+  .gotchas {
+    background-color: #fffbeb;
+    border-left: 4px solid #f59e0b;
+    padding: 16px 20px;
+    margin: 22px 0;
+    border-radius: 0 8px 8px 0;
+  }
+  .gotchas h4 {
+    color: #b45309;
+    margin-top: 0;
+  }
+  
+  .hands-on {
+    background-color: #f0fdf4;
+    border: 1px solid #86efac;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 28px 0;
+  }
+  .hands-on h4 {
+    color: #166534;
+    margin-top: 0;
+    margin-bottom: 14px;
+    font-size: 1.15rem;
+  }
+  .task-item {
+    margin-bottom: 16px;
+  }
+  .task-item:last-child {
+    margin-bottom: 0;
+  }
+  .task-title {
+    font-weight: 700;
+    color: #15803d;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 0.94rem;
+  }
+  th, td {
+    border: 1px solid #cbd5e1;
+    padding: 12px 16px;
+    text-align: left;
+  }
+  th {
+    background-color: #f1f5f9;
+    color: #0f172a;
+    font-weight: 700;
+  }
+  tr:nth-child(even) {
+    background-color: #f8fafc;
+  }
+  
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+  svg text {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    user-select: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="content-wrapper">
+
+<h1>Junos Network Interfaces, Command Output Analysis & CLI Filtering Study Notes</h1>
+<div class="subtitle">Complete Illustrated Reference for JNCIA-Junos Certification Preparation</div>
+
+<nav class="toc">
+  <h2>Table of Contents</h2>
+  <ol>
+    <li><a href="#topic-1">Physical vs. Logical Interface Architecture in Junos</a>
+      <ol>
+        <li><a href="#topic-1-1">The Junos Interface Naming Convention</a></li>
+        <li><a href="#topic-1-2">Physical Interface (Layer 1/Layer 2) Properties</a></li>
+        <li><a href="#topic-1-3">Logical Interface Units and Protocol Families (Layer 3)</a></li>
+        <li><a href="#topic-1-4">Layer 2 vs. Layer 3 MTU Anatomy and Encapsulation</a></li>
+        <li><a href="#topic-1-5">Burned-in Hardware MAC vs. Configured Current MAC Address</a></li>
+      </ol>
+    </li>
+    <li><a href="#topic-2">Reading and Analyzing <code>show interfaces</code> Command Output</a>
+      <ol>
+        <li><a href="#topic-2-1">The 5-Level Junos Interface Verbosity Ladder</a></li>
+        <li><a href="#topic-2-2">Physical Interface Output Section Walkthrough</a></li>
+        <li><a href="#topic-2-3">Logical Interface Output Section Walkthrough (IPv4 and IPv6)</a></li>
+        <li><a href="#topic-2-4">Interface Status Diagnostics: Administrative vs. Physical Link State</a></li>
+        <li><a href="#topic-2-5">Link Flap Tracking and Real-Time Traffic Rate Statistics</a></li>
+      </ol>
+    </li>
+    <li><a href="#topic-3">Manipulating and Filtering Output with the Junos CLI Pipe (<code>|</code>)</a>
+      <ol>
+        <li><a href="#topic-3-1">The CLI Pipe Operator Architecture and Available Modifiers</a></li>
+        <li><a href="#topic-3-2">The <code>match</code> Modifier: Substring Matching and Regex OR Syntax</a></li>
+        <li><a href="#topic-3-3">The <code>except</code> Modifier: Inverse Filtering</a></li>
+        <li><a href="#topic-3-4">Multi-Stage Pipe Chaining</a></li>
+        <li><a href="#topic-3-5">The <code>count</code> Modifier: Rapid Device Auditing</a></li>
+        <li><a href="#topic-3-6">The <code>find</code> Modifier: Output Jumping and Navigation</a></li>
+        <li><a href="#topic-3-7">Additional Pipe Modifiers (<code>save</code>, <code>append</code>, <code>last</code>, <code>display</code>)</a></li>
+      </ol>
+    </li>
+    <li><a href="#topic-4">Special & Advanced Interface Types in Junos (JNCIA Context)</a>
+      <ol>
+        <li><a href="#topic-4-1">Out-of-Band Management (<code>fxp0</code> / <code>em0</code> / <code>me0</code>) vs. Console Port</a></li>
+        <li><a href="#topic-4-2">Loopback Interfaces (<code>lo0</code>)</a></li>
+        <li><a href="#topic-4-3">Integrated Routing and Bridging (<code>irb</code>) for Layer 3 Switches</a></li>
+        <li><a href="#topic-4-4">Placeholder Logical Units (<code>.16386</code>)</a></li>
+      </ol>
+    </li>
+    <li><a href="#topic-5">Hands-On Lab Walkthrough & Step-by-Step CLI Scenarios</a>
+      <ol>
+        <li><a href="#topic-5-1">Lab Topology and Management Connectivity</a></li>
+        <li><a href="#topic-5-2">Step-by-Step Lab Execution (Tasks 1 to 14)</a></li>
+      </ol>
+    </li>
+    <li><a href="#topic-6">Command Quick Reference & Common Pitfalls</a>
+      <ol>
+        <li><a href="#topic-6-1">Junos Interface & Pipe Command Summary Table</a></li>
+        <li><a href="#topic-6-2">Common Beginner Mistakes & Gotchas</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+
+<!-- ========================================================================= -->
+<!-- TOPIC 1 -->
+<!-- ========================================================================= -->
+<section id="topic-1">
+  <h2>1. Physical vs. Logical Interface Architecture in Junos</h2>
+  
+  <p>In Juniper Junos OS, network interfaces are decoupled into two distinct, hierarchical layers: the <strong>Physical Interface</strong> (representing the physical hardware port, optics, transceiver, framing, and Layer 2 properties) and one or more <strong>Logical Interfaces</strong> (termed <strong>units</strong>, representing logical sub-interfaces hosting Layer 3 protocol suites like IPv4 and IPv6). Even when a physical interface connects to a simple point-to-point IP link without VLAN tagging, Junos strictly mandates defining at least one logical unit (traditionally <code>unit 0</code>) to assign protocol addresses.</p>
+
+  <div class="diagram-container">
+    <!-- SVG 1: Redesigned Physical to Logical Interface Hierarchy -->
+    <svg viewBox="0 0 960 490" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="shadow" x="-2%" y="-2%" width="104%" height="106%" filterUnits="userSpaceOnUse">
+          <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.08"/>
+        </filter>
+        <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 10 5 L 0 9 z" fill="#475569"/>
+        </marker>
+      </defs>
+
+      <!-- Background Canvas -->
+      <rect width="960" height="490" fill="#f8fafc" rx="10" stroke="#cbd5e1" stroke-width="1.5"/>
+      <text x="480" y="32" font-size="17" font-weight="800" fill="#0f172a" text-anchor="middle">Junos Physical-to-Logical Interface Architecture & Naming Hierarchy</text>
+
+      <!-- 1. Physical Interface Container -->
+      <g transform="translate(40, 50)" filter="url(#shadow)">
+        <rect width="880" height="115" fill="#ffffff" stroke="#2563eb" stroke-width="2" rx="8"/>
+        
+        <!-- Header Badge -->
+        <rect x="0" y="0" width="880" height="34" fill="#2563eb" rx="6"/>
+        <text x="20" y="23" font-size="13" font-weight="700" fill="#ffffff">LEVEL 1: PHYSICAL INTERFACE (Layer 1 & Layer 2 Hardware Transceiver)</text>
+        <text x="860" y="23" font-size="13" font-weight="700" fill="#bfdbfe" text-anchor="end">Target: xe-0/1/2</text>
+        
+        <!-- Description -->
+        <text x="20" y="58" font-size="13" font-weight="700" fill="#1e293b">10-Gigabit Ethernet Port <tspan fill="#64748b" font-weight="500">(FPC Slot 0 / PIC Slot 1 / Port 2)</tspan></text>
+        
+        <!-- Badges Row -->
+        <g transform="translate(20, 72)">
+          <!-- Pill 1 -->
+          <rect x="0" y="0" width="190" height="30" fill="#f0fdf4" stroke="#86efac" rx="5"/>
+          <text x="95" y="19" font-size="11" font-weight="600" fill="#166534" text-anchor="middle">Link: Up • Admin: Enabled</text>
+          
+          <!-- Pill 2 -->
+          <rect x="205" y="0" width="220" height="30" fill="#eff6ff" stroke="#bfdbfe" rx="5"/>
+          <text x="315" y="19" font-size="11" font-weight="600" fill="#1d4ed8" text-anchor="middle">Speed: 10 Gbps • L2 MTU: 1514 B</text>
+
+          <!-- Pill 3 -->
+          <rect x="440" y="0" width="395" height="30" fill="#faf5ff" stroke="#e9d5ff" rx="5"/>
+          <text x="637" y="19" font-size="11" font-weight="600" fill="#6b21a8" text-anchor="middle">Hardware & Current MAC: 00:05:86:71:3d:02</text>
+        </g>
+      </g>
+
+      <!-- Connecting Arrow 1 -->
+      <line x1="480" y1="165" x2="480" y2="198" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow)"/>
+      <rect x="360" y="172" width="240" height="20" fill="#f1f5f9" stroke="#cbd5e1" rx="4"/>
+      <text x="480" y="186" font-size="10" font-weight="700" fill="#475569" text-anchor="middle">Contains 1 or more Logical Units</text>
+
+      <!-- 2. Logical Unit Container -->
+      <g transform="translate(100, 205)" filter="url(#shadow)">
+        <rect width="760" height="95" fill="#ffffff" stroke="#7c3aed" stroke-width="2" rx="8"/>
+        
+        <!-- Header Badge -->
+        <rect x="0" y="0" width="760" height="32" fill="#7c3aed" rx="6"/>
+        <text x="20" y="22" font-size="13" font-weight="700" fill="#ffffff">LEVEL 2: LOGICAL INTERFACE UNIT (Layer 3 Virtual Sub-Interface)</text>
+        <text x="740" y="22" font-size="13" font-weight="700" fill="#e9d5ff" text-anchor="end">Unit Name: xe-0/1/2.0</text>
+        
+        <!-- Info Text -->
+        <text x="20" y="56" font-size="12" font-weight="600" fill="#1e293b">Encapsulation: ENET2 • 802.1Q VLAN Tagging • Firewall Filter & Routing Attachment Point</text>
+        <text x="20" y="78" font-size="11" fill="#64748b">Hosts independent Layer 3 protocol suites (family inet for IPv4, family inet6 for IPv6)</text>
+      </g>
+
+      <!-- Connecting Arrows to Protocol Families -->
+      <line x1="280" y1="300" x2="280" y2="335" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+      <line x1="680" y1="300" x2="680" y2="335" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+      <!-- 3A. Protocol Family inet (IPv4) -->
+      <g transform="translate(80, 340)" filter="url(#shadow)">
+        <rect width="380" height="125" fill="#ffffff" stroke="#16a34a" stroke-width="2" rx="8"/>
+        <rect x="0" y="0" width="380" height="30" fill="#16a34a" rx="6"/>
+        <text x="15" y="20" font-size="12" font-weight="700" fill="#ffffff">LEVEL 3A: Protocol Family inet (IPv4)</text>
+        
+        <text x="15" y="52" font-size="12" font-weight="700" fill="#15803d">• Layer 3 MTU: <tspan fill="#0f172a" font-weight="500">1500 Bytes (Excludes MAC Header)</tspan></text>
+        <text x="15" y="74" font-size="12" font-weight="700" fill="#15803d">• Local Address: <tspan fill="#0f172a" font-weight="700">172.16.20.1/24</tspan> (Primary)</text>
+        <text x="15" y="96" font-size="11" fill="#475569">• Subnet Notation: <tspan font-weight="600" fill="#0f172a">172.16.20/24</tspan> (Shorthand)</text>
+        <text x="15" y="114" font-size="11" fill="#475569">• Broadcast Address: <tspan font-weight="600" fill="#0f172a">172.16.20.255</tspan></text>
+      </g>
+
+      <!-- 3B. Protocol Family inet6 (IPv6) -->
+      <g transform="translate(500, 340)" filter="url(#shadow)">
+        <rect width="380" height="125" fill="#ffffff" stroke="#ea580c" stroke-width="2" rx="8"/>
+        <rect x="0" y="0" width="380" height="30" fill="#ea580c" rx="6"/>
+        <text x="15" y="20" font-size="12" font-weight="700" fill="#ffffff">LEVEL 3B: Protocol Family inet6 (IPv6)</text>
+        
+        <text x="15" y="52" font-size="12" font-weight="700" fill="#c2410c">• Layer 3 MTU: <tspan fill="#0f172a" font-weight="500">1500 Bytes (Independent L3 MTU)</tspan></text>
+        <text x="15" y="74" font-size="12" font-weight="700" fill="#c2410c">• Global Unicast: <tspan fill="#0f172a" font-weight="700">2001:db8:10::1/64</tspan></text>
+        <text x="15" y="96" font-size="11" fill="#475569">• Link-Local: <tspan font-weight="600" fill="#0f172a">fe80::205:86ff:fe71:3d02/64</tspan></text>
+        <text x="15" y="114" font-size="11" fill="#475569">• Scope: Local link segment only</text>
+      </g>
+    </svg>
+    <div class="diagram-caption">Figure 1: Junos interface model illustrating the decoupling between the physical interface port (xe-0/1/2), the logical unit (xe-0/1/2.0), and protocol families (inet and inet6).</div>
+  </div>
+
+  <h3 id="topic-1-1">1.1 The Junos Interface Naming Convention</h3>
+  <p>Junos uses a standardized, deterministic naming schema across all modular and fixed hardware platforms:</p>
+  <pre><code>&lt;media-type&gt;-&lt;fpc-slot&gt;/&lt;pic-slot&gt;/&lt;port-number&gt;.&lt;logical-unit&gt;</code></pre>
+  
+  <ul>
+    <li><strong>Media Type:</strong> Indicates interface speed and physical transceiver technology:
+      <ul>
+        <li><code>ge</code>: Gigabit Ethernet (1 Gbps / 1,000 Mbps)</li>
+        <li><code>xe</code>: 10-Gigabit Ethernet (10 Gbps / 10,000 Mbps)</li>
+        <li><code>et</code>: 40-Gigabit, 100-Gigabit, or 400-Gigabit Ethernet</li>
+        <li><code>fe</code>: Fast Ethernet (100 Mbps - legacy)</li>
+        <li><code>fxp0</code> / <code>em0</code> / <code>me0</code>: Dedicated out-of-band management Ethernet port</li>
+        <li><code>lo0</code>: Loopback virtual interface</li>
+        <li><code>irb</code>: Integrated Routing and Bridging (VLAN virtual interface on switches)</li>
+      </ul>
+    </li>
+    <li><strong>FPC Slot (Flexible PIC Concentrator):</strong> The chassis slot number where the line card is seated (starts at 0). On fixed-chassis routers/switches, this is always 0.</li>
+    <li><strong>PIC Slot (Physical Interface Card):</strong> The daughtercard or sub-module slot on the FPC (starts at 0).</li>
+    <li><strong>Port Number:</strong> The individual physical transceiver receptacle or RJ-45 jack on the PIC (starts at 0).</li>
+    <li><strong>Logical Unit (<code>.&lt;unit&gt;</code>):</strong> The logical sub-interface partition (e.g., <code>.0</code> for the base unit, or <code>.100</code> for VLAN 100).</li>
+  </ul>
+
+  <div class="diagram-container">
+    <!-- SVG 2: Redesigned Realistic Hardware Chassis Front Panel -->
+    <svg viewBox="0 0 960 260" xmlns="http://www.w3.org/2000/svg">
+      <!-- Outer 1U Rackmount Chassis -->
+      <rect x="10" y="20" width="940" height="220" rx="8" fill="#1e293b" stroke="#0f172a" stroke-width="3"/>
+      
+      <!-- Mounting Ears Left & Right -->
+      <rect x="10" y="20" width="30" height="220" fill="#334155" stroke="#0f172a" rx="3"/>
+      <circle cx="25" cy="50" r="5" fill="#94a3b8" stroke="#0f172a"/>
+      <circle cx="25" cy="210" r="5" fill="#94a3b8" stroke="#0f172a"/>
+      
+      <rect x="920" y="20" width="30" height="220" fill="#334155" stroke="#0f172a" rx="3"/>
+      <circle cx="935" cy="50" r="5" fill="#94a3b8" stroke="#0f172a"/>
+      <circle cx="935" cy="210" r="5" fill="#94a3b8" stroke="#0f172a"/>
+
+      <!-- Inner Faceplate -->
+      <rect x="45" y="32" width="870" height="196" fill="#0f172a" rx="4"/>
+      
+      <!-- Branding & LEDs Left Area -->
+      <g transform="translate(60, 45)">
+        <text x="0" y="20" font-size="14" font-weight="800" fill="#ffffff" letter-spacing="1">JUNIPER NETWORKS</text>
+        <text x="0" y="38" font-size="11" font-weight="600" fill="#94a3b8">SRX / MX Services Gateway</text>
+        
+        <!-- Status LEDs -->
+        <g transform="translate(0, 60)">
+          <circle cx="8" cy="8" r="5" fill="#22c55e"/>
+          <text x="20" y="12" font-size="10" font-weight="700" fill="#e2e8f0">PWR</text>
+          
+          <circle cx="65" cy="8" r="5" fill="#22c55e"/>
+          <text x="77" y="12" font-size="10" font-weight="700" fill="#e2e8f0">STAT</text>
+
+          <circle cx="125" cy="8" r="5" fill="#f59e0b"/>
+          <text x="137" y="12" font-size="10" font-weight="700" fill="#e2e8f0">ALM</text>
+        </g>
+      </g>
+
+      <!-- Module 1: Management & Console (RJ-45) -->
+      <g transform="translate(250, 45)">
+        <rect width="165" height="165" fill="#1e293b" stroke="#475569" stroke-width="1.5" rx="6"/>
+        <text x="82" y="22" font-size="11" font-weight="700" fill="#cbd5e1" text-anchor="middle">MGMT / CONSOLE</text>
+        
+        <!-- Console Port -->
+        <g transform="translate(20, 38)">
+          <rect width="50" height="42" fill="#0f172a" stroke="#64748b" stroke-width="1.5" rx="3"/>
+          <path d="M 15 15 L 35 15 L 35 30 L 15 30 Z" fill="#334155"/>
+          <text x="25" y="60" font-size="9" font-weight="600" fill="#94a3b8" text-anchor="middle">CONSOLE</text>
+        </g>
+
+        <!-- fxp0 Port -->
+        <g transform="translate(95, 38)">
+          <rect width="50" height="42" fill="#0f172a" stroke="#22c55e" stroke-width="2" rx="3"/>
+          <path d="M 15 15 L 35 15 L 35 30 L 15 30 Z" fill="#166534"/>
+          <circle cx="10" cy="8" r="2.5" fill="#22c55e"/>
+          <circle cx="40" cy="8" r="2.5" fill="#eab308"/>
+          <text x="25" y="60" font-size="9" font-weight="800" fill="#4ade80" text-anchor="middle">fxp0</text>
+        </g>
+
+        <!-- Description -->
+        <rect x="12" y="115" width="140" height="36" fill="#0f172a" rx="4"/>
+        <text x="82" y="130" font-size="9" font-weight="700" fill="#e2e8f0" text-anchor="middle">fxp0: 172.25.11.1</text>
+        <text x="82" y="144" font-size="8" fill="#94a3b8" text-anchor="middle">OOB RE Management</text>
+      </g>
+
+      <!-- Module 2: PIC 0 - 1GbE SFP Ports -->
+      <g transform="translate(430, 45)">
+        <rect width="235" height="165" fill="#1e293b" stroke="#3b82f6" stroke-width="1.5" rx="6"/>
+        <text x="117" y="22" font-size="11" font-weight="700" fill="#60a5fa" text-anchor="middle">FPC 0 / PIC 0 (1GbE SFP)</text>
+        
+        <!-- 4 SFP Cages -->
+        <g transform="translate(15, 40)">
+          <!-- Port 0 -->
+          <rect x="0" y="0" width="45" height="48" fill="#0f172a" stroke="#64748b" rx="3"/>
+          <circle cx="22" cy="8" r="2" fill="#22c55e"/>
+          <text x="22" y="66" font-size="9" font-weight="600" fill="#94a3b8" text-anchor="middle">ge-0/0/0</text>
+          
+          <!-- Port 1 -->
+          <rect x="52" y="0" width="45" height="48" fill="#0f172a" stroke="#64748b" rx="3"/>
+          <circle cx="74" cy="8" r="2" fill="#22c55e"/>
+          <text x="74" y="66" font-size="9" font-weight="600" fill="#94a3b8" text-anchor="middle">ge-0/0/1</text>
+
+          <!-- Port 2 -->
+          <rect x="104" y="0" width="45" height="48" fill="#0f172a" stroke="#64748b" rx="3"/>
+          <circle cx="126" cy="8" r="2" fill="#ef4444"/>
+          <text x="126" y="66" font-size="9" font-weight="600" fill="#94a3b8" text-anchor="middle">ge-0/0/2</text>
+
+          <!-- Port 3 -->
+          <rect x="156" y="0" width="45" height="48" fill="#0f172a" stroke="#64748b" rx="3"/>
+          <circle cx="178" cy="8" r="2" fill="#ef4444"/>
+          <text x="178" y="66" font-size="9" font-weight="600" fill="#94a3b8" text-anchor="middle">ge-0/0/3</text>
+        </g>
+
+        <!-- Description -->
+        <text x="117" y="142" font-size="10" font-weight="600" fill="#cbd5e1" text-anchor="middle">1 Gbps Optical / Copper</text>
+      </g>
+
+      <!-- Module 3: PIC 1 - 10GbE SFP+ Ports -->
+      <g transform="translate(680, 45)">
+        <rect width="220" height="165" fill="#1e293b" stroke="#eab308" stroke-width="2" rx="6"/>
+        <text x="110" y="22" font-size="11" font-weight="800" fill="#facc15" text-anchor="middle">FPC 0 / PIC 1 (10GbE SFP+)</text>
+        
+        <!-- 4 SFP+ Cages -->
+        <g transform="translate(10, 40)">
+          <!-- Port 0 -->
+          <rect x="0" y="0" width="44" height="48" fill="#0f172a" stroke="#64748b" rx="3"/>
+          <circle cx="22" cy="8" r="2" fill="#22c55e"/>
+          <text x="22" y="66" font-size="8.5" font-weight="600" fill="#94a3b8" text-anchor="middle">xe-0/1/0</text>
+          
+          <!-- Port 1 -->
+          <rect x="50" y="0" width="44" height="48" fill="#0f172a" stroke="#64748b" rx="3"/>
+          <circle cx="72" cy="8" r="2" fill="#22c55e"/>
+          <text x="72" y="66" font-size="8.5" font-weight="600" fill="#94a3b8" text-anchor="middle">xe-0/1/1</text>
+
+          <!-- Port 2 (Target Highlighted) -->
+          <rect x="100" y="0" width="46" height="48" fill="#422006" stroke="#facc15" stroke-width="2.5" rx="3"/>
+          <circle cx="123" cy="8" r="2.5" fill="#22c55e"/>
+          <text x="123" y="66" font-size="9" font-weight="800" fill="#facc15" text-anchor="middle">xe-0/1/2</text>
+
+          <!-- Port 3 -->
+          <rect x="152" y="0" width="44" height="48" fill="#0f172a" stroke="#64748b" rx="3"/>
+          <circle cx="174" cy="8" r="2" fill="#ef4444"/>
+          <text x="174" y="66" font-size="8.5" font-weight="600" fill="#94a3b8" text-anchor="middle">xe-0/1/3</text>
+        </g>
+
+        <!-- Highlight Callout -->
+        <rect x="10" y="118" width="200" height="34" fill="#0f172a" stroke="#facc15" rx="4"/>
+        <text x="110" y="134" font-size="9.5" font-weight="800" fill="#fde047" text-anchor="middle">Target Port: xe-0/1/2</text>
+        <text x="110" y="146" font-size="8.5" fill="#e2e8f0" text-anchor="middle">Speed: 10 Gbps (SFP+ Optic)</text>
+      </g>
+    </svg>
+    <div class="diagram-caption">Figure 2: Hardware chassis front panel showing FPC 0 with PIC 0 (Gigabit Ethernet), PIC 1 (10-Gigabit Ethernet SFP+), and dedicated out-of-band management port (fxp0).</div>
+  </div>
+
+  <blockquote class="added-context">
+    <p><strong>📘 Added context: Modular vs. Fixed Chassis Port Numbering in JNCIA-Junos</strong></p>
+    <p>On enterprise routers (like SRX branch gateways or MX modular edge routers), FPC slot 0 represents the built-in motherboard ports. PIC slot 0 hosts onboard Gigabit ports (<code>ge-0/0/x</code>), while PIC slot 1 represents expansion modules or high-speed uplinks (<code>xe-0/1/x</code>). On modular multi-chassis systems (like the MX960), FPC numbers range from 0 to 11, PIC numbers range from 0 to 3 per FPC, and port numbers range according to port density.</p>
+  </blockquote>
+
+  <h3 id="topic-1-2">1.2 Physical Interface (Layer 1/Layer 2) Properties</h3>
+  <p>The physical interface corresponds to the hardware device driver and physical media. Key parameters managed at the physical layer include:</p>
+  <ul>
+    <li><strong>Physical Link State:</strong> The electrical/optical carrier signal detected on the wire (<code>Up</code> or <code>Down</code>).</li>
+    <li><strong>Administrative State:</strong> Whether the interface is operational (<code>Enabled</code>) or disabled by an administrator via configuration (<code>Disabled</code> via <code>set interfaces xe-0/1/2 disable</code>).</li>
+    <li><strong>Interface Speed and Duplex:</strong> Negotiated or hardcoded operational speed (e.g., <code>Speed: 10Gbps</code>, <code>1000mbps</code>, <code>Full-Duplex</code>).</li>
+    <li><strong>Layer 2 MTU:</strong> Maximum frame size that the hardware transceiver will transmit/receive across the wire without frame truncation or errors (default: <code>1514</code> bytes for Ethernet).</li>
+    <li><strong>Hardware MAC Addresses:</strong> The factory burned-in physical MAC address of the transceiver/port, alongside any software-overridden Current MAC address.</li>
+  </ul>
+
+  <h3 id="topic-1-3">1.3 Logical Interface Units and Protocol Families (Layer 3)</h3>
+  <p>A physical interface cannot process network-layer packets until a <strong>logical unit</strong> is defined. Within a logical unit, you configure one or more <strong>protocol families</strong>:</p>
+  <ul>
+    <li><code>family inet</code>: Standard IPv4 routing and packet processing.</li>
+    <li><code>family inet6</code>: IPv6 routing, Neighbor Discovery (NDP), and link-local addressing.</li>
+    <li><code>family ethernet-switching</code>: Layer 2 switching/bridging mode (on EX switches).</li>
+    <li><code>family mpls</code>: Multiprotocol Label Switching packet forwarding.</li>
+  </ul>
+
+  <h3 id="topic-1-4">1.4 Layer 2 vs. Layer 3 MTU Anatomy and Encapsulation</h3>
+  <p>A frequent point of confusion for network engineers transitioning to Junos is why <code>show interfaces</code> reports an MTU of <strong>1514</strong> on the physical interface, but an MTU of <strong>1500</strong> under <code>Protocol inet</code> / <code>Protocol inet6</code>.</p>
+  
+  <div class="diagram-container">
+    <!-- SVG 3: Redesigned MTU Encapsulation Anatomy -->
+    <svg viewBox="0 0 960 250" xmlns="http://www.w3.org/2000/svg">
+      <rect width="960" height="250" fill="#f8fafc" rx="10" stroke="#cbd5e1" stroke-width="1.5"/>
+      <text x="480" y="28" font-size="16" font-weight="800" fill="#0f172a" text-anchor="middle">Ethernet Frame Encapsulation: Layer 2 MTU (1514 B) vs. Layer 3 MTU (1500 B)</text>
+
+      <!-- Main Frame Container -->
+      <g transform="translate(40, 48)">
+        <!-- Outer L2 Box (1514 Bytes) -->
+        <rect width="880" height="125" fill="#f1f5f9" stroke="#475569" stroke-width="2" rx="8"/>
+        <text x="440" y="22" font-size="12" font-weight="700" fill="#334155" text-anchor="middle">Physical Interface Layer 2 MTU: 1514 Bytes (Total Frame Ingested by Junos PFE)</text>
+
+        <!-- L2 Header (14 Bytes) -->
+        <g transform="translate(15, 34)">
+          <rect width="160" height="75" fill="#fee2e2" stroke="#ef4444" stroke-width="2" rx="6"/>
+          <text x="80" y="28" font-size="12" font-weight="800" fill="#991b1b" text-anchor="middle">Ethernet Header</text>
+          <text x="80" y="46" font-size="13" font-weight="800" fill="#dc2626" text-anchor="middle">14 Bytes</text>
+          <text x="80" y="64" font-size="9.5" font-weight="600" fill="#7f1d1d" text-anchor="middle">DMAC (6B) + SMAC (6B) + Type (2B)</text>
+        </g>
+
+        <!-- L3 Payload (1500 Bytes) -->
+        <g transform="translate(190, 34)">
+          <rect width="675" height="75" fill="#dcfce7" stroke="#16a34a" stroke-width="2" rx="6"/>
+          <text x="337" y="24" font-size="12" font-weight="800" fill="#166534" text-anchor="middle">Logical Unit Protocol MTU: 1500 Bytes (family inet / family inet6)</text>
+          
+          <!-- IP Header -->
+          <g transform="translate(15, 32)">
+            <rect width="170" height="35" fill="#ffedd5" stroke="#f97316" stroke-width="1.5" rx="4"/>
+            <text x="85" y="16" font-size="10.5" font-weight="700" fill="#9a3412" text-anchor="middle">IP Header</text>
+            <text x="85" y="29" font-size="9" fill="#7c2d12" text-anchor="middle">IPv4 (20B) / IPv6 (40B)</text>
+          </g>
+
+          <!-- Transport / Data Payload -->
+          <g transform="translate(195, 32)">
+            <rect width="465" height="35" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5" rx="4"/>
+            <text x="232" y="16" font-size="10.5" font-weight="700" fill="#334155" text-anchor="middle">TCP / UDP Header + Data Payload</text>
+            <text x="232" y="29" font-size="9" fill="#64748b" text-anchor="middle">Maximum MSS: 1460 Bytes (IPv4)</text>
+          </g>
+        </g>
+      </g>
+
+      <!-- Bottom Explanatory Summary -->
+      <g transform="translate(40, 188)">
+        <rect width="880" height="42" fill="#eff6ff" stroke="#bfdbfe" rx="6"/>
+        <text x="440" y="18" font-size="11.5" font-weight="700" fill="#1e40af" text-anchor="middle">Formula: Physical L2 MTU (1514 B) = 14 Bytes (Ethernet MAC) + 1500 Bytes (Layer 3 IP Packet)</text>
+        <text x="440" y="34" font-size="10" fill="#475569" text-anchor="middle">* 802.1Q VLAN tagging adds 4 bytes (L2 MTU becomes 1518 B). 4-byte FCS/CRC is stripped by PFE hardware upon ingestion.</text>
+      </g>
+    </svg>
+    <div class="diagram-caption">Figure 3: Breakdown of standard Layer 2 Ethernet frame encapsulation and the mathematical relationship between Physical MTU (1514 B) and Protocol MTU (1500 B).</div>
+  </div>
+
+  <blockquote class="added-context">
+    <p><strong>📘 Added context: Why Ethernet FCS (CRC) is Excluded from Junos L2 MTU</strong></p>
+    <p>Standard Ethernet frames have a 4-byte Frame Check Sequence (FCS/CRC) trailer at the physical layer, bringing the total on-wire frame to 1518 bytes. However, Junos network processors strip the 4-byte FCS in hardware upon ingestion into the packet forwarding engine (PFE). Therefore, the Layer 2 MTU in Junos represents the Ethernet header (14 bytes) + Layer 3 IP MTU (1500 bytes) = <strong>1514 bytes</strong>. If 802.1Q VLAN tagging is enabled, 4 additional bytes are added to the Layer 2 header, yielding an L2 MTU of <strong>1518 bytes</strong>.</p>
+  </blockquote>
+
+  <h3 id="topic-1-5">1.5 Burned-in Hardware MAC vs. Configured Current MAC Address</h3>
+  <p>In standard <code>show interfaces</code> output, Junos reports two MAC address fields under the physical interface:</p>
+  <pre><code>Hardware address: 00:05:86:71:3d:02
+Current address:  00:05:86:71:3d:02</code></pre>
+  <ul>
+    <li><strong>Hardware address:</strong> The permanent, manufacturer-assigned BIA (Burned-In Address) stored in the physical NIC's EEPROM.</li>
+    <li><strong>Current address:</strong> The active operational MAC address utilized by Junos in Ethernet frame headers. By default, this matches the hardware address.</li>
+  </ul>
+  <p>Junos permits overriding the MAC address via configuration. This is invaluable in testing labs or high-availability failover scenarios:</p>
+  <pre><code><span class="prompt">user@router#</span> <span class="highlight">set interfaces xe-0/1/2 mac 00:11:22:33:44:55</span>
+<span class="prompt">user@router#</span> <span class="highlight">commit</span></code></pre>
+  <p>Once committed, <code>Hardware address</code> remains <code>00:05:86:71:3d:02</code>, but <code>Current address</code> reflects <code>00:11:22:33:44:55</code>.</p>
+
+  <div class="key-terms">
+    <h4>Key Terminology & Definitions</h4>
+    <dl>
+      <dt>Physical Interface</dt>
+      <dd>The hardware port and transceiver component (e.g., <code>xe-0/1/2</code>) managing physical signaling, clocking, link carrier, and Layer 2 framing.</dd>
+      <dt>Logical Interface (Unit)</dt>
+      <dd>A virtual sub-interface (e.g., <code>xe-0/1/2.0</code>) that houses Layer 3 protocol suites, VLAN tags, and firewall filters.</dd>
+      <dt>Protocol Family (<code>inet</code> / <code>inet6</code>)</dt>
+      <dd>The network layer protocol suite enabled on a logical unit (IPv4 = <code>inet</code>, IPv6 = <code>inet6</code>).</dd>
+      <dt>Layer 2 MTU</dt>
+      <dd>The maximum frame size (including Ethernet MAC header) accepted on the physical interface without dropping.</dd>
+      <dt>Layer 3 MTU</dt>
+      <dd>The maximum IP packet size (including IP header) that can be transmitted without IP fragmentation.</dd>
+    </dl>
+  </div>
+
+  <div class="gotchas">
+    <h4>⚠️ Common Beginner Mistakes & Gotchas</h4>
+    <ul>
+      <li><strong>Forgetting to define a logical unit:</strong> You cannot assign an IP address directly to <code>interfaces xe-0/1/2</code>. Attempting to do so will cause a CLI syntax error. You must always configure <code>unit &lt;number&gt; family inet address &lt;ip&gt;</code>.</li>
+      <li><strong>Confusing L2 and L3 MTU:</strong> Configuring an MTU under <code>[edit interfaces xe-0/1/2]</code> changes the Layer 2 physical MTU, whereas configuring it under <code>[edit interfaces xe-0/1/2 unit 0 family inet]</code> changes the IPv4 MTU.</li>
+    </ul>
+  </div>
+
+  <div class="hands-on">
+    <h4>🛠️ Hands-On Practice & Scenarios</h4>
+    <div class="task-item">
+      <div class="task-title">Task 1: Basic Interface Configuration</div>
+      <p>Configure interface <code>xe-0/1/2</code> with description <code>"Link-to-Core-Router"</code>, logical unit <code>0</code>, and IPv4 address <code>172.16.20.1/24</code>.</p>
+      <pre><code><span class="prompt">user@router#</span> <span class="highlight">set interfaces xe-0/1/2 description "Link-to-Core-Router"</span>
+<span class="prompt">user@router#</span> <span class="highlight">set interfaces xe-0/1/2 unit 0 family inet address 172.16.20.1/24</span>
+<span class="prompt">user@router#</span> <span class="highlight">commit</span></code></pre>
+    </div>
+    <div class="task-item">
+      <div class="task-title">Task 2: Verification Scenario Question</div>
+      <p><em>Scenario:</em> You inspect an interface and find <code>Hardware address: 00:50:56:a1:01:02</code> and <code>Current address: 02:00:00:00:00:01</code>. Explain why these two values differ and which address appears in ARP requests.</p>
+      <p><strong>Answer:</strong> An administrator configured a virtual or custom MAC address using <code>set interfaces &lt;name&gt; mac ...</code>. The <code>Current address</code> (<code>02:00:00:00:00:01</code>) is the active operational address used in all outgoing Ethernet frames and ARP replies.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================================= -->
+<!-- TOPIC 2 -->
+<!-- ========================================================================= -->
+<section id="topic-2">
+  <h2>2. Reading and Analyzing <code>show interfaces</code> Command Output</h2>
+  
+  <p>Junos provides five levels of interface verbosity in operational mode. Choosing the correct command verbosity is a core skill for rapid troubleshooting and JNCIA exam success.</p>
+
+  <div class="diagram-container">
+    <!-- SVG 4: Redesigned 5-Level Verbosity Ladder -->
+    <svg viewBox="0 0 960 320" xmlns="http://www.w3.org/2000/svg">
+      <rect width="960" height="320" fill="#f8fafc" rx="10" stroke="#cbd5e1" stroke-width="1.5"/>
+      <text x="480" y="30" font-size="17" font-weight="800" fill="#0f172a" text-anchor="middle">The 5-Level Junos Interface Verbosity Ladder</text>
+
+      <!-- 5 Columns Grid -->
+      <!-- Column 1: terse -->
+      <g transform="translate(30, 52)">
+        <rect width="170" height="240" fill="#ffffff" stroke="#3b82f6" stroke-width="2" rx="8"/>
+        <rect x="0" y="0" width="170" height="40" fill="#3b82f6" rx="6"/>
+        <text x="85" y="24" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">1. terse</text>
+        <text x="85" y="58" font-size="11" font-weight="700" fill="#1d4ed8" text-anchor="middle">Quick Health Check</text>
+        
+        <g transform="translate(10, 75)" font-size="10" fill="#334155">
+          <text x="0" y="14">• Interface name</text>
+          <text x="0" y="34">• Admin state (up/down)</text>
+          <text x="0" y="54">• Link state (up/down)</text>
+          <text x="0" y="74">• Protocol family</text>
+          <text x="0" y="94">• IP addresses</text>
+        </g>
+        <rect x="10" y="195" width="150" height="30" fill="#eff6ff" stroke="#bfdbfe" rx="4"/>
+        <text x="85" y="214" font-size="9.5" font-weight="600" fill="#1e40af" text-anchor="middle">1 line per logical unit</text>
+      </g>
+
+      <!-- Column 2: brief -->
+      <g transform="translate(215, 52)">
+        <rect width="170" height="240" fill="#ffffff" stroke="#0d9488" stroke-width="2" rx="8"/>
+        <rect x="0" y="0" width="170" height="40" fill="#0d9488" rx="6"/>
+        <text x="85" y="24" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">2. brief</text>
+        <text x="85" y="58" font-size="11" font-weight="700" fill="#0f766e" text-anchor="middle">Basic Summary</text>
+        
+        <g transform="translate(10, 75)" font-size="10" fill="#334155">
+          <text x="0" y="14">• Physical & admin state</text>
+          <text x="0" y="34">• Description</text>
+          <text x="0" y="54">• Link-level type</text>
+          <text x="0" y="74">• L2 MTU & Speed</text>
+          <text x="0" y="94">• Addresses & flags</text>
+        </g>
+        <rect x="10" y="195" width="150" height="30" fill="#f0fdfa" stroke="#99f6e4" rx="4"/>
+        <text x="85" y="214" font-size="9.5" font-weight="600" fill="#115e59" text-anchor="middle">Concise interface view</text>
+      </g>
+
+      <!-- Column 3: standard (Highlighted) -->
+      <g transform="translate(400, 52)">
+        <rect width="170" height="240" fill="#f0fdf4" stroke="#16a34a" stroke-width="3" rx="8"/>
+        <rect x="0" y="0" width="170" height="40" fill="#16a34a" rx="6"/>
+        <text x="85" y="24" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">3. standard (default)</text>
+        <text x="85" y="58" font-size="11" font-weight="800" fill="#15803d" text-anchor="middle">Standard Operational</text>
+        
+        <g transform="translate(10, 75)" font-size="10" fill="#14532d">
+          <text x="0" y="14">• MAC (HW & Current)</text>
+          <text x="0" y="34" font-weight="700" fill="#166534">• Last flapped timer</text>
+          <text x="0" y="54" font-weight="700" fill="#166534">• Live bps / pps rates</text>
+          <text x="0" y="74">• L2 & L3 MTU values</text>
+          <text x="0" y="94">• Subnet & link-local</text>
+        </g>
+        <rect x="10" y="195" width="150" height="30" fill="#ffffff" stroke="#86efac" rx="4"/>
+        <text x="85" y="214" font-size="9.5" font-weight="800" fill="#15803d" text-anchor="middle">~2 CLI screens</text>
+      </g>
+
+      <!-- Column 4: detail -->
+      <g transform="translate(585, 52)">
+        <rect width="170" height="240" fill="#ffffff" stroke="#ea580c" stroke-width="2" rx="8"/>
+        <rect x="0" y="0" width="170" height="40" fill="#ea580c" rx="6"/>
+        <text x="85" y="24" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">4. detail</text>
+        <text x="85" y="58" font-size="11" font-weight="700" fill="#c2410c" text-anchor="middle">Diagnostic View</text>
+        
+        <g transform="translate(10, 75)" font-size="10" fill="#334155">
+          <text x="0" y="14">• Carrier transitions</text>
+          <text x="0" y="34">• Device flags</text>
+          <text x="0" y="54">• Detailed error stats</text>
+          <text x="0" y="74">• Protocol stats</text>
+          <text x="0" y="94">• Ingress/Egress drops</text>
+        </g>
+        <rect x="10" y="195" width="150" height="30" fill="#fff7ed" stroke="#fed7aa" rx="4"/>
+        <text x="85" y="214" font-size="9.5" font-weight="600" fill="#9a3412" text-anchor="middle">Protocol diagnostics</text>
+      </g>
+
+      <!-- Column 5: extensive -->
+      <g transform="translate(770, 52)">
+        <rect width="160" height="240" fill="#ffffff" stroke="#7c3aed" stroke-width="2" rx="8"/>
+        <rect x="0" y="0" width="160" height="40" fill="#7c3aed" rx="6"/>
+        <text x="80" y="24" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">5. extensive</text>
+        <text x="80" y="58" font-size="11" font-weight="700" fill="#6b21a8" text-anchor="middle">Complete Telemetry</text>
+        
+        <g transform="translate(10, 75)" font-size="10" fill="#334155">
+          <text x="0" y="14">• CoS queue counters</text>
+          <text x="0" y="34">• Buffer drop statistics</text>
+          <text x="0" y="54">• Hardware MAC errors</text>
+          <text x="0" y="74">• CRC / framing errors</text>
+          <text x="0" y="94">• Policer / filter telemetry</text>
+        </g>
+        <rect x="10" y="195" width="140" height="30" fill="#faf5ff" stroke="#e9d5ff" rx="4"/>
+        <text x="80" y="214" font-size="9.5" font-weight="600" fill="#6b21a8" text-anchor="middle">Exhaustive hardware</text>
+      </g>
+    </svg>
+    <div class="diagram-caption">Figure 4: The Junos 5-level command verbosity ladder, progressing from terse (quick summary) to extensive (complete hardware & telemetry counters).</div>
+  </div>
+
+  <h3 id="topic-2-1">2.1 The 5-Level Junos Interface Verbosity Ladder</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Command</th>
+        <th>Output Length</th>
+        <th>Primary Use Case</th>
+        <th>Key Information Displayed</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>show interfaces terse</code></td>
+        <td>Minimal (1 line/unit)</td>
+        <td>Quick device-wide status audit</td>
+        <td>Admin state, Link state, Logical Unit, Protocol family, IP address</td>
+      </tr>
+      <tr>
+        <td><code>show interfaces brief</code></td>
+        <td>Short</td>
+        <td>High-level link assessment</td>
+        <td>Description, L2 MTU, Speed, Link-level type (Ethernet), Addresses</td>
+      </tr>
+      <tr>
+        <td><code>show interfaces &lt;name&gt;</code></td>
+        <td>Standard (~2 screens)</td>
+        <td>Standard interface troubleshooting</td>
+        <td>MAC addresses, Last flapped, Live throughput rates (bps/pps), L2/L3 MTUs, Subnet info</td>
+      </tr>
+      <tr>
+        <td><code>show interfaces detail</code></td>
+        <td>Long</td>
+        <td>Carrier & protocol troubleshooting</td>
+        <td>Carrier transitions, detailed device flags, per-protocol packet stats</td>
+      </tr>
+      <tr>
+        <td><code>show interfaces extensive</code></td>
+        <td>Very Long (Multiple screens)</td>
+        <td>Hardware, CoS, & error diagnostics</td>
+        <td>CoS queue counters, tail drops, MAC CRC/align errors, FIFO errors</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 id="topic-2-2">2.2 Physical Interface Output Section Walkthrough</h3>
+  <p>Executing the standard command <code>show interfaces xe-0/1/2</code> outputs two distinct sections. Below is the annotated walkthrough of the <strong>Physical Interface</strong> section:</p>
+
+  <pre><code><span class="prompt">user@router></span> <span class="highlight">show interfaces xe-0/1/2</span>
+<span class="highlight">Physical interface: xe-0/1/2, Enabled, Physical link is Up</span>  <span class="comment">&lt;-- Admin: Enabled | Link: Up</span>
+  Interface index: 135, SNMP ifIndex: 512
+  Description: Corporate-Uplink-10G
+  Link-level type: Ethernet, <span class="highlight">MTU: 1514</span>, <span class="highlight">Speed: 10Gbps</span>, BPDU Error: None  <span class="comment">&lt;-- L2 MTU & 10G Speed</span>
+  Device flags   : Present Running
+  Interface flags: SNMP-Traps Internal: 0x0
+  Link flags     : None
+  CoS queues     : 8 supported, 8 maximum usable queues
+  <span class="highlight">Current address: 00:05:86:71:3d:02, Hardware address: 00:05:86:71:3d:02</span>  <span class="comment">&lt;-- MAC Addresses</span>
+  <span class="highlight">Last flapped   : 2026-08-04 10:14:22 UTC (1w3d 04:20 ago)</span>  <span class="comment">&lt;-- Link stability timer</span>
+  <span class="highlight">Input rate     : 0 bps (0 pps)</span>  <span class="comment">&lt;-- Live real-time traffic statistics</span>
+  <span class="highlight">Output rate    : 0 bps (0 pps)</span>
+  Active alarms  : None
+  Active defects : None</code></pre>
+
+  <h3 id="topic-2-3">2.3 Logical Interface Output Section Walkthrough (IPv4 and IPv6)</h3>
+  <p>Immediately following the physical section is the <strong>Logical Interface</strong> section for each configured unit:</p>
+
+  <pre><code>  <span class="highlight">Logical interface xe-0/1/2.0 (Index 74) (SNMP ifIndex 540)</span>
+    Flags: Up SNMP-Traps 0x0 Encapsulation: ENET2
+    Input packets : 1420
+    Output packets: 1105
+    <span class="highlight">Protocol inet</span>
+      Flags: None
+      <span class="highlight">MTU: 1500</span>  <span class="comment">&lt;-- IPv4 Layer 3 MTU</span>
+      Addresses, Flags: Is-Preferred Is-Primary
+        <span class="highlight">Destination: 172.16.20/24, Local: 172.16.20.1, Broadcast: 172.16.20.255</span>
+    <span class="highlight">Protocol inet6</span>
+      Flags: None
+      <span class="highlight">MTU: 1500</span>  <span class="comment">&lt;-- IPv6 Layer 3 MTU</span>
+      Addresses, Flags: Is-Preferred
+        <span class="highlight">Destination: 2001:db8:10::/64, Local: 2001:db8:10::1</span>
+      Addresses, Flags: Is-Preferred
+        <span class="highlight">Destination: fe80::/64, Local: fe80::205:86ff:fe71:3d02</span>  <span class="comment">&lt;-- Auto Link-Local (FE80)</span></code></pre>
+
+  <blockquote class="added-context">
+    <p><strong>📘 Added context: Junos Subnet Notation Shorthand (<code>172.16.20/24</code>)</strong></p>
+    <p>In formal Junos CLI output and routing tables, a <code>/24</code> network is represented as <code>172.16.20/24</code> rather than writing out <code>172.16.20.0/24</code>. Because the <code>/24</code> mask specifies that the first 24 bits (3 octets) are the network portion, the host bits can range from <code>.0</code> to <code>.255</code>. Junos drops trailing zeros that fall entirely within the host portion in Destination prefix summaries.</p>
+  </blockquote>
+
+  <h3 id="topic-2-4">2.4 Interface Status Diagnostics: Administrative vs. Physical Link State</h3>
+  <p>Understanding the combination of Administrative and Link states is essential for troubleshooting:</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Administrative State</th>
+        <th>Physical Link State</th>
+        <th>Terse Output Status</th>
+        <th>Diagnosis / Root Cause</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Enabled</strong></td>
+        <td><strong>Up</strong></td>
+        <td><code>up    up</code></td>
+        <td>Healthy operational state. Physical transceiver detecting carrier signal.</td>
+      </tr>
+      <tr>
+        <td><strong>Enabled</strong></td>
+        <td><strong>Down</strong></td>
+        <td><code>up    down</code></td>
+        <td>Cable disconnected, remote endpoint port down, optic failure, or speed/duplex mismatch.</td>
+      </tr>
+      <tr>
+        <td><strong>Disabled</strong></td>
+        <td><strong>Down</strong></td>
+        <td><code>down  down</code></td>
+        <td>Interface administratively disabled via <code>set interfaces &lt;name&gt; disable</code>.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 id="topic-2-5">2.5 Link Flap Tracking and Real-Time Traffic Rate Statistics</h3>
+  <ul>
+    <li><strong>Last flapped:</strong> Reports the exact timestamp and relative duration (e.g., <code>1w3d 04:20 ago</code>) since the interface last transitioned between up/down states. This enables immediate verification of whether an interface experienced recent instability even without reviewing system log files.</li>
+    <li><strong>Input/Output Rates:</strong> Displays moving average statistics in bits per second (<strong>bps</strong>) and packets per second (<strong>pps</strong>). A reading of <code>0 bps (0 pps)</code> indicates zero active data traffic at that exact sampling interval.</li>
+  </ul>
+
+  <div class="key-terms">
+    <h4>Key Terminology & Definitions</h4>
+    <dl>
+      <dt>Link Flap</dt>
+      <dd>A rapid state oscillation where a physical or logical link transitions from Up to Down and back Up, triggering routing protocol reconvergence.</dd>
+      <dt>Link-Local Address (FE80::/10)</dt>
+      <dd>An automatically generated IPv6 address utilized strictly for local link communications (e.g., NDP, routing protocol peerings) that is not routable beyond the subnet.</dd>
+      <dt>BIA (Burned-In Address)</dt>
+      <dd>The permanent hardware MAC address assigned to the NIC by the IEEE OUI registry and manufacturer.</dd>
+    </dl>
+  </div>
+
+  <div class="gotchas">
+    <h4>⚠️ Common Beginner Mistakes & Gotchas</h4>
+    <ul>
+      <li><strong>Missing the difference between <code>terse</code> and standard <code>show interfaces</code>:</strong> <code>show interfaces terse</code> will <em>never</em> show interface speed, MAC address, MTU, or flap times. If your manager asks for port speed or flap history, you must use standard <code>show interfaces &lt;name&gt;</code>.</li>
+      <li><strong>Assuming rate statistics are lifetime totals:</strong> The <code>Input rate</code> and <code>Output rate</code> fields represent live moving averages over a few seconds, while <code>Input packets</code> / <code>Output packets</code> under the logical unit represent cumulative counters.</li>
+    </ul>
+  </div>
+
+  <div class="hands-on">
+    <h4>🛠️ Hands-On Practice & Scenarios</h4>
+    <div class="task-item">
+      <div class="task-title">Task 1: Link Stability Investigation</div>
+      <p>A customer reports intermittent connectivity. Run the command to inspect the last flapped time and current live throughput of interface <code>ge-0/0/1</code>.</p>
+      <pre><code><span class="prompt">user@router></span> <span class="highlight">show interfaces ge-0/0/1</span></code></pre>
+      <p><em>Verification:</em> Locate the <code>Last flapped</code> and <code>Input rate / Output rate</code> lines in the physical section.</p>
+    </div>
+    <div class="task-item">
+      <div class="task-title">Task 2: Exam Question Scenario</div>
+      <p><em>Question:</em> An engineer runs <code>show interfaces terse ge-0/0/0</code> and sees <code>Admin: up</code>, <code>Link: down</code>. What does this indicate?</p>
+      <p><strong>Answer:</strong> The interface is administratively enabled in configuration, but the physical Layer 1 signal is down (e.g., disconnected cable or powered-off peer device).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================================= -->
+<!-- TOPIC 3 -->
+<!-- ========================================================================= -->
+<section id="topic-3">
+  <h2>3. Manipulating and Filtering Output with the Junos CLI Pipe (<code>|</code>)</h2>
+  
+  <p>The Junos CLI Pipe operator (<code>|</code>, entered via <kbd>Shift</kbd> + <kbd>\</kbd>) allows engineers to filter, search, format, count, and redirect operational command output directly within the Junos text stream. Junos supports chaining multiple pipe filters in a single execution pipeline.</p>
+
+  <div class="diagram-container">
+    <!-- SVG 5: Redesigned CLI Pipe Stream Pipeline -->
+    <svg viewBox="0 0 960 260" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="pipeArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 10 5 L 0 9 z" fill="#2563eb"/>
+        </marker>
+      </defs>
+      <rect width="960" height="260" fill="#f8fafc" rx="10" stroke="#cbd5e1" stroke-width="1.5"/>
+      <text x="480" y="30" font-size="16" font-weight="800" fill="#0f172a" text-anchor="middle">Junos CLI Multi-Stage Pipe ( | ) Stream Processing Pipeline</text>
+
+      <!-- 4 Stages Row -->
+      <!-- Stage 1 -->
+      <g transform="translate(30, 52)">
+        <rect width="180" height="135" fill="#ffffff" stroke="#3b82f6" stroke-width="2" rx="8"/>
+        <rect x="0" y="0" width="180" height="32" fill="#3b82f6" rx="6"/>
+        <text x="90" y="21" font-size="11" font-weight="800" fill="#ffffff" text-anchor="middle">1. Command Execution</text>
+        
+        <rect x="10" y="42" width="160" height="32" fill="#0f172a" rx="4"/>
+        <text x="90" y="62" font-size="10" font-weight="700" fill="#38bdf8" text-anchor="middle">show interfaces xe-0/1/*</text>
+        
+        <text x="90" y="98" font-size="10.5" font-weight="600" fill="#dc2626" text-anchor="middle">Raw Stream: 300+ lines</text>
+        <text x="90" y="116" font-size="9" fill="#64748b" text-anchor="middle">(Full physical + logical data)</text>
+      </g>
+
+      <!-- Pipe Connector 1 -->
+      <g transform="translate(215, 105)">
+        <line x1="0" y1="12" x2="28" y2="12" stroke="#2563eb" stroke-width="3" marker-end="url(#pipeArrow)"/>
+        <circle cx="14" cy="-8" r="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+        <text x="14" y="-4" font-size="11" font-weight="800" fill="#1d4ed8" text-anchor="middle">|</text>
+      </g>
+
+      <!-- Stage 2 -->
+      <g transform="translate(255, 52)">
+        <rect width="190" height="135" fill="#ffffff" stroke="#16a34a" stroke-width="2" rx="8"/>
+        <rect x="0" y="0" width="190" height="32" fill="#16a34a" rx="6"/>
+        <text x="95" y="21" font-size="11" font-weight="800" fill="#ffffff" text-anchor="middle">2. Filter 1: match physical</text>
+        
+        <rect x="10" y="42" width="170" height="32" fill="#0f172a" rx="4"/>
+        <text x="95" y="62" font-size="10" font-weight="700" fill="#4ade80" text-anchor="middle">| match physical</text>
+        
+        <text x="95" y="98" font-size="10" font-weight="700" fill="#15803d" text-anchor="middle">Retains "Physical interface"</text>
+        <text x="95" y="116" font-size="9" fill="#64748b" text-anchor="middle">Drops 290+ logical lines</text>
+      </g>
+
+      <!-- Pipe Connector 2 -->
+      <g transform="translate(450, 105)">
+        <line x1="0" y1="12" x2="28" y2="12" stroke="#2563eb" stroke-width="3" marker-end="url(#pipeArrow)"/>
+        <circle cx="14" cy="-8" r="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+        <text x="14" y="-4" font-size="11" font-weight="800" fill="#1d4ed8" text-anchor="middle">|</text>
+      </g>
+
+      <!-- Stage 3 -->
+      <g transform="translate(490, 52)">
+        <rect width="190" height="135" fill="#ffffff" stroke="#ea580c" stroke-width="2" rx="8"/>
+        <rect x="0" y="0" width="190" height="32" fill="#ea580c" rx="6"/>
+        <text x="95" y="21" font-size="11" font-weight="800" fill="#ffffff" text-anchor="middle">3. Filter 2: except down</text>
+        
+        <rect x="10" y="42" width="170" height="32" fill="#0f172a" rx="4"/>
+        <text x="95" y="62" font-size="10" font-weight="700" fill="#fb923c" text-anchor="middle">| except down</text>
+        
+        <text x="95" y="98" font-size="10" font-weight="700" fill="#c2410c" text-anchor="middle">Discards inactive links</text>
+        <text x="95" y="116" font-size="9" fill="#64748b" text-anchor="middle">4 active physical links remain</text>
+      </g>
+
+      <!-- Pipe Connector 3 -->
+      <g transform="translate(685, 105)">
+        <line x1="0" y1="12" x2="28" y2="12" stroke="#2563eb" stroke-width="3" marker-end="url(#pipeArrow)"/>
+        <circle cx="14" cy="-8" r="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+        <text x="14" y="-4" font-size="11" font-weight="800" fill="#1d4ed8" text-anchor="middle">|</text>
+      </g>
+
+      <!-- Stage 4 -->
+      <g transform="translate(725, 52)">
+        <rect width="200" height="135" fill="#ffffff" stroke="#7c3aed" stroke-width="2" rx="8"/>
+        <rect x="0" y="0" width="200" height="32" fill="#7c3aed" rx="6"/>
+        <text x="100" y="21" font-size="11" font-weight="800" fill="#ffffff" text-anchor="middle">4. Filter 3: count</text>
+        
+        <rect x="10" y="42" width="180" height="32" fill="#0f172a" rx="4"/>
+        <text x="100" y="62" font-size="10" font-weight="700" fill="#c084fc" text-anchor="middle">| count</text>
+        
+        <rect x="15" y="85" width="170" height="36" fill="#f5f3ff" stroke="#ddd6fe" rx="4"/>
+        <text x="100" y="108" font-size="12" font-weight="800" fill="#6b21a8" text-anchor="middle">Count: 4 lines</text>
+      </g>
+
+      <!-- Bottom Pipeline Command Bar -->
+      <g transform="translate(30, 202)">
+        <rect width="895" height="38" fill="#0f172a" rx="6"/>
+        <text x="447" y="24" font-size="11.5" font-family="monospace" fill="#f8fafc" text-anchor="middle">user@router> <tspan fill="#facc15">show interfaces xe-0/1/* | match physical | except down | count</tspan></text>
+      </g>
+    </svg>
+    <div class="diagram-caption">Figure 5: Data stream processing inside the Junos CLI using multi-stage pipe filters to transform hundreds of lines of output into precise operational metrics.</div>
+  </div>
+
+  <h3 id="topic-3-1">3.1 The CLI Pipe Operator Architecture and Available Modifiers</h3>
+  <p>Typing a space, followed by <code>|</code> and <code>?</code> displays all available stream manipulation modifiers in Junos:</p>
+  <pre><code><span class="prompt">user@router></span> <span class="highlight">show interfaces | ?</span>
+Possible completions:
+  compare              Compare configuration with another file
+  count                Count occurrences
+  display              Show additional kinds of information (set, xml, json)
+  except               Show only text that does not match a pattern
+  find                 Search for first occurrence of pattern
+  hold                 Hold screen until key press
+  last                 Display end of output
+  match                Show only text that matches a pattern
+  no-more              Don't pause with ---(more)--- page breaks
+  refresh              Auto-refresh command output every N seconds
+  save                 Save output text to file
+  trim                 Trim specified number of columns from output</code></pre>
+
+  <h3 id="topic-3-2">3.2 The <code>match</code> Modifier: Substring Matching and Regex OR Syntax</h3>
+  <p>The <code>match</code> modifier acts as a line filter, preserving only lines that match the provided search term or regular expression.</p>
+  
+  <h4>Single Pattern Match: Solving Manager Task 3</h4>
+  <p>To list all physical 10GbE interfaces on PIC 1 without displaying the extensive logical sub-interface lines:</p>
+  <pre><code><span class="prompt">user@router></span> <span class="highlight">show interfaces xe-0/1/* | match physical</span>
+<span class="output">Physical interface: xe-0/1/0, Enabled, Physical link is Up
+Physical interface: xe-0/1/1, Enabled, Physical link is Up
+Physical interface: xe-0/1/2, Enabled, Physical link is Up
+Physical interface: xe-0/1/3, Enabled, Physical link is Up
+Physical interface: xe-0/1/4, Enabled, Physical link is Down
+Physical interface: xe-0/1/5, Enabled, Physical link is Down
+Physical interface: xe-0/1/6, Enabled, Physical link is Down
+Physical interface: xe-0/1/7, Enabled, Physical link is Down</span></code></pre>
+
+  <blockquote class="added-context">
+    <p><strong>📘 Added context: Case-Insensitivity in Junos <code>match</code></strong></p>
+    <p>By default, the Junos CLI pattern matcher is case-insensitive. Running <code>| match physical</code>, <code>| match Physical</code>, or <code>| match PHYSICAL</code> yields identical results. To enforce strict case sensitivity, regular expression flags like <code>(?-i)</code> can be embedded.</p>
+  </blockquote>
+
+  <h4>Multi-Term Regular Expression (OR Match)</h4>
+  <p>To extract both the physical interface name AND the last flapped timestamp across all interfaces, enclose the search strings in quotes separated by a pipe (<code>|</code>):</p>
+  <pre><code><span class="prompt">user@router></span> <span class="highlight">show interfaces xe-0/1/* | match "physical|flapped"</span>
+<span class="output">Physical interface: xe-0/1/0, Enabled, Physical link is Up
+  Last flapped   : 2026-08-04 10:14:22 UTC (1w3d 04:20 ago)
+Physical interface: xe-0/1/1, Enabled, Physical link is Up
+  Last flapped   : 2026-08-04 10:14:22 UTC (1w3d 04:20 ago)
+Physical interface: xe-0/1/2, Enabled, Physical link is Up
+  Last flapped   : 2026-08-04 10:14:22 UTC (1w3d 04:20 ago)</span></code></pre>
+
+  <h3 id="topic-3-3">3.3 The <code>except</code> Modifier: Inverse Filtering</h3>
+  <p>The <code>except</code> modifier performs inverse matching, hiding any line containing the specified pattern. A prime example is filtering out automatically generated IPv6 Link-Local addresses (<code>fe80::</code>) when reviewing interface IP assignments:</p>
+  <pre><code><span class="prompt">user@router></span> <span class="highlight">show interfaces terse xe-0/1/1 | except fe80</span>
+<span class="output">Interface               Admin Link Proto    Local                 Remote
+xe-0/1/1                up    up
+xe-0/1/1.0              up    up   inet     172.16.10.1/24
+                                   inet6    2001:db8:1::1/64</span></code></pre>
+
+  <h3 id="topic-3-4">3.4 Multi-Stage Pipe Chaining</h3>
+  <p>Unlike many networking operating systems that restrict CLI filtering to a single pipe, Junos allows chaining multiple consecutive filters:</p>
+  <pre><code><span class="prompt">user@router></span> <span class="highlight">show interfaces xe-0/1/* | match physical | except down</span>
+<span class="output">Physical interface: xe-0/1/0, Enabled, Physical link is Up
+Physical interface: xe-0/1/1, Enabled, Physical link is Up
+Physical interface: xe-0/1/2, Enabled, Physical link is Up
+Physical interface: xe-0/1/3, Enabled, Physical link is Up</span></code></pre>
+
+  <h3 id="topic-3-5">3.5 The <code>count</code> Modifier: Rapid Device Auditing</h3>
+  <p>The <code>count</code> modifier suppresses full command output and outputs the total number of resulting lines. On high-density carrier routers with hundreds of interfaces, this provides immediate verification counts:</p>
+  <pre><code><span class="prompt">user@router></span> <span class="highlight">show interfaces xe-0/1/* | match physical | count</span>
+<span class="output">Count: 8 lines</span></code></pre>
+
+  <h3 id="topic-3-6">3.6 The <code>find</code> Modifier: Output Jumping and Navigation</h3>
+  <p>The <code>find</code> modifier outputs the complete command stream beginning at the <em>first occurrence</em> of the specified pattern, skipping preceding content. This allows engineers to jump straight to logical configuration in verbose outputs:</p>
+  <pre><code><span class="prompt">user@router></span> <span class="highlight">show interfaces xe-0/1/2 | find logical</span>
+<span class="output">  Logical interface xe-0/1/2.0 (Index 74) (SNMP ifIndex 540)
+    Flags: Up SNMP-Traps 0x0 Encapsulation: ENET2
+    Protocol inet
+      MTU: 1500
+      Addresses, Flags: Is-Preferred Is-Primary
+        Destination: 172.16.20/24, Local: 172.16.20.1, Broadcast: 172.16.20.255
+... [remaining output continues]</span></code></pre>
+
+  <h3 id="topic-3-7">3.7 Additional Pipe Modifiers (<code>save</code>, <code>append</code>, <code>last</code>, <code>display</code>)</h3>
+  <ul>
+    <li><code>| save &lt;filename&gt;</code>: Redirects command output to a file on the local flash drive (e.g., <code>/var/tmp/interfaces.txt</code>).</li>
+    <li><code>| append &lt;filename&gt;</code>: Appends output to an existing text file for auditing or logging.</li>
+    <li><code>| last &lt;n&gt;</code>: Displays only the final <em>n</em> lines of output (useful in system log analysis).</li>
+    <li><code>| display set</code>: (In configuration mode) Displays the hierarchy formatted as executable <code>set</code> commands.</li>
+    <li><code>| no-more</code>: Disables screen pagination (<code>---(more)---</code>) to dump output continuously.</li>
+  </ul>
+
+  <div class="key-terms">
+    <h4>Key Terminology & Definitions</h4>
+    <dl>
+      <dt>Pipe (<code>|</code>)</dt>
+      <dd>A CLI stream redirection operator that feeds stdout of a command into a text filter modifier.</dd>
+      <dt>Regular Expression (Regex)</dt>
+      <dd>A pattern-matching syntax supported in Junos CLI filters (e.g., <code>| match "ge-0/0/[0-2]"</code> or <code>| match "physical|flapped"</code>).</dd>
+      <dt>Stream Inversion (<code>except</code>)</dt>
+      <dd>Filtering logic that discards matching lines and preserves non-matching lines.</dd>
+    </dl>
+  </div>
+
+  <div class="gotchas">
+    <h4>⚠️ Common Beginner Mistakes & Gotchas</h4>
+    <ul>
+      <li><strong>Missing quotes in multi-term matches:</strong> Typing <code>show interfaces | match physical | flapped</code> will fail because Junos interprets the second pipe as a chained command instead of regex OR logic. You must write <code>show interfaces | match "physical|flapped"</code>.</li>
+      <li><strong>Confusing <code>find</code> with <code>match</code>:</strong> <code>match</code> shows <em>only</em> lines containing the keyword. <code>find</code> starts displaying at the first matching line and continues printing all subsequent lines to the end of the file.</li>
+    </ul>
+  </div>
+
+  <div class="hands-on">
+    <h4>🛠️ Hands-On Practice & Scenarios</h4>
+    <div class="task-item">
+      <div class="task-title">Task 1: Active Interface Counting</div>
+      <p>Execute a single chained CLI command that counts how many Gigabit Ethernet interfaces on Router 1 are currently in the <code>Up</code> state.</p>
+      <pre><code><span class="prompt">user@router></span> <span class="highlight">show interfaces terse ge-* | match up | count</span></code></pre>
+    </div>
+    <div class="task-item">
+      <div class="task-title">Task 2: Interface Configuration Extraction</div>
+      <p>Extract only the configured IPv4 and IPv6 addresses on interface <code>ge-0/0/1</code> while ignoring link-local IPv6 addresses.</p>
+      <pre><code><span class="prompt">user@router></span> <span class="highlight">show interfaces terse ge-0/0/1 | match inet | except fe80</span></code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================================= -->
+<!-- TOPIC 4 -->
+<!-- ========================================================================= -->
+<section id="topic-4">
+  <h2>4. Special & Advanced Interface Types in Junos (JNCIA Context)</h2>
+  
+  <p>Beyond standard Ethernet physical ports, Junos employs specialized interface types for management, control-plane routing, and Layer 3 bridging.</p>
+
+  <h3 id="topic-4-1">4.1 Out-of-Band Management (<code>fxp0</code> / <code>em0</code> / <code>me0</code>) vs. Console Port</h3>
+  <ul>
+    <li><strong>Dedicated Out-of-Band (OOB) Management Interface:</strong>
+      <ul>
+        <li>Named <code>fxp0</code> on MX routers, SRX branch devices, and M-series; named <code>me0</code> or <code>em0</code> on EX switches and newer platforms.</li>
+        <li>Connects directly to the Routing Engine (RE) CPU, physically bypassing the packet forwarding engine (PFE) data plane.</li>
+        <li>Ensures out-of-band SSH/HTTPS administrative access even if all revenue transit data ports are congested, looping, or down.</li>
+      </ul>
+    </li>
+    <li><strong>Console Port:</strong>
+      <ul>
+        <li>An RS-232 / RJ-45 or USB serial connection providing direct asynchronous terminal access to the Junos kernel/FreeBSD subsystem, used for zero-touch bootstrap configuration and disaster recovery.</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h3 id="topic-4-2">4.2 Loopback Interfaces (<code>lo0</code>)</h3>
+  <ul>
+    <li><code>lo0.0</code> is a virtual, logical interface that represents the router itself. It never experiences link flaps unless the entire Routing Engine shuts down.</li>
+    <li>Used as the stable Router ID for dynamic routing protocols (OSPF, IS-IS, BGP), termination point for VPN tunnels, and destination for Loopback Stateless Firewall Filters protecting the Routing Engine.</li>
+  </ul>
+
+  <h3 id="topic-4-3">4.3 Integrated Routing and Bridging (<code>irb</code>) for Layer 3 Switches</h3>
+  <ul>
+    <li>On Junos enterprise switches (EX/QFX), an <code>irb</code> (Integrated Routing and Bridging) interface acts as the Switched Virtual Interface (SVI), providing default gateway IP routing between VLANs.</li>
+  </ul>
+
+  <h3 id="topic-4-4">4.4 Placeholder Logical Units (<code>.16386</code>)</h3>
+  <p>When running <code>show interfaces terse</code> on unconfigured ports, you will observe logical units ending in <code>.16386</code> (e.g., <code>ge-0/0/0.16386</code>). These are Junos internal placeholder units automatically generated to process control-plane frames (such as LACP, LLDP, and BPDU packets) on interfaces where no user configuration exists.</p>
+
+  <div class="key-terms">
+    <h4>Key Terminology & Definitions</h4>
+    <dl>
+      <dt><code>fxp0</code> / <code>em0</code></dt>
+      <dd>The dedicated physical out-of-band management Ethernet port tied directly to the Routing Engine.</dd>
+      <dt><code>lo0.0</code></dt>
+      <dd>The primary loopback interface representing the Routing Engine control plane.</dd>
+      <dt><code>irb</code> Interface</dt>
+      <dd>Integrated Routing and Bridging virtual interface providing inter-VLAN routing on Junos Layer 3 switches.</dd>
+      <dt>Unit <code>.16386</code></dt>
+      <dd>An internal Junos placeholder sub-interface instantiated on unconfigured physical ports for control traffic handling.</dd>
+    </dl>
+  </div>
+</section>
+
+<!-- ========================================================================= -->
+<!-- TOPIC 5 -->
+<!-- ========================================================================= -->
+<section id="topic-5">
+  <h2>5. Hands-On Lab Walkthrough & Step-by-Step CLI Scenarios</h2>
+  
+  <p>The following section documents the complete practical lab session conducted in the course, covering topology verification, baseline deployment, and the 14-task operational verification sequence.</p>
+
+  <div class="diagram-container">
+    <!-- SVG 6: Redesigned Lab Network Topology -->
+    <svg viewBox="0 0 960 410" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="topoArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 10 5 L 0 9 z" fill="#3b82f6"/>
+        </marker>
+      </defs>
+      <rect width="960" height="410" fill="#f8fafc" rx="10" stroke="#cbd5e1" stroke-width="1.5"/>
+      <text x="480" y="28" font-size="16" font-weight="800" fill="#0f172a" text-anchor="middle">JNCIA Course Lab Network Topology (Management & Data Plane Architecture)</text>
+
+      <!-- MANAGEMENT PLANE SECTION (Top) -->
+      <g transform="translate(30, 44)">
+        <rect width="900" height="115" fill="#f1f5f9" stroke="#94a3b8" stroke-dasharray="5,4" rx="8"/>
+        <text x="15" y="20" font-size="11" font-weight="800" fill="#475569">OUT-OF-BAND MANAGEMENT PLANE (VLAN 11 • Subnet: 172.25.11.0/24)</text>
+        
+        <!-- Student Desktop -->
+        <g transform="translate(25, 32)">
+          <rect width="210" height="65" fill="#ffffff" stroke="#2563eb" stroke-width="2" rx="6"/>
+          <text x="105" y="24" font-size="11" font-weight="800" fill="#1d4ed8" text-anchor="middle">Virtual Student Desktop</text>
+          <text x="105" y="42" font-size="10" font-weight="700" fill="#0f172a" text-anchor="middle">IP: 172.25.11.100</text>
+          <text x="105" y="56" font-size="9" fill="#16a34a" font-weight="600" text-anchor="middle">Runs: lab2 setup script</text>
+        </g>
+
+        <!-- Mgmt Switch -->
+        <g transform="translate(370, 32)">
+          <rect width="160" height="65" fill="#ffffff" stroke="#64748b" stroke-width="1.5" rx="6"/>
+          <text x="80" y="26" font-size="11" font-weight="700" fill="#334155" text-anchor="middle">Management Switch</text>
+          <text x="80" y="44" font-size="9.5" fill="#64748b" text-anchor="middle">Isolated OOB VLAN</text>
+          <text x="80" y="58" font-size="9" font-weight="600" fill="#2563eb" text-anchor="middle">172.25.11.0/24</text>
+        </g>
+
+        <!-- Router 1 Mgmt Port -->
+        <g transform="translate(665, 32)">
+          <rect width="210" height="65" fill="#fff7ed" stroke="#ea580c" stroke-width="2" rx="6"/>
+          <text x="105" y="24" font-size="11" font-weight="800" fill="#c2410c" text-anchor="middle">Router 1: fxp0 Interface</text>
+          <text x="105" y="42" font-size="10" font-weight="700" fill="#0f172a" text-anchor="middle">IP: 172.25.11.1 /24</text>
+          <text x="105" y="56" font-size="9" fill="#475569" text-anchor="middle">SSH Credentials: lab / lab123</text>
+        </g>
+
+        <!-- Connection Lines -->
+        <line x1="235" y1="64" x2="370" y2="64" stroke="#2563eb" stroke-width="2"/>
+        <line x1="530" y1="64" x2="665" y2="64" stroke="#2563eb" stroke-width="2"/>
+      </g>
+
+      <!-- DATA PLANE SECTION (Bottom) -->
+      <g transform="translate(30, 172)">
+        <rect width="900" height="220" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" rx="8"/>
+        <text x="15" y="22" font-size="11" font-weight="800" fill="#0f172a">PRODUCTION DATA PLANE TOPOLOGY</text>
+
+        <!-- WAN Provider Left -->
+        <g transform="translate(25, 60)">
+          <rect width="210" height="100" fill="#eff6ff" stroke="#3b82f6" stroke-width="2" rx="6"/>
+          <text x="105" y="26" font-size="12" font-weight="800" fill="#1e40af" text-anchor="middle">WAN Internet Gateway</text>
+          <text x="105" y="48" font-size="10" font-weight="700" fill="#0f172a" text-anchor="middle">Subnet: 198.51.100.0/30</text>
+          <text x="105" y="68" font-size="9.5" fill="#475569" text-anchor="middle">Remote Peer: 198.51.100.1</text>
+          <text x="105" y="86" font-size="9" font-weight="700" fill="#2563eb" text-anchor="middle">Router 1 Port: xe-0/1/0</text>
+        </g>
+
+        <!-- Router 1 Central -->
+        <g transform="translate(350, 40)">
+          <rect width="200" height="150" fill="#0f172a" stroke="#334155" stroke-width="2" rx="8"/>
+          <text x="100" y="28" font-size="14" font-weight="800" fill="#ffffff" text-anchor="middle">ROUTER 1</text>
+          <text x="100" y="44" font-size="10" font-weight="600" fill="#94a3b8" text-anchor="middle">Target Junos Device</text>
+          
+          <line x1="15" y1="54" x2="185" y2="54" stroke="#334155" stroke-width="1"/>
+
+          <!-- Ports List -->
+          <g transform="translate(15, 68)" font-size="9.5" font-family="monospace">
+            <text x="0" y="10" fill="#60a5fa" font-weight="700">xe-0/1/0: WAN Uplink</text>
+            <text x="0" y="28" fill="#34d399" font-weight="700">xe-0/1/1: Corp LAN</text>
+            <text x="0" y="46" fill="#facc15" font-weight="700">xe-0/1/2: Server LAN</text>
+            <text x="0" y="64" fill="#f87171" font-weight="700">xe-0/1/3: Guest LAN</text>
+          </g>
+        </g>
+
+        <!-- Connectors from Router 1 to LANs -->
+        <!-- WAN Link Line -->
+        <line x1="235" y1="110" x2="350" y2="110" stroke="#3b82f6" stroke-width="2.5"/>
+        <rect x="255" y="98" width="75" height="18" fill="#ffffff" stroke="#bfdbfe" rx="3"/>
+        <text x="292" y="111" font-size="8.5" font-weight="700" fill="#1d4ed8" text-anchor="middle">xe-0/1/0</text>
+
+        <!-- Right 3 LAN Segments -->
+        <!-- Corp LAN -->
+        <g transform="translate(665, 38)">
+          <rect width="210" height="48" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5" rx="5"/>
+          <text x="105" y="20" font-size="11" font-weight="800" fill="#065f46" text-anchor="middle">Corporate LAN (xe-0/1/1)</text>
+          <text x="105" y="36" font-size="9.5" font-weight="600" fill="#047857" text-anchor="middle">172.16.10.0/24 (GW: 172.16.10.1)</text>
+        </g>
+        <line x1="550" y1="95" x2="665" y2="62" stroke="#10b981" stroke-width="2"/>
+
+        <!-- Server LAN -->
+        <g transform="translate(665, 94)">
+          <rect width="210" height="48" fill="#fefce8" stroke="#eab308" stroke-width="2" rx="5"/>
+          <text x="105" y="20" font-size="11" font-weight="800" fill="#854d0e" text-anchor="middle">Server LAN (xe-0/1/2)</text>
+          <text x="105" y="36" font-size="9.5" font-weight="700" fill="#a16207" text-anchor="middle">172.16.20.0/24 (Target Port)</text>
+        </g>
+        <line x1="550" y1="115" x2="665" y2="118" stroke="#eab308" stroke-width="2.5"/>
+
+        <!-- Guest LAN -->
+        <g transform="translate(665, 150)">
+          <rect width="210" height="48" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5" rx="5"/>
+          <text x="105" y="20" font-size="11" font-weight="800" fill="#991b1b" text-anchor="middle">Guest LAN (xe-0/1/3)</text>
+          <text x="105" y="36" font-size="9.5" font-weight="600" fill="#b91c1c" text-anchor="middle">172.16.30.0/24 (GW: 172.16.30.1)</text>
+        </g>
+        <line x1="550" y1="135" x2="665" y2="174" stroke="#ef4444" stroke-width="2"/>
+      </g>
+    </svg>
+    <div class="diagram-caption">Figure 6: Course lab architecture showing out-of-band management access via fxp0 (172.25.11.1) and production data plane links (WAN, Corporate LAN, Server LAN, Guest LAN).</div>
+  </div>
+
+  <h3 id="topic-5-1">5.1 Lab Topology and Management Connectivity</h3>
+  <p>To access the lab environment from the Virtual Student Desktop:</p>
+  <pre><code><span class="prompt">student@desktop:~$</span> <span class="highlight">lab2</span>  <span class="comment"># Executes alias script deploying baseline configuration to Router 1</span>
+<span class="prompt">student@desktop:~$</span> <span class="highlight">ssh lab@172.25.11.1</span>
+<span class="output">Password: lab123</span>
+<span class="prompt">lab@router1></span></code></pre>
+
+  <h3 id="topic-5-2">5.2 Step-by-Step Lab Execution (Tasks 1 to 14)</h3>
+  
+  <h4>Task 1: Verify WAN link status with minimal output</h4>
+  <pre><code><span class="prompt">lab@router1></span> <span class="highlight">show interfaces terse xe-0/1/0</span>
+<span class="output">Interface               Admin Link Proto    Local                 Remote
+xe-0/1/0                up    up
+xe-0/1/0.0              up    up   inet     198.51.100.2/30</span></code></pre>
+
+  <h4>Task 2: Inspect Corporate LAN interface using brief output</h4>
+  <pre><code><span class="prompt">lab@router1></span> <span class="highlight">show interfaces brief xe-0/1/1</span></code></pre>
+
+  <h4>Task 3: Inspect Server LAN interface using standard output</h4>
+  <pre><code><span class="prompt">lab@router1></span> <span class="highlight">show interfaces xe-0/1/2</span>
+<span class="comment"># Press [Spacebar] to page through the multi-screen output</span></code></pre>
+
+  <h4>Task 4: Inspect Guest LAN interface using detailed output</h4>
+  <pre><code><span class="prompt">lab@router1></span> <span class="highlight">show interfaces detail xe-0/1/3</span></code></pre>
+
+  <h4>Task 5: View all interfaces device-wide and identify <code>fxp0</code></h4>
+  <pre><code><span class="prompt">lab@router1></span> <span class="highlight">show interfaces terse</span>
+<span class="comment"># Identifies ge-*, xe-*, fxp0 (management), lo0 (loopback), and .16386 placeholder units</span></code></pre>
+
+  <h4>Task 6: Filter output for Gigabit Ethernet interfaces using <code>match</code></h4>
+  <pre><code><span class="prompt">lab@router1></span> <span class="highlight">show interfaces terse | match ge</span></code></pre>
+
+  <h4>Task 7: Filter Gigabit Ethernet interfaces using wildcard syntax</h4>
+  <pre><code><span class="prompt">lab@router1></span> <span class="highlight">show interfaces terse ge-*</span></code></pre>
+
+  <div class="diagram-container">
+    <!-- SVG 7: Redesigned Wildcard vs Pipe Comparison -->
+    <svg viewBox="0 0 960 250" xmlns="http://www.w3.org/2000/svg">
+      <rect width="960" height="250" fill="#f8fafc" rx="10" stroke="#cbd5e1" stroke-width="1.5"/>
+      <text x="480" y="28" font-size="16" font-weight="800" fill="#0f172a" text-anchor="middle">Wildcard Pattern Matching vs. CLI Pipe Filtering Comparison</text>
+
+      <!-- Left Card: Wildcard -->
+      <g transform="translate(30, 48)">
+        <rect width="435" height="175" fill="#ffffff" stroke="#2563eb" stroke-width="2" rx="8"/>
+        <rect x="0" y="0" width="435" height="34" fill="#2563eb" rx="6"/>
+        <text x="217" y="22" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">METHOD A: Wildcard Parameter Matching</text>
+        
+        <rect x="15" y="46" width="405" height="32" fill="#0f172a" rx="4"/>
+        <text x="217" y="66" font-size="11" font-family="monospace" font-weight="700" fill="#38bdf8" text-anchor="middle">show interfaces ge-* terse</text>
+
+        <g transform="translate(15, 90)" font-size="11" fill="#334155">
+          <text x="0" y="14">• Evaluated by the <tspan font-weight="700" fill="#0f172a">Junos CLI Parser</tspan> before execution.</text>
+          <text x="0" y="34">• Kernel fetches only records matching the interface pattern.</text>
+          <text x="0" y="54" font-weight="700" fill="#16a34a">✓ Preserves column table headers in terse output.</text>
+        </g>
+      </g>
+
+      <!-- Right Card: Pipe -->
+      <g transform="translate(495, 48)">
+        <rect width="435" height="175" fill="#ffffff" stroke="#7c3aed" stroke-width="2" rx="8"/>
+        <rect x="0" y="0" width="435" height="34" fill="#7c3aed" rx="6"/>
+        <text x="217" y="22" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">METHOD B: CLI Pipe Stream Filtering</text>
+        
+        <rect x="15" y="46" width="405" height="32" fill="#0f172a" rx="4"/>
+        <text x="217" y="66" font-size="11" font-family="monospace" font-weight="700" fill="#c084fc" text-anchor="middle">show interfaces terse | match ge</text>
+
+        <g transform="translate(15, 90)" font-size="11" fill="#334155">
+          <text x="0" y="14">• Executes the <tspan font-weight="700" fill="#0f172a">full command</tspan> across all device interfaces.</text>
+          <text x="0" y="34">• Evaluates the stdout text stream line-by-line using regex.</text>
+          <text x="0" y="54" font-weight="700" fill="#dc2626">✗ Strips table header lines (they lack the substring "ge").</text>
+        </g>
+      </g>
+    </svg>
+    <div class="diagram-caption">Figure 7: Architectural distinction between CLI wildcard parameter filtering (command syntax) and post-execution stream pipe filtering.</div>
+  </div>
+
+  <h4>Task 8: Isolate down interfaces with <code>match down</code></h4>
+  <pre><code><span class="prompt">lab@router1></span> <span class="highlight">show interfaces terse ge-* | match down</span>
+<span class="output">ge-0/0/2                up    down
+ge-0/0/2.16386          up    down
+ge-0/0/3                up    down
+ge-0/0/3.16386          up    down</span></code></pre>
+
+  <h4>Task 9: List all physical GE ports using <code>match physical</code></h4>
+  <pre><code><span class="prompt">lab@router1></span> <span class="highlight">show interfaces ge-* | match physical</span></code></pre>
+
+  <h4>Task 10: Multi-term match for physical port headers and flap timestamps</h4>
+  <pre><code><span class="prompt">lab@router1></span> <span class="highlight">show interfaces ge-* | match "physical|flapped"</span></code></pre>
+
+  <h4>Task 11: Display assigned IP addresses while stripping link-local addresses</h4>
+  <pre><code><span class="prompt">lab@router1></span> <span class="highlight">show interfaces terse ge-0/0/1 | match inet | except fe80</span></code></pre>
+
+  <h4>Task 12: Chain filters to list only active (Up) physical interfaces</h4>
+  <pre><code><span class="prompt">lab@router1></span> <span class="highlight">show interfaces ge-* | match physical | except down</span></code></pre>
+
+  <h4>Task 13: Count total physical GE interfaces via CLI pipe</h4>
+  <pre><code><span class="prompt">lab@router1></span> <span class="highlight">show interfaces ge-* | match physical | count</span>
+<span class="output">Count: 4 lines</span></code></pre>
+
+  <h4>Task 14: Jump directly to logical unit configuration using <code>find</code></h4>
+  <pre><code><span class="prompt">lab@router1></span> <span class="highlight">show interfaces ge-0/0/2 | find logical</span></code></pre>
+
+  <blockquote class="added-context">
+    <p><strong>📘 Added context: Recommended Lab Cleanup Practice</strong></p>
+    <p>Always terminate operational SSH terminal sessions upon completing lab exercises (<code>exit</code>). This prevents stale terminal buffers and state contamination when initiating subsequent configuration labs.</p>
+  </blockquote>
+</section>
+
+<!-- ========================================================================= -->
+<!-- TOPIC 6 -->
+<!-- ========================================================================= -->
+<section id="topic-6">
+  <h2>6. Command Quick Reference & Common Pitfalls</h2>
+
+  <h3 id="topic-6-1">6.1 Junos Interface & Pipe Command Summary Table</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Command String</th>
+        <th>CLI Mode</th>
+        <th>Functional Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>show interfaces terse</code></td>
+        <td>Operational</td>
+        <td>Displays 1-line summary of all interfaces, admin state, link state, and IP addresses.</td>
+      </tr>
+      <tr>
+        <td><code>show interfaces brief &lt;name&gt;</code></td>
+        <td>Operational</td>
+        <td>Displays concise summary of interface properties, speed, MTU, and descriptions.</td>
+      </tr>
+      <tr>
+        <td><code>show interfaces &lt;name&gt;</code></td>
+        <td>Operational</td>
+        <td>Displays full physical (MAC, flap time, live bps/pps) and logical (IP, subnet, MTU) details.</td>
+      </tr>
+      <tr>
+        <td><code>show interfaces detail &lt;name&gt;</code></td>
+        <td>Operational</td>
+        <td>Displays in-depth carrier transitions, device flags, and per-protocol packet stats.</td>
+      </tr>
+      <tr>
+        <td><code>show interfaces extensive &lt;name&gt;</code></td>
+        <td>Operational</td>
+        <td>Displays exhaustive hardware error counters, CoS buffer queues, and framing diagnostics.</td>
+      </tr>
+      <tr>
+        <td><code>show interfaces &lt;pattern&gt;*</code></td>
+        <td>Operational</td>
+        <td>Wildcard command parameter filter matching interfaces starting with the pattern.</td>
+      </tr>
+      <tr>
+        <td><code>&lt;command&gt; | match &lt;pattern&gt;</code></td>
+        <td>Operational / Config</td>
+        <td>Filters stdout to display only lines containing the specified case-insensitive pattern.</td>
+      </tr>
+      <tr>
+        <td><code>&lt;command&gt; | match "&lt;term1&gt;|&lt;term2&gt;"</code></td>
+        <td>Operational / Config</td>
+        <td>Regular expression OR search matching lines containing either term1 or term2.</td>
+      </tr>
+      <tr>
+        <td><code>&lt;command&gt; | except &lt;pattern&gt;</code></td>
+        <td>Operational / Config</td>
+        <td>Inverts filter, discarding lines matching pattern and printing all others.</td>
+      </tr>
+      <tr>
+        <td><code>&lt;command&gt; | count</code></td>
+        <td>Operational / Config</td>
+        <td>Counts and outputs the total number of lines generated by the command or pipe stream.</td>
+      </tr>
+      <tr>
+        <td><code>&lt;command&gt; | find &lt;pattern&gt;</code></td>
+        <td>Operational / Config</td>
+        <td>Jumps output to begin printing at the first occurrence of the search string.</td>
+      </tr>
+      <tr>
+        <td><code>&lt;command&gt; | no-more</code></td>
+        <td>Operational / Config</td>
+        <td>Suppresses pagination prompts (<code>---(more)---</code>) for uninterrupted stream capture.</td>
+      </tr>
+      <tr>
+        <td><code>set interfaces &lt;name&gt; disable</code></td>
+        <td>Configuration</td>
+        <td>Administratively disables the physical interface (admin state becomes Down).</td>
+      </tr>
+      <tr>
+        <td><code>set interfaces &lt;name&gt; mac &lt;address&gt;</code></td>
+        <td>Configuration</td>
+        <td>Overrides the default hardware MAC address with a user-configured current address.</td>
+      </tr>
+      <tr>
+        <td><code>set interfaces &lt;name&gt; unit &lt;id&gt; family inet address &lt;ip/mask&gt;</code></td>
+        <td>Configuration</td>
+        <td>Assigns an IPv4 address and subnet mask to the specified logical interface unit.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 id="topic-6-2">6.2 Common Beginner Mistakes & Gotchas</h3>
+  <div class="gotchas">
+    <h4>Key Traps to Avoid on the JNCIA Exam and in Production</h4>
+    <ol>
+      <li><strong>Assuming <code>terse</code> shows interface speeds or MAC addresses:</strong> <code>show interfaces terse</code> displays only administrative status, operational link status, and protocol addresses. It never includes hardware MACs, link speeds, or MTU values.</li>
+      <li><strong>Missing logical unit 0 when configuring IP addresses:</strong> Physical interfaces in Junos (<code>ge-0/0/0</code>) cannot hold IP addresses directly. You must assign them to a logical unit (<code>ge-0/0/0 unit 0 family inet address ...</code>).</li>
+      <li><strong>Forgetting quotes in multi-term pipe regex:</strong> <code>| match term1|term2</code> is parsed as an illegal pipe chaining syntax. You must use quotes: <code>| match "term1|term2"</code>.</li>
+      <li><strong>Confusing the <code>.16386</code> unit with a misconfiguration:</strong> The <code>.16386</code> logical unit is an automated internal Junos placeholder sub-interface for unconfigured ports. Do not attempt to delete or edit it.</li>
+      <li><strong>Overlooking the 14-byte Ethernet header in Layer 2 MTU:</strong> In Junos, standard Layer 2 Ethernet MTU is <strong>1514 bytes</strong> (14 bytes L2 header + 1500 bytes L3 IP packet).</li>
+    </ol>
+  </div>
+</section>
+
+</div>
+</body>
+</html>
