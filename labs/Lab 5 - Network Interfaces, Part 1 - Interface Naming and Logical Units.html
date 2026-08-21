@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab 5: Network Interfaces (Part 1) — Interface Naming & Logical Units | Hands-on Lab Guide</title>
+<style>
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.65;
+    color: #1e293b;
+    background-color: #f8fafc;
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 32px 20px;
+  }
+  .content-wrapper {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 44px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  }
+  .badge-lab {
+    display: inline-block;
+    padding: 4px 12px;
+    background-color: #dcfce7;
+    color: #15803d;
+    border: 1px solid #86efac;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+  }
+  h1 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #0f172a;
+    border-bottom: 3px solid #0284c7;
+    padding-bottom: 14px;
+    margin-top: 0;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+  .subtitle {
+    font-size: 1.15rem;
+    color: #64748b;
+    margin-bottom: 32px;
+    font-weight: 500;
+  }
+  h2 {
+    font-size: 1.65rem;
+    font-weight: 700;
+    color: #0369a1;
+    border-bottom: 2px solid #e0f2fe;
+    padding-bottom: 10px;
+    margin-top: 52px;
+    letter-spacing: -0.01em;
+  }
+  h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-top: 32px;
+    color: #0c4a6e;
+  }
+  h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 24px;
+    color: #334155;
+  }
+  nav.toc {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 10px;
+    padding: 26px 32px;
+    margin-bottom: 44px;
+  }
+  nav.toc h2 {
+    margin-top: 0;
+    font-size: 1.35rem;
+    border-bottom: none;
+    padding-bottom: 0;
+    color: #0369a1;
+  }
+  nav.toc ol {
+    margin: 0;
+    padding-left: 22px;
+  }
+  nav.toc li {
+    margin: 9px 0;
+  }
+  nav.toc a {
+    color: #0284c7;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  nav.toc a:hover {
+    text-decoration: underline;
+    color: #0369a1;
+  }
+  
+  /* Scenario / Mission Brief Box */
+  .scenario-box {
+    background-color: #f8fafc;
+    border: 2px solid #0284c7;
+    border-radius: 12px;
+    padding: 28px;
+    margin: 28px 0;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.08);
+  }
+  .scenario-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #0369a1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 0;
+    margin-bottom: 14px;
+  }
+
+  /* Lab Step Container */
+  .lab-step {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-left: 5px solid #0284c7;
+    border-radius: 0 10px 10px 0;
+    padding: 24px;
+    margin: 28px 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+  }
+  .step-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .step-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+  }
+  .step-tag {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 6px;
+    background: #f1f5f9;
+    color: #475569;
+    text-transform: uppercase;
+  }
+
+  /* Realistic Junos Terminal CLI Block */
+  .terminal-box {
+    background-color: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    margin: 16px 0;
+    overflow: hidden;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  }
+  .terminal-header {
+    background-color: #1e293b;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #334155;
+  }
+  .terminal-dots {
+    display: flex;
+    gap: 6px;
+  }
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+  .dot-red { background-color: #ef4444; }
+  .dot-yellow { background-color: #f59e0b; }
+  .dot-green { background-color: #10b981; }
+  .terminal-title {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.8rem;
+    color: #94a3b8;
+  }
+
+  pre {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    background-color: transparent;
+    color: #f8fafc;
+    padding: 16px 20px;
+    margin: 0;
+    overflow-x: auto;
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+  pre code {
+    background-color: transparent;
+    padding: 0;
+    border: none;
+    color: inherit;
+    font-size: inherit;
+  }
+
+  /* Terminal Syntax Highlighting */
+  .p-user { color: #38bdf8; font-weight: bold; } /* prompt user/hostname */
+  .cmd { color: #facc15; font-weight: 700; }    /* command typed */
+  .kw { color: #4ade80; font-weight: 600; }     /* keywords like set */
+  .hier { color: #38bdf8; font-weight: 600; }   /* hierarchies */
+  .val { color: #f1f5f9; }                      /* text / values */
+  .cmt { color: #94a3b8; font-style: italic; }  /* comments */
+  .ok { color: #4ade80; font-weight: 600; }     /* up status */
+  .down { color: #f87171; font-weight: 600; }   /* down status */
+  .match-hl { background-color: rgba(250, 204, 21, 0.25); color: #fde047; padding: 1px 4px; border-radius: 3px; font-weight: bold; }
+
+  /* Explanation / Analysis callouts */
+  .instructor-note {
+    background-color: #f0fdf4;
+    border-left: 4px solid #16a34a;
+    padding: 16px 20px;
+    margin: 16px 0;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.95rem;
+  }
+  .instructor-title {
+    font-weight: 700;
+    color: #15803d;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .gotcha-box {
+    background-color: #fff7ed;
+    border-left: 4px solid #ea580c;
+    padding: 16px 20px;
+    margin: 16px 0;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.95rem;
+  }
+  .gotcha-title {
+    font-weight: 700;
+    color: #c2410c;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Summary Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+    text-align: left;
+    margin: 20px 0;
+  }
+  th, td {
+    padding: 12px 16px;
+    border: 1px solid #cbd5e1;
+  }
+  th {
+    background-color: #f1f5f9;
+    font-weight: 700;
+    color: #0f172a;
+  }
+  tr:nth-child(even) {
+    background-color: #f8fafc;
+  }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    background-color: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #0369a1;
+    border: 1px solid #e2e8f0;
+  }
+</style>
+</head>
+<body>
+
+<div class="content-wrapper">
+  <span class="badge-lab">Hands-on Lab Exercise • Module 5</span>
+  <h1>Lab 5: Junos Network Interfaces (Part 1)</h1>
+  <div class="subtitle">Interface Naming Conventions, Hardware Architecture (FPC/PIC/Port), Logical Units & Terse Verification</div>
+
+  <nav class="toc">
+    <h2>Lab Sections & Walkthrough</h2>
+    <ol>
+      <li><a href="#lab-scenario">Lab Mission: Enterprise Perimeter Interface Audit</a></li>
+      <li><a href="#lab-concept">Core Concept: Junos Interface Naming & Slot Triplet Architecture</a></li>
+      <li><a href="#lab-part1">Part 1: Connecting to Router 1 & Verifying Host Session</a></li>
+      <li><a href="#lab-part2">Part 2: Deconstructing Interface Types and Speeds (ge, xe, et)</a></li>
+      <li><a href="#lab-part3">Part 3: Exploring Physical vs. Logical Units (Unit 0 & Protocol Families)</a></li>
+      <li><a href="#lab-part4">Part 4: Executing and Analyzing <code>show interfaces terse</code></a></li>
+      <li><a href="#lab-part5">Part 5: Administrative State vs. Physical Link State Diagnostics</a></li>
+      <li><a href="#lab-part6">Part 6: Targeted Interface Queries & Name Scoping</a></li>
+      <li><a href="#lab-findings">Part 7: Official Interface Audit Findings Report</a></li>
+      <li><a href="#lab-cheat-sheet">Part 8: JNCIA-Junos Interface Naming Quick Reference</a></li>
+    </ol>
+  </nav>
+
+  <!-- LAB SCENARIO / MISSION BRIEF -->
+  <section id="lab-scenario">
+    <div class="scenario-box">
+      <div class="scenario-title">
+        <span>📋</span> Client Audit Scenario: Physical & Logical Interface Discovery
+      </div>
+      <p><strong>Client Organization:</strong> Nexus Financial Services Network Core</p>
+      <p><strong>Device Under Audit:</strong> Edge Router <code>Router 1</code> (Juniper MX-Series / Junos OS)</p>
+      <p><strong>Mission Background:</strong> You have been brought in to perform a comprehensive physical and logical interface audit of the perimeter router. Following recent maintenance, documentation about which physical ports connect to WAN and LAN subnets has become outdated. Before approving new routing configurations, you must verify all interface names, slot locations, media speeds, administrative states, physical link statuses, logical units, and IP address family bindings.</p>
+      
+      <h4>Core Audit Objectives:</h4>
+      <ol>
+        <li><strong>Decode Interface Identifiers:</strong> Accurately parse the <code>type-fpc/pic/port</code> triplet for all active network ports.</li>
+        <li><strong>Verify Operational States:</strong> Distinguish between physical link state (Link Up/Down) and software administrative state (Admin Up/Down).</li>
+        <li><strong>Audit Logical Unit Bindings:</strong> Confirm logical unit numbers, address families (<code>inet</code> vs. <code>inet6</code>), and assigned IP addresses.</li>
+        <li><strong>Document Interface Roles:</strong> Map physical interfaces (e.g. <code>xe-0/1/0</code> through <code>xe-0/1/3</code>) to their functional network segments.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- CORE CONCEPT: INTERFACE NAMING ARCHITECTURE -->
+  <section id="lab-concept">
+    <div class="scenario-box">
+      <div class="scenario-title">
+        <span>⚙️</span> Core Concept: Junos Interface Naming Architecture
+      </div>
+      <p>Every physical network interface in Junos OS follows a strictly standardized, hardware-location-encoded naming syntax:</p>
+      <div class="terminal-box">
+        <div class="terminal-header">
+          <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+          <span class="terminal-title">Junos Naming Syntax Rule</span>
+        </div>
+        <pre><code><span class="hier">&lt;type-prefix&gt;</span>-<span class="val">&lt;FPC&gt;</span>/<span class="val">&lt;PIC&gt;</span>/<span class="val">&lt;Port&gt;</span>.<span class="kw">&lt;logical-unit&gt;</span>
+
+Example: <span class="hier">xe</span>-<span class="val">0</span>/<span class="val">1</span>/<span class="val">2</span>.<span class="kw">0</span>
+  ├── <span class="hier">xe</span>  : Interface Type Prefix (10 Gigabit Ethernet SFP+)
+  ├── <span class="val">0</span>   : FPC Slot (Flexible PIC Concentrator / Line Card Slot 0)
+  ├── <span class="val">1</span>   : PIC Slot (Physical Interface Card Bay 1)
+  ├── <span class="val">2</span>   : Port Number (Port index 2 on that PIC, 0-indexed)
+  └── <span class="kw">.0</span>  : Logical Unit (Unit 0 for Layer 3 IP processing)</code></pre>
+      </div>
+      <div class="instructor-note">
+        <div class="instructor-title"><span>📌</span> Hardware Architecture Key Rules</div>
+        <ul>
+          <li><strong>0-Indexed Numbering:</strong> In Junos OS, all FPC slots, PIC bays, and port numbers start at <strong>0</strong> (never 1).</li>
+          <li><strong>Fixed vs Modular Chassis:</strong> On fixed-configuration devices (e.g. EX2300, SRX300), FPC is always <code>0</code> and the built-in ports reside on PIC <code>0</code> or <code>1</code>. Modular routers (MX960) number FPCs according to the chassis slot number.</li>
+          <li><strong>Physical vs Logical:</strong> The physical port (<code>xe-0/1/2</code>) operates at Layer 1/2. The logical unit (<code>xe-0/1/2.0</code>) processes Layer 3 IP packets.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PART 1: CONNECTING TO ROUTER 1 -->
+  <section id="lab-part1">
+    <h2>Part 1: Connecting to Router 1 & Verifying Host Session</h2>
+    <p>Initiate your operational mode session to the router and confirm terminal connectivity.</p>
+
+    <div class="lab-step">
+      <div class="step-header">
+        <h3 class="step-title">Step 1.1: Establish SSH Session</h3>
+        <span class="step-tag">Access</span>
+      </div>
+      <p>Connect from your workstation to Router 1 via SSH:</p>
+      
+      <div class="terminal-box">
+        <div class="terminal-header">
+          <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+          <span class="terminal-title">Engineer Workstation — Terminal</span>
+        </div>
+        <pre><code><span class="p-user">student@workstation:~$</span> <span class="cmd">ssh employee@172.16.10.1</span>
+Password: <span class="cmt">**********</span>
+Last login: Thu Aug 20 09:50:04 2026 from 172.16.10.50
+--- JUNOS 21.4R1.12 built 2026-02-15 08:30:10 UTC
+<span class="p-user">employee@R1></span> </code></pre>
+      </div>
+
+      <div class="instructor-note">
+        <div class="instructor-title"><span>💡</span> Operational Mode Context</div>
+        <p>The prompt <code>employee@R1></code> confirms you are logged in as user <code>employee</code> in operational mode on device <code>R1</code>. All interface verification commands are executed directly in operational mode.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PART 2: DECONSTRUCTING INTERFACE TYPES -->
+  <section id="lab-part2">
+    <h2>Part 2: Deconstructing Interface Types and Media Speeds</h2>
+    <p>Junos uses distinct two-letter prefix codes to identify the physical media type, connector, and speed of an interface.</p>
+
+    <div class="lab-step">
+      <div class="step-header">
+        <h3 class="step-title">Step 2.1: Common Junos Interface Type Prefixes</h3>
+        <span class="step-tag">Theory & Reference</span>
+      </div>
+      <p>Review the standard prefix codes used across Juniper routers, switches, and firewalls:</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Type Prefix</th>
+            <th>Media / Speed Specification</th>
+            <th>Common Physical Connector / Transceiver</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>ge-</code></td>
+            <td>Gigabit Ethernet (1 Gbps)</td>
+            <td>1GbE RJ-45 Copper or SFP Optical</td>
+          </tr>
+          <tr>
+            <td><code>xe-</code></td>
+            <td>10 Gigabit Ethernet (10 Gbps)</td>
+            <td>10GbE SFP+ Optical / Direct-Attach Copper</td>
+          </tr>
+          <tr>
+            <td><code>et-</code></td>
+            <td>Enhanced / 40G / 100G / 400G Ethernet</td>
+            <td>QSFP+ (40G), QSFP28 (100G), QSFP-DD (400G)</td>
+          </tr>
+          <tr>
+            <td><code>fe-</code></td>
+            <td>Fast Ethernet (100 Mbps, legacy)</td>
+            <td>100Base-TX RJ-45</td>
+          </tr>
+          <tr>
+            <td><code>fxp0</code> / <code>em0</code></td>
+            <td>Dedicated Out-of-Band Management Port</td>
+            <td>1GbE RJ-45 Management Port on RE</td>
+          </tr>
+          <tr>
+            <td><code>lo0</code></td>
+            <td>Virtual Loopback Interface</td>
+            <td>Software-only (always up / logical)</td>
+          </tr>
+          <tr>
+            <td><code>ae</code></td>
+            <td>Aggregated Ethernet (LAG / LACP Bundle)</td>
+            <td>Logical bundle of multiple physical interfaces</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- PART 3: PHYSICAL VS LOGICAL UNITS -->
+  <section id="lab-part3">
+    <h2>Part 3: Exploring Physical vs. Logical Units</h2>
+    <p>A central tenet of Junos OS is the strict separation between <strong>Physical Interfaces</strong> (Layer 1/2 framing, MTU, transceiver diagnostics) and <strong>Logical Interfaces</strong> (Layer 3 protocol families and IP addressing).</p>
+
+    <div class="lab-step">
+      <div class="step-header">
+        <h3 class="step-title">Step 3.1: Logical Unit 0 and Protocol Families</h3>
+        <span class="step-tag">Architecture</span>
+      </div>
+      <p>Consider the structure of a configured interface:</p>
+      
+      <div class="terminal-box">
+        <div class="terminal-header">
+          <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+          <span class="terminal-title">Configuration Hierarchy Mapping</span>
+        </div>
+        <pre><code><span class="hier">interfaces</span> {
+    <span class="hier">xe-0/1/1</span> {                     <span class="cmt">/* Physical Interface (Layer 2) */</span>
+        <span class="hier">description</span> <span class="val">"Corp LAN"</span>;
+        <span class="hier">unit</span> <span class="val">0</span> {                   <span class="cmt">/* Logical Interface (Layer 3 Unit 0) */</span>
+            <span class="hier">family</span> <span class="val">inet</span> {          <span class="cmt">/* IPv4 Address Family */</span>
+                <span class="hier">address</span> <span class="val">172.16.10.1/24</span>;
+            }
+            <span class="hier">family</span> <span class="val">inet6</span> {         <span class="cmt">/* IPv6 Address Family */</span>
+                <span class="hier">address</span> <span class="val">2001:db8:10::1/64</span>;
+            }
+        }
+    }
+}</code></pre>
+      </div>
+
+      <div class="instructor-note">
+        <div class="instructor-title"><span>💡</span> Why Unit 0 is Required</div>
+        <p>In Junos OS, you <strong>cannot assign an IP address directly to a physical interface</strong>. An IP address must always be configured under a <strong>logical unit</strong> (usually <code>unit 0</code> for standard untagged access, or non-zero unit numbers when using 802.1Q VLAN tagging).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PART 4: SHOW INTERFACES TERSE -->
+  <section id="lab-part4">
+    <h2>Part 4: Executing & Analyzing <code>show interfaces terse</code></h2>
+    <p>The primary command for rapid interface auditing across any Junos device is <code>show interfaces terse</code>. It presents an aligned tabular view of all physical ports and their logical unit bindings.</p>
+
+    <div class="lab-step">
+      <div class="step-header">
+        <h3 class="step-title">Step 4.1: Run <code>show interfaces terse</code> on Router 1</h3>
+        <span class="step-tag">Primary Audit Command</span>
+      </div>
+      <p>Execute the command and analyze the live output:</p>
+
+      <div class="terminal-box">
+        <div class="terminal-header">
+          <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+          <span class="terminal-title">Router 1 — Operational Mode</span>
+        </div>
+        <pre><code><span class="p-user">employee@R1></span> <span class="cmd">show interfaces terse</span>
+Interface               Admin Link Proto    Local                 Remote
+xe-0/1/0                <span class="ok">up</span>    <span class="ok">up</span>
+xe-0/1/0.0              <span class="ok">up</span>    <span class="ok">up</span>   inet     198.51.100.2/30
+xe-0/1/1                <span class="ok">up</span>    <span class="ok">up</span>
+xe-0/1/1.0              <span class="ok">up</span>    <span class="ok">up</span>   inet     172.16.10.1/24
+                                   inet6    2001:db8:10::1/64
+                                            fe80::205:86ff:fe71:a101
+xe-0/1/2                <span class="ok">up</span>    <span class="ok">up</span>
+xe-0/1/2.0              <span class="ok">up</span>    <span class="ok">up</span>   inet     172.16.20.1/24
+                                   inet6    2001:db8:20::1/64
+                                            fe80::205:86ff:fe71:a102
+xe-0/1/3                <span class="ok">up</span>    <span class="ok">up</span>
+xe-0/1/3.0              <span class="ok">up</span>    <span class="ok">up</span>   inet     172.16.30.1/24
+                                   inet6    fe80::205:86ff:fe71:a103
+fxp0                    <span class="ok">up</span>    <span class="ok">up</span>
+fxp0.0                  <span class="ok">up</span>    <span class="ok">up</span>   inet     10.0.0.1/24
+lo0                     <span class="ok">up</span>    <span class="ok">up</span>
+lo0.0                   <span class="ok">up</span>    <span class="ok">up</span>   inet     127.0.0.1             --> 0/0</code></pre>
+      </div>
+
+      <div class="instructor-note">
+        <div class="instructor-title"><span>🔍</span> Deconstructing the 6 Columns of Terse Output</div>
+        <ol>
+          <li><strong>Interface:</strong> Physical interface name (no dot, e.g. <code>xe-0/1/0</code>) or Logical unit (with dot, e.g. <code>xe-0/1/0.0</code>).</li>
+          <li><strong>Admin Status:</strong> Software administrative state (<code>up</code> or <code>down</code>). Governed by the <code>disable</code> configuration statement.</li>
+          <li><strong>Link Status:</strong> Physical layer 1 carrier state (<code>up</code> = carrier detected, <code>down</code> = no signal / unplugged).</li>
+          <li><strong>Proto:</strong> Protocol family (<code>inet</code> for IPv4, <code>inet6</code> for IPv6, <code>eth-switch</code> for Layer 2 switching).</li>
+          <li><strong>Local:</strong> Configured IP address and subnet mask prefix (CIDR). Notice link-local <code>fe80::</code> addresses automatically generated for IPv6.</li>
+          <li><strong>Remote:</strong> Remote point-to-point destination address (if configured).</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- PART 5: ADMIN STATE VS LINK STATE -->
+  <section id="lab-part5">
+    <h2>Part 5: Administrative State vs. Physical Link State Diagnostics</h2>
+    <p>Understanding the four possible combinations of <strong>Admin</strong> and <strong>Link</strong> state is critical for troubleshooting interface connectivity.</p>
+
+    <div class="lab-step">
+      <div class="step-header">
+        <h3 class="step-title">Step 5.1: The 4 Interface State Combinations</h3>
+        <span class="step-tag">Diagnostic Matrix</span>
+      </div>
+      <p>Review the state matrix and root-cause indicators:</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Admin Status</th>
+            <th>Link Status</th>
+            <th>Operational Meaning</th>
+            <th>Troubleshooting Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="ok">up</span></td>
+            <td><span class="ok">up</span></td>
+            <td>Fully operational. Port enabled, physical carrier detected, traffic forwarding normally.</td>
+            <td>None required. Interface healthy.</td>
+          </tr>
+          <tr>
+            <td><span class="ok">up</span></td>
+            <td><span class="down">down</span></td>
+            <td>Port is enabled in software, but <strong>no physical carrier signal</strong> is received.</td>
+            <td>Check physical cabling, SFP transceiver seating, remote switch power, speed/duplex mismatch.</td>
+          </tr>
+          <tr>
+            <td><span class="down">down</span></td>
+            <td><span class="down">down</span></td>
+            <td>Port is <strong>administratively shut down</strong> via <code>set interfaces &lt;name&gt; disable</code>.</td>
+            <td>Issue <code>delete interfaces &lt;name&gt; disable</code> and commit to bring port online.</td>
+          </tr>
+          <tr>
+            <td><span class="down">down</span></td>
+            <td><span class="ok">up</span></td>
+            <td><em>Rare / Transient:</em> Port administratively disabled while transceiver still sees optical carrier.</td>
+            <td>Verify configuration commit status.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="gotcha-box">
+        <div class="gotcha-title"><span>⚠️</span> Exam Gotcha: Admin Down Always Causes Link Down</div>
+        <p>When an engineer disables an interface in Junos (<code>set interfaces xe-0/1/1 disable</code>), the operating system disables the laser/PHY, forcing <strong>both Admin and Link to show down</strong>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PART 6: TARGETED INTERFACE QUERIES -->
+  <section id="lab-part6">
+    <h2>Part 6: Targeted Interface Queries & Name Scoping</h2>
+    <p>On devices with hundreds of ports, querying the entire terse table is inefficient. You can target specific interfaces by passing the interface name directly.</p>
+
+    <div class="lab-step">
+      <div class="step-header">
+        <h3 class="step-title">Step 6.1: Query a Specific Single Interface</h3>
+        <span class="step-tag">Scoping</span>
+      </div>
+      <p>Target only interface <code>xe-0/1/1</code>:</p>
+
+      <div class="terminal-box">
+        <div class="terminal-header">
+          <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+          <span class="terminal-title">Router 1 — Operational Mode</span>
+        </div>
+        <pre><code><span class="p-user">employee@R1></span> <span class="cmd">show interfaces terse xe-0/1/1</span>
+Interface               Admin Link Proto    Local                 Remote
+xe-0/1/1                <span class="ok">up</span>    <span class="ok">up</span>
+xe-0/1/1.0              <span class="ok">up</span>    <span class="ok">up</span>   inet     172.16.10.1/24
+                                   inet6    2001:db8:10::1/64
+                                            fe80::205:86ff:fe71:a101</code></pre>
+      </div>
+    </div>
+
+    <div class="lab-step">
+      <div class="step-header">
+        <h3 class="step-title">Step 6.2: Match All 10GbE SFP+ Interfaces</h3>
+        <span class="step-tag">Pipe Matching</span>
+      </div>
+      <p>Filter for only 10GbE (<code>xe-</code>) network ports:</p>
+
+      <div class="terminal-box">
+        <div class="terminal-header">
+          <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+          <span class="terminal-title">Router 1 — Operational Mode</span>
+        </div>
+        <pre><code><span class="p-user">employee@R1></span> <span class="cmd">show interfaces terse | match "^xe-"</span>
+xe-0/1/0                <span class="ok">up</span>    <span class="ok">up</span>
+xe-0/1/0.0              <span class="ok">up</span>    <span class="ok">up</span>   inet     198.51.100.2/30
+xe-0/1/1                <span class="ok">up</span>    <span class="ok">up</span>
+xe-0/1/1.0              <span class="ok">up</span>    <span class="ok">up</span>   inet     172.16.10.1/24
+xe-0/1/2                <span class="ok">up</span>    <span class="ok">up</span>
+xe-0/1/2.0              <span class="ok">up</span>    <span class="ok">up</span>   inet     172.16.20.1/24
+xe-0/1/3                <span class="ok">up</span>    <span class="ok">up</span>
+xe-0/1/3.0              <span class="ok">up</span>    <span class="ok">up</span>   inet     172.16.30.1/24</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- PART 7: OFFICIAL AUDIT FINDINGS -->
+  <section id="lab-findings">
+    <h2>Part 7: Official Interface Audit Findings Report</h2>
+    <p>Summary mapping of Router 1 interfaces produced during this discovery lab:</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Interface Name</th>
+          <th>Type & Slot Location</th>
+          <th>Operational State</th>
+          <th>Logical Unit & Addresses</th>
+          <th>Functional Role</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>xe-0/1/0</code></td>
+          <td>10GbE • FPC 0, PIC 1, Port 0</td>
+          <td><span class="ok">Admin Up / Link Up</span></td>
+          <td>Unit 0 • IPv4: <code>198.51.100.2/30</code></td>
+          <td>WAN Internet Link</td>
+        </tr>
+        <tr>
+          <td><code>xe-0/1/1</code></td>
+          <td>10GbE • FPC 0, PIC 1, Port 1</td>
+          <td><span class="ok">Admin Up / Link Up</span></td>
+          <td>Unit 0 • IPv4: <code>172.16.10.1/24</code><br>IPv6: <code>2001:db8:10::1/64</code></td>
+          <td>Corporate LAN Trunk</td>
+        </tr>
+        <tr>
+          <td><code>xe-0/1/2</code></td>
+          <td>10GbE • FPC 0, PIC 1, Port 2</td>
+          <td><span class="ok">Admin Up / Link Up</span></td>
+          <td>Unit 0 • IPv4: <code>172.16.20.1/24</code><br>IPv6: <code>2001:db8:20::1/64</code></td>
+          <td>Server LAN Trunk</td>
+        </tr>
+        <tr>
+          <td><code>xe-0/1/3</code></td>
+          <td>10GbE • FPC 0, PIC 1, Port 3</td>
+          <td><span class="ok">Admin Up / Link Up</span></td>
+          <td>Unit 0 • IPv4: <code>172.16.30.1/24</code><br>IPv6: Link-Local Only</td>
+          <td>Guest LAN Trunk</td>
+        </tr>
+        <tr>
+          <td><code>fxp0</code></td>
+          <td>Out-of-Band Management</td>
+          <td><span class="ok">Admin Up / Link Up</span></td>
+          <td>Unit 0 • IPv4: <code>10.0.0.1/24</code></td>
+          <td>Dedicated RE Management</td>
+        </tr>
+        <tr>
+          <td><code>lo0</code></td>
+          <td>Virtual Software Loopback</td>
+          <td><span class="ok">Admin Up / Link Up</span></td>
+          <td>Unit 0 • IPv4: <code>127.0.0.1</code></td>
+          <td>Host Loopback / System ID</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- PART 8: CHEAT SHEET -->
+  <section id="lab-cheat-sheet">
+    <h2>Part 8: JNCIA-Junos Interface Naming Quick Reference</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Concept / Command</th>
+          <th>Syntax & Pattern</th>
+          <th>Key Takeaway</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Naming Syntax</td>
+          <td><code>&lt;type&gt;-&lt;fpc&gt;/&lt;pic&gt;/&lt;port&gt;.&lt;unit&gt;</code></td>
+          <td>Encodes media speed + hardware physical location. 0-indexed.</td>
+        </tr>
+        <tr>
+          <td>Terse Interface Audit</td>
+          <td><code>show interfaces terse</code></td>
+          <td>Displays concise table with Admin, Link, Protocol, and IP columns.</td>
+        </tr>
+        <tr>
+          <td>Single Port Terse</td>
+          <td><code>show interfaces terse &lt;name&gt;</code></td>
+          <td>Filters terse display to single port without reading full table.</td>
+        </tr>
+        <tr>
+          <td>IPv4 Protocol Family</td>
+          <td><code>family inet</code></td>
+          <td>Junos keyword for standard IPv4 addressing.</td>
+        </tr>
+        <tr>
+          <td>IPv6 Protocol Family</td>
+          <td><code>family inet6</code></td>
+          <td>Junos keyword for standard IPv6 addressing.</td>
+        </tr>
+        <tr>
+          <td>Administrative Disable</td>
+          <td><code>set interfaces &lt;name&gt; disable</code></td>
+          <td>Brings port Admin Down and cuts optical/copper carrier (Link Down).</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</div>
+
+</body>
+</html>

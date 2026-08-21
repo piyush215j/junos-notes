@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab 6: Network Interfaces (Part 2) — Detailed Output Analysis & CLI Filtering | Hands-on Lab Guide</title>
+<style>
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.65;
+    color: #1e293b;
+    background-color: #f8fafc;
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 32px 20px;
+  }
+  .content-wrapper {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 44px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  }
+  .badge-lab {
+    display: inline-block;
+    padding: 4px 12px;
+    background-color: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #93c5fd;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+  }
+  h1 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #0f172a;
+    border-bottom: 3px solid #2563eb;
+    padding-bottom: 14px;
+    margin-top: 0;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+  .subtitle {
+    font-size: 1.15rem;
+    color: #64748b;
+    margin-bottom: 32px;
+    font-weight: 500;
+  }
+  h2 {
+    font-size: 1.65rem;
+    font-weight: 700;
+    color: #1e3a8a;
+    border-bottom: 2px solid #dbeafe;
+    padding-bottom: 10px;
+    margin-top: 52px;
+    letter-spacing: -0.01em;
+  }
+  h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-top: 32px;
+    color: #1d4ed8;
+  }
+  h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 24px;
+    color: #334155;
+  }
+  nav.toc {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 10px;
+    padding: 26px 32px;
+    margin-bottom: 44px;
+  }
+  nav.toc h2 {
+    margin-top: 0;
+    font-size: 1.35rem;
+    border-bottom: none;
+    padding-bottom: 0;
+    color: #1e40af;
+  }
+  nav.toc ol {
+    margin: 0;
+    padding-left: 22px;
+  }
+  nav.toc li {
+    margin: 9px 0;
+  }
+  nav.toc a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  nav.toc a:hover {
+    text-decoration: underline;
+    color: #1e40af;
+  }
+  
+  /* Scenario / Mission Brief Box */
+  .scenario-box {
+    background-color: #f8fafc;
+    border: 2px solid #2563eb;
+    border-radius: 12px;
+    padding: 28px;
+    margin: 28px 0;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
+  }
+  .scenario-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #1e40af;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 0;
+    margin-bottom: 14px;
+  }
+
+  /* Lab Step Container */
+  .lab-step {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-left: 5px solid #2563eb;
+    border-radius: 0 10px 10px 0;
+    padding: 24px;
+    margin: 28px 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+  }
+  .step-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .step-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+  }
+  .step-tag {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 6px;
+    background: #f1f5f9;
+    color: #475569;
+    text-transform: uppercase;
+  }
+
+  /* Realistic Junos Terminal CLI Block */
+  .terminal-box {
+    background-color: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    margin: 16px 0;
+    overflow: hidden;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  }
+  .terminal-header {
+    background-color: #1e293b;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #334155;
+  }
+  .terminal-dots {
+    display: flex;
+    gap: 6px;
+  }
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+  .dot-red { background-color: #ef4444; }
+  .dot-yellow { background-color: #f59e0b; }
+  .dot-green { background-color: #10b981; }
+  .terminal-title {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.8rem;
+    color: #94a3b8;
+  }
+
+  pre {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    background-color: transparent;
+    color: #f8fafc;
+    padding: 16px 20px;
+    margin: 0;
+    overflow-x: auto;
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+  pre code {
+    background-color: transparent;
+    padding: 0;
+    border: none;
+    color: inherit;
+    font-size: inherit;
+  }
+
+  /* Terminal Syntax Highlighting */
+  .p-user { color: #38bdf8; font-weight: bold; } /* prompt user/hostname */
+  .cmd { color: #facc15; font-weight: 700; }    /* command typed */
+  .pipe { color: #38bdf8; font-weight: 700; }   /* pipe operator */
+  .hier { color: #38bdf8; font-weight: 600; }   /* labels */
+  .val { color: #f1f5f9; }                      /* text / values */
+  .cmt { color: #94a3b8; font-style: italic; }  /* comments */
+  .ok { color: #4ade80; font-weight: 600; }     /* up status */
+  .down { color: #f87171; font-weight: 600; }   /* down status */
+  .match-hl { background-color: rgba(250, 204, 21, 0.25); color: #fde047; padding: 1px 4px; border-radius: 3px; font-weight: bold; }
+
+  /* Explanation / Analysis callouts */
+  .instructor-note {
+    background-color: #f0fdf4;
+    border-left: 4px solid #16a34a;
+    padding: 16px 20px;
+    margin: 16px 0;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.95rem;
+  }
+  .instructor-title {
+    font-weight: 700;
+    color: #15803d;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .gotcha-box {
+    background-color: #fff7ed;
+    border-left: 4px solid #ea580c;
+    padding: 16px 20px;
+    margin: 16px 0;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.95rem;
+  }
+  .gotcha-title {
+    font-weight: 700;
+    color: #c2410c;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Summary Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+    text-align: left;
+    margin: 20px 0;
+  }
+  th, td {
+    padding: 12px 16px;
+    border: 1px solid #cbd5e1;
+  }
+  th {
+    background-color: #f1f5f9;
+    font-weight: 700;
+    color: #0f172a;
+  }
+  tr:nth-child(even) {
+    background-color: #f8fafc;
+  }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    background-color: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #0369a1;
+    border: 1px solid #e2e8f0;
+  }
+</style>
+</head>
+<body>
+
+<div class="content-wrapper">
+  <span class="badge-lab">Hands-on Lab Exercise • Module 6</span>
+  <h1>Lab 6: Junos Network Interfaces (Part 2)</h1>
+  <div class="subtitle">Detailed Output Analysis, Hardware/Protocol Diagnostics, Link Statistics & CLI Pipe Filtering</div>
+
+  <nav class="toc">
+    <h2>Lab Sections & Walkthrough</h2>
+    <ol>
+      <li><a href="#lab-scenario">Lab Mission: Deep-Dive Interface Troubleshooting</a></li>
+      <li><a href="#lab-concept">Core Concept: The 5-Level Junos Interface Verbosity Ladder</a></li>
+      <li><a href="#lab-part1">Part 1: Connecting to Router 1 & Operational Baseline</a></li>
+      <li><a href="#lab-part2">Part 2: Deconstructing Physical Layer (L1/L2) Detailed Output</a></li>
+      <li><a href="#lab-part3">Part 3: Deconstructing Logical Layer (L3) Protocol Statistics</a></li>
+      <li><a href="#lab-part4">Part 4: Real-Time Traffic Rates & Link Flap Counter Auditing</a></li>
+      <li><a href="#lab-part5">Part 5: Advanced CLI Pipe Filtering Mastery (match, except, count, find)</a></li>
+      <li><a href="#lab-part6">Part 6: Special Interfaces Audit (fxp0, lo0, irb, .16386)</a></li>
+      <li><a href="#lab-findings">Part 7: Official Interface Health & Performance Audit Report</a></li>
+      <li><a href="#lab-cheat-sheet">Part 8: JNCIA-Junos Interface Diagnostics & Filter Cheat Sheet</a></li>
+    </ol>
+  </nav>
+
+  <!-- LAB SCENARIO / MISSION BRIEF -->
+  <section id="lab-scenario">
+    <div class="scenario-box">
+      <div class="scenario-title">
+        <span>📋</span> Client Audit Scenario: Core Link Telemetry & Health Audit
+      </div>
+      <p><strong>Client Organization:</strong> Apex Global Enterprise Core Backbone</p>
+      <p><strong>Device Under Audit:</strong> Core Router <code>Router 1</code> (Juniper MX-204 Universal Routing Platform)</p>
+      <p><strong>Mission Background:</strong> Network operations has received alerts regarding packet fragmentation and intermittent link instability between Router 1 and the downstream distribution switches. Your task is to perform an exhaustive, non-intrusive operational inspection of physical link parameters (MAC addresses, L2/L3 MTUs, carrier stability, traffic rates, error counters) using detailed command outputs and advanced CLI pipe filtering techniques.</p>
+      
+      <h4>Core Troubleshooting Objectives:</h4>
+      <ol>
+        <li><strong>Audit Hardware & Current MACs:</strong> Verify burned-in hardware MAC addresses versus configured current MAC addresses.</li>
+        <li><strong>Detect MTU Mismatches:</strong> Pinpoint physical frame MTUs versus logical IP family MTUs across all active ports.</li>
+        <li><strong>Analyze Error Counters & Flaps:</strong> Identify CRC errors, framing errors, carrier transitions, and last-flap timestamps.</li>
+        <li><strong>Master CLI Output Stream Modifiers:</strong> Use <code>match</code>, <code>except</code>, <code>count</code>, <code>find</code>, and multi-stage pipe chaining to extract precise telemetry in seconds.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- CORE CONCEPT: VERBOSITY LADDER -->
+  <section id="lab-concept">
+    <div class="scenario-box">
+      <div class="scenario-title">
+        <span>⚙️</span> Core Concept: The 5-Level Junos Interface Verbosity Ladder
+      </div>
+      <p>Junos OS provides five standardized verbosity levels for operational interface inspection:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Level / Command</th>
+            <th>Output Density</th>
+            <th>Primary Information Displayed</th>
+            <th>Best Used For</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>show interfaces terse</code></td>
+            <td>1 line per interface / unit</td>
+            <td>Interface name, Admin status, Link status, Protocol family, IP address</td>
+            <td>High-speed inventory & quick status checks</td>
+          </tr>
+          <tr>
+            <td><code>show interfaces brief</code></td>
+            <td>Compact block (~4-6 lines)</td>
+            <td>Encapsulation, Speed, Duplex, Link-mode, Addresses</td>
+            <td>Quick physical layer verification</td>
+          </tr>
+          <tr>
+            <td><code>show interfaces &lt;name&gt;</code> (Standard)</td>
+            <td>Moderate block (~25-35 lines)</td>
+            <td>Physical L1/L2 properties, Hardware/Current MAC, L2 MTU, L3 Units, Statistics</td>
+            <td>Standard troubleshooting & interface verification</td>
+          </tr>
+          <tr>
+            <td><code>show interfaces &lt;name&gt; detail</code></td>
+            <td>Detailed (~80-120 lines)</td>
+            <td>Complete bit-rate statistics, CoS queue counters, L3 family MTUs, protocol flags</td>
+            <td>Deep-dive performance & MTU investigation</td>
+          </tr>
+          <tr>
+            <td><code>show interfaces &lt;name&gt; extensive</code></td>
+            <td>Exhaustive (150+ lines)</td>
+            <td>Driver-level ASIC counters, PHY registers, MAC packet size distributions</td>
+            <td>Hardware defect & physical carrier failure analysis</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- PART 1: CONNECTING & BASELINE -->
+  <section id="lab-part1">
+    <h2>Part 1: Connecting to Router 1 & Operational Baseline</h2>
+    <p>Establish terminal access to Router 1 and verify baseline prompt readiness.</p>
+
+    <div class="lab-step">
+      <div class="step-header">
+        <h3 class="step-title">Step 1.1: SSH Connection to Core Router</h3>
+        <span class="step-tag">Access</span>
+      </div>
+      <div class="terminal-box">
+        <div class="terminal-header">
+          <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+          <span class="terminal-title">Engineer Workstation — Terminal</span>
+        </div>
+        <pre><code><span class="p-user">student@workstation:~$</span> <span class="cmd">ssh employee@172.16.10.1</span>
+Password: <span class="cmt">**********</span>
+Last login: Thu Aug 20 10:02:15 2026 from 172.16.10.50
+--- JUNOS 21.4R1.12 built 2026-02-15 08:30:10 UTC
+<span class="p-user">employee@R1></span> </code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- PART 2: DECONSTRUCTING PHYSICAL LAYER DETAILED OUTPUT -->
+  <section id="lab-part2">
+    <h2>Part 2: Deconstructing Physical Layer (L1/L2) Detailed Output</h2>
+    <p>Run standard operational diagnostics on Corporate LAN interface <code>xe-0/1/1</code> to dissect all Layer 1 and Layer 2 properties.</p>
+
+    <div class="lab-step">
+      <div class="step-header">
+        <h3 class="step-title">Step 2.1: Run Standard <code>show interfaces xe-0/1/1</code></h3>
+        <span class="step-tag">Physical Audit</span>
+      </div>
+      <div class="terminal-box">
+        <div class="terminal-header">
+          <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+          <span class="terminal-title">Router 1 — Operational Mode</span>
+        </div>
+        <pre><code><span class="p-user">employee@R1></span> <span class="cmd">show interfaces xe-0/1/1</span>
+Physical interface: xe-0/1/1, Enabled, Physical link is Up
+  Interface index: 142, SNMP ifIndex: 512, Generation: 145
+  Description: Corporate LAN Trunk
+  Link-level type: Ethernet, MTU: 1800, MRU: 1808, LAN-PHY mode
+  Speed: 10Gbps, BPDU Error: None, Loop Detect PDU: None, Ethernet-Switching Error: None
+  Source filtering: Disabled, Flow control: Disabled, Media type: Fiber
+  Device flags   : Present Running
+  Interface flags: SNMP-Traps Internal: 0x4000
+  Link flags     : None
+  CoS queues     : 8 supported, 8 maximum usable queues
+  Current address: 00:05:86:71:a1:01, Hardware address: 00:05:86:71:a1:01
+  Last flapped   : 2026-08-18 14:22:10 UTC (2d 19:40 ago)
+  Input rate     : 1420856 bps (1824 pps)
+  Output rate    : 3840192 bps (4210 pps)
+  Active alarms  : None
+  Active defects : None</code></pre>
+      </div>
+
+      <div class="instructor-note">
+        <div class="instructor-title"><span>🔍</span> Key Field Analysis: Physical Layer Properties</div>
+        <ul>
+          <li><strong>Enabled, Physical link is Up:</strong> Administrative state is enabled; physical carrier is active.</li>
+          <li><strong>Link-level type: Ethernet, MTU: 1800:</strong> Layer 2 physical maximum frame size is 1800 bytes (custom jumbo frame).</li>
+          <li><strong>Current vs Hardware address:</strong> Both show <code>00:05:86:71:a1:01</code>. The hardware address is the burned-in vendor MAC; current address is the active operational MAC (which can be overridden via <code>mac</code> configuration).</li>
+          <li><strong>Last flapped:</strong> Indicates interface stability (no link flaps in nearly 3 days).</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PART 3: LOGICAL LAYER DETAILED OUTPUT -->
+  <section id="lab-part3">
+    <h2>Part 3: Deconstructing Logical Layer (L3) Protocol Statistics</h2>
+    <p>Next, examine the logical unit portion of the command output to verify Layer 3 addressing and protocol family parameters.</p>
+
+    <div class="lab-step">
+      <div class="step-header">
+        <h3 class="step-title">Step 3.1: Logical Interface Inspection (IPv4 & IPv6)</h3>
+        <span class="step-tag">Logical Audit</span>
+      </div>
+      <p>Scroll down in the <code>show interfaces xe-0/1/1</code> output:</p>
+      
+      <div class="terminal-box">
+        <div class="terminal-header">
+          <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+          <span class="terminal-title">Router 1 — Operational Mode (Logical Unit Section)</span>
+        </div>
+        <pre><code>  Logical interface xe-0/1/1.0 (Index 74) (SNMP ifIndex 513) (Generation 146)
+    Flags: Up SNMP-Traps 0x4000 Encapsulation: ENET2
+    Traffic statistics:
+     Input  bytes  :          842019482
+     Output bytes  :         2491029481
+     Input  packets:            1829402
+     Output packets:            4910284
+    Protocol inet, MTU: 1500, Generation: 150, Route table: 0
+      Flags: Sendbcast-pkt
+      Addresses, Flags: Is-Preferred Is-Primary
+        Destination: 172.16.10/24, Local: 172.16.10.1, Broadcast: 172.16.10.255, Generation: 151
+    Protocol inet6, MTU: 1500, Generation: 152, Route table: 0
+      Flags: None
+      Addresses, Flags: Is-Preferred
+        Destination: 2001:db8:10::/64, Local: 2001:db8:10::1
+      Addresses, Flags: Is-Preferred
+        Destination: fe80::/64, Local: fe80::205:86ff:fe71:a101</code></pre>
+      </div>
+
+      <div class="instructor-note">
+        <div class="instructor-title"><span>💡</span> L2 Physical MTU (1800) vs L3 Protocol MTU (1500)</div>
+        <p>Notice that while the physical interface MTU is <strong>1800 bytes</strong>, <code>Protocol inet</code> shows <strong>MTU: 1500</strong>. This means standard 1500-byte IP packets traverse without fragmentation, while Layer 2 framing has extra headroom for VLAN tagging and QinQ encapsulation.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PART 4: REAL-TIME TRAFFIC & ERROR COUNTERS -->
+  <section id="lab-part4">
+    <h2>Part 4: Real-Time Traffic Rates & Link Flap Counter Auditing</h2>
+    <p>Evaluate interface telemetry and hardware error counters on Guest LAN port <code>xe-0/1/3</code>.</p>
+
+    <div class="lab-step">
+      <div class="step-header">
+        <h3 class="step-title">Step 4.1: Inspect Detailed Error Counters</h3>
+        <span class="step-tag">Error Diagnostics</span>
+      </div>
+      <div class="terminal-box">
+        <div class="terminal-header">
+          <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+          <span class="terminal-title">Router 1 — Operational Mode</span>
+        </div>
+        <pre><code><span class="p-user">employee@R1></span> <span class="cmd">show interfaces xe-0/1/3 detail</span>
+Physical interface: xe-0/1/3, Enabled, Physical link is Up
+  Link-level type: Ethernet, MTU: 1514, Speed: 10Gbps
+  Input errors:
+    Errors: 0, Drops: 0, Framing errors: 0, Runts: 0, Policed discards: 0,
+    L3 incompletes: 0, L2 channel errors: 0, L2 mismatch timeouts: 0,
+    FIFO errors: 0, Resource errors: 0
+  Output errors:
+    Carrier transitions: 0, Errors: 0, Drops: 0, Collisions: 0,
+    Aged packets: 0, FIFO errors: 0, HS link CRC errors: 0
+  Logical interface xe-0/1/3.0
+    Protocol inet, <span class="match-hl">MTU: 900</span>
+      Addresses, Local: 172.16.30.1/24
+    Protocol inet6, MTU: 1500
+      Addresses, Local: fe80::205:86ff:fe71:a103</code></pre>
+      </div>
+
+      <div class="gotcha-box">
+        <div class="gotcha-title"><span>⚠️</span> Critical MTU Anomaly Detected!</div>
+        <p>Notice that on <code>xe-0/1/3.0</code>, <code>Protocol inet</code> has <strong>MTU: 900</strong>, while <code>Protocol inet6</code> has <strong>MTU: 1500</strong>. This confirms that any IPv4 packet exceeding 900 bytes will be dropped or fragmented, while IPv6 traffic flows normally!</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PART 5: ADVANCED CLI PIPE FILTERING MASTERY -->
+  <section id="lab-part5">
+    <h2>Part 5: Advanced CLI Pipe Filtering Mastery</h2>
+    <p>The Junos CLI pipe operator (<code>|</code>) executes stream filtering on the Routing Engine. In this section, you master all core pipe modifiers.</p>
+
+    <!-- STEP 5.1 -->
+    <div class="lab-step">
+      <div class="step-header">
+        <h3 class="step-title">Step 5.1: Substring Matching with Regex OR (<code>match</code>)</h3>
+        <span class="step-tag">Filter: match</span>
+      </div>
+      <p>Extract physical interface headers, MTU lines, and link status simultaneously using regex OR syntax <code>(A|B|C)</code>:</p>
+
+      <div class="terminal-box">
+        <div class="terminal-header">
+          <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+          <span class="terminal-title">Router 1 — Operational Mode</span>
+        </div>
+        <pre><code><span class="p-user">employee@R1></span> <span class="cmd">show interfaces | match "Physical interface|MTU:"</span>
+Physical interface: xe-0/1/0, Enabled, Physical link is Up
+  Link-level type: Ethernet, <span class="match-hl">MTU:</span> 1514, MRU: 1522, LAN-PHY mode
+    Protocol inet, <span class="match-hl">MTU:</span> 1500, Generation: 140, Route table: 0
+Physical interface: xe-0/1/1, Enabled, Physical link is Up
+  Link-level type: Ethernet, <span class="match-hl">MTU:</span> 1800, MRU: 1808, LAN-PHY mode
+    Protocol inet, <span class="match-hl">MTU:</span> 1500, Generation: 150, Route table: 0
+    Protocol inet6, <span class="match-hl">MTU:</span> 1500, Generation: 152, Route table: 0
+Physical interface: xe-0/1/2, Enabled, Physical link is Up
+  Link-level type: Ethernet, <span class="match-hl">MTU:</span> 1514, MRU: 1522, LAN-PHY mode
+    Protocol inet, <span class="match-hl">MTU:</span> 1500, Generation: 160, Route table: 0
+    Protocol inet6, <span class="match-hl">MTU:</span> 1500, Generation: 162, Route table: 0
+Physical interface: xe-0/1/3, Enabled, Physical link is Up
+  Link-level type: Ethernet, <span class="match-hl">MTU:</span> 1514, MRU: 1522, LAN-PHY mode
+    Protocol inet, <span class="match-hl">MTU:</span> 900, Generation: 170, Route table: 0
+    Protocol inet6, <span class="match-hl">MTU:</span> 1500, Generation: 172, Route table: 0</code></pre>
+      </div>
+    </div>
+
+    <!-- STEP 5.2 -->
+    <div class="lab-step">
+      <div class="step-header">
+        <h3 class="step-title">Step 5.2: Inverse Filtering with <code>except</code></h3>
+        <span class="step-tag">Filter: except</span>
+      </div>
+      <p>Display interface terse output while hiding loopback, internal, and management ports:</p>
+
+      <div class="terminal-box">
+        <div class="terminal-header">
+          <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+          <span class="terminal-title">Router 1 — Operational Mode</span>
+        </div>
+        <pre><code><span class="p-user">employee@R1></span> <span class="cmd">show interfaces terse | except "(lo0|fxp0|bme|dsc|vtep)"</span>
+Interface               Admin Link Proto    Local                 Remote
+xe-0/1/0                <span class="ok">up</span>    <span class="ok">up</span>
+xe-0/1/0.0              <span class="ok">up</span>    <span class="ok">up</span>   inet     198.51.100.2/30
+xe-0/1/1                <span class="ok">up</span>    <span class="ok">up</span>
+xe-0/1/1.0              <span class="ok">up</span>    <span class="ok">up</span>   inet     172.16.10.1/24
+                                   inet6    2001:db8:10::1/64
+xe-0/1/2                <span class="ok">up</span>    <span class="ok">up</span>
+xe-0/1/2.0              <span class="ok">up</span>    <span class="ok">up</span>   inet     172.16.20.1/24
+                                   inet6    2001:db8:20::1/64
+xe-0/1/3                <span class="ok">up</span>    <span class="ok">up</span>
+xe-0/1/3.0              <span class="ok">up</span>    <span class="ok">up</span>   inet     172.16.30.1/24</code></pre>
+      </div>
+    </div>
+
+    <!-- STEP 5.3 -->
+    <div class="lab-step">
+      <div class="step-header">
+        <h3 class="step-title">Step 5.3: Line Counting with <code>count</code></h3>
+        <span class="step-tag">Filter: count</span>
+      </div>
+      <p>Count total physical ports detected on the router:</p>
+
+      <div class="terminal-box">
+        <div class="terminal-header">
+          <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+          <span class="terminal-title">Router 1 — Operational Mode</span>
+        </div>
+        <pre><code><span class="p-user">employee@R1></span> <span class="cmd">show interfaces | match "^Physical interface" | count</span>
+Count: 6 lines</code></pre>
+      </div>
+    </div>
+
+    <!-- STEP 5.4 -->
+    <div class="lab-step">
+      <div class="step-header">
+        <h3 class="step-title">Step 5.4: Live Output Jumping with <code>find</code></h3>
+        <span class="step-tag">Filter: find</span>
+      </div>
+      <p>Skip directly to the section of command output mentioning <code>xe-0/1/3</code>:</p>
+
+      <div class="terminal-box">
+        <div class="terminal-header">
+          <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+          <span class="terminal-title">Router 1 — Operational Mode</span>
+        </div>
+        <pre><code><span class="p-user">employee@R1></span> <span class="cmd">show interfaces | find xe-0/1/3</span>
+Physical interface: xe-0/1/3, Enabled, Physical link is Up
+  Interface index: 144, SNMP ifIndex: 514
+  Description: Guest LAN Trunk
+  Link-level type: Ethernet, MTU: 1514, Speed: 10Gbps
+  Current address: 00:05:86:71:a1:03, Hardware address: 00:05:86:71:a1:03
+  ... output continues ...</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- PART 6: SPECIAL INTERFACES AUDIT -->
+  <section id="lab-part6">
+    <h2>Part 6: Special Interfaces Audit (fxp0, lo0, irb, .16386)</h2>
+    <p>Examine internal, management, and virtual interfaces found on Junos routers.</p>
+
+    <div class="lab-step">
+      <div class="step-header">
+        <h3 class="step-title">Step 6.1: Special Junos Interface Roles</h3>
+        <span class="step-tag">Special Interfaces</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Interface Type</th>
+            <th>Default Name</th>
+            <th>Primary Function & Characteristics</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Out-of-Band Management</strong></td>
+            <td><code>fxp0</code> / <code>em0</code> / <code>me0</code></td>
+            <td>Dedicated physical Ethernet port on the Routing Engine. Completely isolated from the forwarding plane (transit traffic cannot enter/exit).</td>
+          </tr>
+          <tr>
+            <td><strong>Loopback Interface</strong></td>
+            <td><code>lo0.0</code></td>
+            <td>Virtual, always-up software interface used for router ID, BGP peering, and applying Routing Engine firewall filters.</td>
+          </tr>
+          <tr>
+            <td><strong>Integrated Routing & Bridging</strong></td>
+            <td><code>irb</code> / <code>vlan</code></td>
+            <td>Layer 3 gateway interface on Juniper switches and routers terminating bridged VLAN broadcast domains.</td>
+          </tr>
+          <tr>
+            <td><strong>Internal / System Units</strong></td>
+            <td><code>.16386</code> / <code>.32767</code></td>
+            <td>Auto-generated internal logical units used by Junos daemons for control-plane routing protocol operations. Never deleted.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- PART 7: OFFICIAL AUDIT FINDINGS -->
+  <section id="lab-findings">
+    <h2>Part 7: Official Interface Health & Performance Audit Report</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Port</th>
+          <th>Physical MTU</th>
+          <th>IPv4 Family MTU</th>
+          <th>Link Flaps</th>
+          <th>Status / Risk Assessment</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>xe-0/1/0</code> (WAN)</td>
+          <td>1514 bytes</td>
+          <td>1500 bytes</td>
+          <td>0 flaps (stable)</td>
+          <td><span style="color:#16a34a; font-weight:bold;">Healthy:</span> Standard Internet WAN framing compliant.</td>
+        </tr>
+        <tr>
+          <td><code>xe-0/1/1</code> (Corp LAN)</td>
+          <td>1800 bytes</td>
+          <td>1500 bytes</td>
+          <td>0 flaps (stable)</td>
+          <td><span style="color:#16a34a; font-weight:bold;">Healthy:</span> Custom 1800 L2 frame size provides headroom for VLAN encapsulation.</td>
+        </tr>
+        <tr>
+          <td><code>xe-0/1/2</code> (Server LAN)</td>
+          <td>1514 bytes</td>
+          <td>1500 bytes</td>
+          <td>0 flaps (stable)</td>
+          <td><span style="color:#16a34a; font-weight:bold;">Healthy:</span> Standard enterprise LAN settings.</td>
+        </tr>
+        <tr>
+          <td><code>xe-0/1/3</code> (Guest LAN)</td>
+          <td>1514 bytes</td>
+          <td><strong>900 bytes</strong></td>
+          <td>0 flaps (stable)</td>
+          <td><span style="color:#dc2626; font-weight:bold;">Defect / Action Required:</span> IPv4 family MTU capped at 900B causing packet drops. Recommend restoring to 1500.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- PART 8: CHEAT SHEET -->
+  <section id="lab-cheat-sheet">
+    <h2>Part 8: JNCIA-Junos Interface Diagnostics & Filter Cheat Sheet</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Command / Recipe</th>
+          <th>Modifier Action</th>
+          <th>Primary Use Case</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>show interfaces &lt;name&gt;</code></td>
+          <td>Standard verbosity</td>
+          <td>Displays MAC addresses, L2 MTU, speed, carrier states, and L3 units.</td>
+        </tr>
+        <tr>
+          <td><code>show interfaces &lt;name&gt; detail</code></td>
+          <td>Detailed verbosity</td>
+          <td>Shows bit rates, error counters, and address family MTUs.</td>
+        </tr>
+        <tr>
+          <td><code>show interfaces | match &lt;regex&gt;</code></td>
+          <td>Substring / Regex match</td>
+          <td>Filters live output stream to lines matching query.</td>
+        </tr>
+        <tr>
+          <td><code>show interfaces terse | except &lt;regex&gt;</code></td>
+          <td>Inverse match</td>
+          <td>Hides all lines matching query to isolate remaining ports.</td>
+        </tr>
+        <tr>
+          <td><code>show interfaces | match ... | count</code></td>
+          <td>Chained line counter</td>
+          <td>Returns instant integer count of matching lines.</td>
+        </tr>
+        <tr>
+          <td><code>show interfaces | find &lt;term&gt;</code></td>
+          <td>Output jump</td>
+          <td>Jumps output display directly to the first matching section.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</div>
+
+</body>
+</html>
