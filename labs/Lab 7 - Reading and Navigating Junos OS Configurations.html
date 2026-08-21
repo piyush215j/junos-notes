@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab 7: Reading and Navigating Junos OS Configurations | Hands-on Lab Guide</title>
+<style>
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.65;
+    color: #1e293b;
+    background-color: #f8fafc;
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 32px 20px;
+  }
+  .content-wrapper {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 44px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  }
+  .badge-lab {
+    display: inline-block;
+    padding: 4px 12px;
+    background-color: #dcfce7;
+    color: #15803d;
+    border: 1px solid #86efac;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+  }
+  h1 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #0f172a;
+    border-bottom: 3px solid #10b981;
+    padding-bottom: 14px;
+    margin-top: 0;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+  .subtitle {
+    font-size: 1.15rem;
+    color: #64748b;
+    margin-bottom: 32px;
+    font-weight: 500;
+  }
+  h2 {
+    font-size: 1.65rem;
+    font-weight: 700;
+    color: #0f766e;
+    border-bottom: 2px solid #ccfbf1;
+    padding-bottom: 10px;
+    margin-top: 52px;
+    letter-spacing: -0.01em;
+  }
+  h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-top: 32px;
+    color: #115e59;
+  }
+  h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 24px;
+    color: #334155;
+  }
+  nav.toc {
+    background: #f0fdfa;
+    border: 1px solid #99f6e4;
+    border-radius: 10px;
+    padding: 26px 32px;
+    margin-bottom: 44px;
+  }
+  nav.toc h2 {
+    margin-top: 0;
+    font-size: 1.35rem;
+    border-bottom: none;
+    padding-bottom: 0;
+    color: #0f766e;
+  }
+  nav.toc ol {
+    margin: 0;
+    padding-left: 22px;
+  }
+  nav.toc li {
+    margin: 9px 0;
+  }
+  nav.toc a {
+    color: #0d9488;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  nav.toc a:hover {
+    text-decoration: underline;
+    color: #0f766e;
+  }
+  
+  /* Scenario / Mission Brief Box */
+  .scenario-box {
+    background-color: #f8fafc;
+    border: 2px solid #0284c7;
+    border-radius: 12px;
+    padding: 28px;
+    margin: 28px 0;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.08);
+  }
+  .scenario-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #0369a1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 0;
+    margin-bottom: 14px;
+  }
+
+  /* Lab Step Container */
+  .lab-step {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-left: 5px solid #10b981;
+    border-radius: 0 10px 10px 0;
+    padding: 24px;
+    margin: 28px 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+  }
+  .step-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .step-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+  }
+  .step-tag {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 6px;
+    background: #f1f5f9;
+    color: #475569;
+    text-transform: uppercase;
+  }
+
+  /* Realistic Junos Terminal CLI Block */
+  .terminal-box {
+    background-color: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    margin: 16px 0;
+    overflow: hidden;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  }
+  .terminal-header {
+    background-color: #1e293b;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #334155;
+  }
+  .terminal-dots {
+    display: flex;
+    gap: 6px;
+  }
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+  .dot-red { background-color: #ef4444; }
+  .dot-yellow { background-color: #f59e0b; }
+  .dot-green { background-color: #10b981; }
+  .terminal-title {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.8rem;
+    color: #94a3b8;
+  }
+
+  pre {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    background-color: transparent;
+    color: #f8fafc;
+    padding: 16px 20px;
+    margin: 0;
+    overflow-x: auto;
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+  pre code {
+    background-color: transparent;
+    padding: 0;
+    border: none;
+    color: inherit;
+    font-size: inherit;
+  }
+
+  /* Terminal Syntax Highlighting */
+  .p-user { color: #38bdf8; font-weight: bold; } /* prompt user/hostname */
+  .p-mode { color: #4ade80; font-weight: bold; } /* prompt operational mode > */
+  .p-hash { color: #f43f5e; font-weight: bold; } /* prompt config mode # */
+  .cmd { color: #facc15; font-weight: 700; }    /* command typed */
+  .pipe { color: #38bdf8; font-weight: 700; }   /* pipe character */
+  .kw { color: #4ade80; font-weight: 600; }     /* keywords like set */
+  .hier { color: #38bdf8; font-weight: 600; }   /* hierarchies */
+  .val { color: #f1f5f9; }                      /* text / values */
+  .cmt { color: #94a3b8; font-style: italic; }  /* comments */
+  .warn { color: #fb923c; font-weight: 600; }   /* warnings */
+  .err { color: #f87171; font-weight: 600; }    /* errors */
+  .match-hl { background-color: rgba(250, 204, 21, 0.25); color: #fde047; padding: 1px 4px; border-radius: 3px; font-weight: bold; }
+
+  /* Explanation / Analysis callouts */
+  .instructor-note {
+    background-color: #f0fdf4;
+    border-left: 4px solid #16a34a;
+    padding: 16px 20px;
+    margin: 16px 0;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.95rem;
+  }
+  .instructor-title {
+    font-weight: 700;
+    color: #15803d;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .gotcha-box {
+    background-color: #fff7ed;
+    border-left: 4px solid #ea580c;
+    padding: 16px 20px;
+    margin: 16px 0;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.95rem;
+  }
+  .gotcha-title {
+    font-weight: 700;
+    color: #c2410c;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Summary Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+    text-align: left;
+    margin: 20px 0;
+  }
+  th, td {
+    padding: 12px 16px;
+    border: 1px solid #cbd5e1;
+  }
+  th {
+    background-color: #f1f5f9;
+    font-weight: 700;
+    color: #0f172a;
+  }
+  tr:nth-child(even) {
+    background-color: #f8fafc;
+  }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    background-color: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #0369a1;
+    border: 1px solid #e2e8f0;
+  }
+</style>
+</head>
+<body>
+
+<div class="content-wrapper">
+  <span class="badge-lab">Hands-on Lab Exercise • Module 7</span>
+  <h1>Lab 7: Reading & Navigating Junos OS Configurations</h1>
+  <div class="subtitle">Complete Step-by-Step CLI Guided Audit, Hierarchy Exploration & Pipe Filtering Lab</div>
+
+  <nav class="toc">
+    <h2>Lab Sections & Walkthrough</h2>
+    <ol>
+      <li><a href="#lab-scenario">Lab Mission: Client Perimeter Router Audit Brief</a></li>
+      <li><a href="#lab-part1">Part 1: Connecting to Router 1 & Verifying Active State</a></li>
+      <li><a href="#lab-part2">Part 2: Deconstructing the Configuration in Set View</a></li>
+      <li><a href="#lab-part3">Part 3: Exploring the Configuration in Default Hierarchy View</a></li>
+      <li><a href="#lab-part4">Part 4: Targeted Sub-Hierarchy Scoping</a></li>
+      <li><a href="#lab-part5">Part 5: Advanced CLI Pipe Filtering (match, except, count, regex)</a></li>
+      <li><a href="#lab-findings">Part 6: Official Audit Findings Report & Solutions</a></li>
+      <li><a href="#lab-cheat-sheet">Part 7: Junos Configuration Navigation Command Cheat Sheet</a></li>
+    </ol>
+  </nav>
+
+  <!-- LAB SCENARIO / MISSION BRIEF -->
+  <section id="lab-scenario">
+    <div class="scenario-box">
+      <div class="scenario-title">
+        <span>📋</span> Client Audit Scenario: Non-Intrusive Configuration Discovery
+      </div>
+      <p><strong>Client Organization:</strong> Apex Global Enterprise Infrastructure</p>
+      <p><strong>Device Under Audit:</strong> Perimeter Router <code>Router 1</code> (Juniper MX-204 Universal Routing Platform / Junos OS)</p>
+      <p><strong>Background:</strong> You have arrived on-site as the new network engineer. The previous network administrator departed abruptly, leaving behind several undocumented configuration edits, potential security exposures, and interface parameter discrepancies. Before submitting any changes or maintenance windows, executive management requires a <strong>100% non-intrusive, read-only configuration audit</strong> of the live running database.</p>
+      
+      <h4>Core Audit Questions You Must Answer:</h4>
+      <ol>
+        <li><strong>Remote Management Services:</strong> What administrative protocols are currently active on the device (SSH, Telnet, NETCONF)? Are there plaintext exposures?</li>
+        <li><strong>User Access & Privileges:</strong> What local user accounts exist, what permissions classes are assigned, and is the default <code>root</code> account secured?</li>
+        <li><strong>Interface MTU Discrepancies:</strong> Are there custom Layer 2 (physical Ethernet) or Layer 3 (protocol family) Maximum Transmission Unit values configured on any interfaces?</li>
+        <li><strong>Discovery Protocol Security:</strong> Is Link Layer Discovery Protocol (LLDP) active on internal LAN trunks and correctly isolated from the untrusted public WAN port?</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- PART 1: CONNECTING & OPERATIONAL PROMPT -->
+  <section id="lab-part1">
+    <h2>Part 1: Connecting to Router 1 & Verifying Operational State</h2>
+    <p>In this initial phase, you log in to the perimeter router via SSH from your engineering workstation using the active user credentials and verify the operational mode prompt.</p>
+
+    <!-- STEP 1.1 -->
+    <div class="lab-step">
+      <div class="step-header">
+        <h3 class="step-title">Step 1.1: SSH Connection to Perimeter Router</h3>
+        <span class="step-tag">Access</span>
+      </div>
+      <p>Establish a secure shell connection from your virtual terminal to the perimeter router:</p>
+      
+      <div class="terminal-box">
+        <div class="terminal-header">
+          <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+          <span class="terminal-title">Engineer Workstation — Terminal</span>
+        </div>
+        <pre><code><span class="p-user">student@workstation:~$</span> <span class="cmd">ssh employee@172.16.10.1</span>
+Password: <span class="cmt">**********</span>
+Last login: Thu Aug 20 09:45:12 2026 from 172.16.10.50
+--- JUNOS 21.4R1.12 built 2026-02-15 08:30:10 UTC
+<span class="p-user">employee@R1></span> </code></pre>
+      </div>
+
+      <div class="instructor-note">
+        <div class="instructor-title"><span>💡</span> Instructor Insight: Operational Prompt Breakdown</div>
+        <p>Notice the prompt: <code>employee@R1></code>. The format is <code>&lt;username&gt;@&lt;hostname&gt;&gt;</code>.</p>
+        <ul>
+          <li><code>employee</code>: Current authenticated local user account.</li>
+          <li><code>R1</code>: Active hostname. <em>(Audit Finding: Expected standard is "Router1", but device shows "R1".)</em></li>
+          <li><code>&gt;</code>: The angle bracket indicates <strong>Operational Mode</strong> (read-only inspection, status querying). Configuration mode uses the hash prompt <code>#</code>.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PART 2: SET VIEW EXPLORATION -->
+  <section id="lab-part2">
+    <h2>Part 2: Deconstructing the Active Configuration in Set View</h2>
+    <p>In this section, you examine the active configuration database using <strong>Set View</strong> (<code>| display set</code>). This renders every configuration statement as a linear, self-contained command starting with the <code>set</code> keyword.</p>
+
+    <!-- STEP 2.1 -->
+    <div class="lab-step">
+      <div class="step-header">
+        <h3 class="step-title">Step 2.1: View Entire Device Configuration in Set Format</h3>
+        <span class="step-tag">CLI Query</span>
+      </div>
+      <p>Display the entire active configuration formatted as individual <code>set</code> statements:</p>
+
+      <div class="terminal-box">
+        <div class="terminal-header">
+          <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+          <span class="terminal-title">Router 1 — Operational Mode</span>
+        </div>
+        <pre><code><span class="p-user">employee@R1></span> <span class="cmd">show configuration | display set</span>
+<span class="kw">set</span> <span class="hier">version</span> <span class="val">21.4R1.12</span>
+<span class="kw">set</span> <span class="hier">system host-name</span> <span class="val">R1</span>
+<span class="kw">set</span> <span class="hier">system root-authentication encrypted-password</span> <span class="val">"$6$qP1v$N4k3E6qZ5x8Y0pL9w2M1..."</span>
+<span class="kw">set</span> <span class="hier">system services ssh</span>
+<span class="kw">set</span> <span class="hier">system services telnet</span>
+<span class="kw">set</span> <span class="hier">system services netconf ssh</span>
+<span class="kw">set</span> <span class="hier">system login user employee class</span> <span class="val">super-user</span>
+<span class="kw">set</span> <span class="hier">system login user employee uid</span> <span class="val">2001</span>
+<span class="kw">set</span> <span class="hier">system login user employee authentication encrypted-password</span> <span class="val">"$6$zX9a$W1e2R3t4Y5u6I7o8P9..."</span>
+<span class="kw">set</span> <span class="hier">system syslog file messages any</span> <span class="val">notice</span>
+<span class="kw">set</span> <span class="hier">system syslog file messages authorization</span> <span class="val">info</span>
+<span class="kw">set</span> <span class="hier">system syslog file interactive-commands commands</span> <span class="val">any</span>
+<span class="kw">set</span> <span class="hier">interfaces xe-0/1/0 description</span> <span class="val">"WAN Internet Connection"</span>
+<span class="kw">set</span> <span class="hier">interfaces xe-0/1/0 unit 0 family inet address</span> <span class="val">198.51.100.2/30</span>
+<span class="kw">set</span> <span class="hier">interfaces xe-0/1/1 description</span> <span class="val">"Corporate LAN Trunk"</span>
+<span class="kw">set</span> <span class="hier">interfaces xe-0/1/1 mtu</span> <span class="val">1800</span>
+<span class="kw">set</span> <span class="hier">interfaces xe-0/1/1 unit 0 family inet address</span> <span class="val">172.16.10.1/24</span>
+<span class="kw">set</span> <span class="hier">interfaces xe-0/1/1 unit 0 family inet6 address</span> <span class="val">2001:db8:10::1/64</span>
+<span class="kw">set</span> <span class="hier">interfaces xe-0/1/2 description</span> <span class="val">"Server LAN Trunk"</span>
+<span class="kw">set</span> <span class="hier">interfaces xe-0/1/2 unit 0 family inet address</span> <span class="val">172.16.20.1/24</span>
+<span class="kw">set</span> <span class="hier">interfaces xe-0/1/2 unit 0 family inet6 address</span> <span class="val">2001:db8:20::1/64</span>
+<span class="kw">set</span> <span class="hier">interfaces xe-0/1/3 description</span> <span class="val">"Guest LAN Trunk"</span>
+<span class="kw">set</span> <span class="hier">interfaces xe-0/1/3 unit 0 family inet mtu</span> <span class="val">900</span>
+<span class="kw">set</span> <span class="hier">interfaces xe-0/1/3 unit 0 family inet address</span> <span class="val">172.16.30.1/24</span>
+<span class="kw">set</span> <span class="hier">interfaces xe-0/1/3 unit 0 family inet6</span>
+<span class="kw">set</span> <span class="hier">protocols lldp interface</span> <span class="val">xe-0/1/1</span>
+<span class="kw">set</span> <span class="hier">protocols lldp interface</span> <span class="val">xe-0/1/2</span>
+<span class="kw">set</span> <span class="hier">protocols lldp interface</span> <span class="val">xe-0/1/3</span></code></pre>
+      </div>
+
+      <div class="instructor-note">
+        <div class="instructor-title"><span>🔍</span> Instructor Analysis: Set View Anatomy</div>
+        <p>Notice how every single statement starts with <code>set</code> and reads from left to right: <code>set [hierarchy] [sub-hierarchy] [leaf-parameter] [value]</code>.</p>
+        <ul>
+          <li><strong>Pro:</strong> Compact, grep-friendly, copy-pasteable straight into configuration mode.</li>
+          <li><strong>Pro:</strong> Excellent for small and medium configurations.</li>
+          <li><strong>Audit Finding:</strong> Note the presence of <code>set system services telnet</code> (unencrypted plaintext management).</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- STEP 2.2 -->
+    <div class="lab-step">
+      <div class="step-header">
+        <h3 class="step-title">Step 2.2: Scoping the System Hierarchy in Set View</h3>
+        <span class="step-tag">CLI Query</span>
+      </div>
+      <p>Narrow your view to inspect only the <code>system</code> hierarchy:</p>
+
+      <div class="terminal-box">
+        <div class="terminal-header">
+          <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+          <span class="terminal-title">Router 1 — Operational Mode</span>
+        </div>
+        <pre><code><span class="p-user">employee@R1></span> <span class="cmd">show configuration system | display set</span>
+<span class="kw">set</span> <span class="hier">system host-name</span> <span class="val">R1</span>
+<span class="kw">set</span> <span class="hier">system root-authentication encrypted-password</span> <span class="val">"$6$qP1v$N4k3E6qZ5x8Y0pL9w2M1..."</span>
+<span class="kw">set</span> <span class="hier">system services ssh</span>
+<span class="kw">set</span> <span class="hier">system services telnet</span>
+<span class="kw">set</span> <span class="hier">system services netconf ssh</span>
+<span class="kw">set</span> <span class="hier">system login user employee class</span> <span class="val">super-user</span>
+<span class="kw">set</span> <span class="hier">system login user employee uid</span> <span class="val">2001</span>
+<span class="kw">set</span> <span class="hier">system login user employee authentication encrypted-password</span> <span class="val">"$6$zX9a$W1e2R3t4Y5u6I7o8P9..."</span>
+<span class="kw">set</span> <span class="hier">system syslog file messages any</span> <span class="val">notice</span>
+<span class="kw">set</span> <span class="hier">system syslog file messages authorization</span> <span class="val">info</span>
+<span class="kw">set</span> <span class="hier">system syslog file interactive-commands commands</span> <span class="val">any</span></code></pre>
+      </div>
+
+      <div class="instructor-note">
+        <div class="instructor-title"><span>🔑</span> Deep-Dive: System Services & User Privileges</div>
+        <p>From these 11 lines, we can verify:</p>
+        <ol>
+          <li><strong>Services Active:</strong> SSH (secure TCP 22), Telnet (insecure TCP 23), NETCONF SSH (API subsystem TCP 830).</li>
+          <li><strong>User Accounts:</strong> Exactly one user configured (<code>employee</code>), assigned the <code>super-user</code> class (full root CLI rights).</li>
+          <li><strong>Root Account:</strong> <code>root-authentication</code> is configured with a SHA-512 (<code>$6$</code>) hash.</li>
+          <li><strong>Syslog Facilities:</strong> <code>messages</code> captures notices and authorization events; <code>interactive-commands</code> logs all typed CLI commands for compliance audits.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- PART 3: HIERARCHY VIEW EXPLORATION -->
+  <section id="lab-part3">
+    <h2>Part 3: Exploring the Configuration in Default Hierarchy View</h2>
+    <p>Junos OS by default displays configuration in <strong>Hierarchy View</strong> with structured indentation and curly braces <code>{ }</code>. This format represents the relational tree stored inside the configuration database.</p>
+
+    <!-- STEP 3.1 -->
+    <div class="lab-step">
+      <div class="step-header">
+        <h3 class="step-title">Step 3.1: View Device Configuration in Default Hierarchy View</h3>
+        <span class="step-tag">CLI Query</span>
+      </div>
+      <p>Execute the base <code>show configuration</code> command without pipe options:</p>
+
+      <div class="terminal-box">
+        <div class="terminal-header">
+          <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+          <span class="terminal-title">Router 1 — Operational Mode</span>
+        </div>
+        <pre><code><span class="p-user">employee@R1></span> <span class="cmd">show configuration</span>
+<span class="hier">version</span> <span class="val">21.4R1.12;</span>
+<span class="hier">system</span> {
+    <span class="hier">host-name</span> <span class="val">R1;</span>
+    <span class="hier">root-authentication</span> {
+        <span class="hier">encrypted-password</span> <span class="val">"$6$qP1v$N4k3E6qZ5x8Y0pL9w2M1...";</span>
+    }
+    <span class="hier">services</span> {
+        <span class="hier">ssh;</span>
+        <span class="hier">telnet;</span>
+        <span class="hier">netconf</span> {
+            <span class="hier">ssh;</span>
+        }
+    }
+    <span class="hier">login</span> {
+        <span class="hier">user</span> <span class="val">employee</span> {
+            <span class="hier">class</span> <span class="val">super-user;</span>
+            <span class="hier">uid</span> <span class="val">2001;</span>
+            <span class="hier">authentication</span> {
+                <span class="hier">encrypted-password</span> <span class="val">"$6$zX9a$W1e2R3t4Y5u6I7o8P9...";</span>
+            }
+        }
+    }
+    <span class="hier">syslog</span> {
+        <span class="hier">file</span> <span class="val">messages</span> {
+            <span class="hier">any</span> <span class="val">notice;</span>
+            <span class="hier">authorization</span> <span class="val">info;</span>
+        }
+        <span class="hier">file</span> <span class="val">interactive-commands</span> {
+            <span class="hier">commands</span> <span class="val">any;</span>
+        }
+    }
+}
+<span class="hier">interfaces</span> {
+    <span class="hier">xe-0/1/0</span> {
+        <span class="hier">description</span> <span class="val">"WAN Internet Connection";</span>
+        <span class="hier">unit</span> <span class="val">0</span> {
+            <span class="hier">family</span> <span class="val">inet</span> {
+                <span class="hier">address</span> <span class="val">198.51.100.2/30;</span>
+            }
+        }
+    }
+    <span class="hier">xe-0/1/1</span> {
+        <span class="hier">description</span> <span class="val">"Corporate LAN Trunk";</span>
+        <span class="hier">mtu</span> <span class="val">1800;</span>
+        <span class="hier">unit</span> <span class="val">0</span> {
+            <span class="hier">family</span> <span class="val">inet</span> {
+                <span class="hier">address</span> <span class="val">172.16.10.1/24;</span>
+            }
+            <span class="hier">family</span> <span class="val">inet6</span> {
+                <span class="hier">address</span> <span class="val">2001:db8:10::1/64;</span>
+            }
+        }
+    }
+    <span class="hier">xe-0/1/2</span> {
+        <span class="hier">description</span> <span class="val">"Server LAN Trunk";</span>
+        <span class="hier">unit</span> <span class="val">0</span> {
+            <span class="hier">family</span> <span class="val">inet</span> {
+                <span class="hier">address</span> <span class="val">172.16.20.1/24;</span>
+            }
+            <span class="hier">family</span> <span class="val">inet6</span> {
+                <span class="hier">address</span> <span class="val">2001:db8:20::1/64;</span>
+            }
+        }
+    }
+    <span class="hier">xe-0/1/3</span> {
+        <span class="hier">description</span> <span class="val">"Guest LAN Trunk";</span>
+        <span class="hier">unit</span> <span class="val">0</span> {
+            <span class="hier">family</span> <span class="val">inet</span> {
+                <span class="hier">mtu</span> <span class="val">900;</span>
+                <span class="hier">address</span> <span class="val">172.16.30.1/24;</span>
+            }
+            <span class="hier">family</span> <span class="val">inet6;</span>
+        }
+    }
+}
+<span class="hier">protocols</span> {
+    <span class="hier">lldp</span> {
+        <span class="hier">interface</span> <span class="val">xe-0/1/1;</span>
+        <span class="hier">interface</span> <span class="val">xe-0/1/2;</span>
+        <span class="hier">interface</span> <span class="val">xe-0/1/3;</span>
+    }
+}</code></pre>
+      </div>
+
+      <div class="instructor-note">
+        <div class="instructor-title"><span>🌟</span> Instructor Insight: When Hierarchy View Shines</div>
+        <p>Notice how easy it is to visually grasp the parent-child relationships:</p>
+        <ul>
+          <li>On <code>xe-0/1/1</code>, the <code>mtu 1800;</code> line is indented at the physical interface level.</li>
+          <li>On <code>xe-0/1/3</code>, the <code>mtu 900;</code> line is nested inside <code>family inet</code> (Layer 3 only).</li>
+          <li>On <code>xe-0/1/3</code>, <code>family inet6;</code> is a standalone leaf statement with no address child, activating <strong>IPv6 link-local addressing only (fe80::)</strong>.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PART 4: SUB-HIERARCHY SCOPING -->
+  <section id="lab-part4">
+    <h2>Part 4: Targeted Sub-Hierarchy Scoping</h2>
+    <p>Rather than dumping the entire device configuration, Junos CLI allows you to append hierarchy keywords directly to <code>show configuration</code> to zoom straight into specific subsections.</p>
+
+    <!-- STEP 4.1 -->
+    <div class="lab-step">
+      <div class="step-header">
+        <h3 class="step-title">Step 4.1: Scoping Directly to a Single Interface</h3>
+        <span class="step-tag">Targeted Query</span>
+      </div>
+      <p>Inspect only the configuration for <code>xe-0/1/1</code>:</p>
+
+      <div class="terminal-box">
+        <div class="terminal-header">
+          <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+          <span class="terminal-title">Router 1 — Operational Mode</span>
+        </div>
+        <pre><code><span class="p-user">employee@R1></span> <span class="cmd">show configuration interfaces xe-0/1/1</span>
+<span class="hier">description</span> <span class="val">"Corporate LAN Trunk";</span>
+<span class="hier">mtu</span> <span class="val">1800;</span>
+<span class="hier">unit</span> <span class="val">0</span> {
+    <span class="hier">family</span> <span class="val">inet</span> {
+        <span class="hier">address</span> <span class="val">172.16.10.1/24;</span>
+    }
+    <span class="hier">family</span> <span class="val">inet6</span> {
+        <span class="hier">address</span> <span class="val">2001:db8:10::1/64;</span>
+    }
+}</code></pre>
+      </div>
+
+      <div class="instructor-note">
+        <div class="instructor-title"><span>⚡</span> Efficiency Tip: Clean Context Stripping</div>
+        <p>Notice that Junos omits the outer <code>interfaces { xe-0/1/1 { ... } }</code> braces. It starts output directly at the requested level, saving terminal screen height.</p>
+      </div>
+    </div>
+
+    <!-- STEP 4.2 -->
+    <div class="lab-step">
+      <div class="step-header">
+        <h3 class="step-title">Step 4.2: Scoping to a Specific User Account</h3>
+        <span class="step-tag">Targeted Query</span>
+      </div>
+      <p>Zoom directly into the <code>employee</code> user profile under the login hierarchy:</p>
+
+      <div class="terminal-box">
+        <div class="terminal-header">
+          <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+          <span class="terminal-title">Router 1 — Operational Mode</span>
+        </div>
+        <pre><code><span class="p-user">employee@R1></span> <span class="cmd">show configuration system login user employee</span>
+<span class="hier">class</span> <span class="val">super-user;</span>
+<span class="hier">uid</span> <span class="val">2001;</span>
+<span class="hier">authentication</span> {
+    <span class="hier">encrypted-password</span> <span class="val">"$6$zX9a$W1e2R3t4Y5u6I7o8P9...";</span>
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- PART 5: ADVANCED PIPE FILTERING -->
+  <section id="lab-part5">
+    <h2>Part 5: Advanced CLI Pipe Filtering (match, except, count, regex)</h2>
+    <p>On production routers with thousands of configuration lines, piping to filters is essential. This section tests your command formulation skills for fast data extraction.</p>
+
+    <!-- STEP 5.1 -->
+    <div class="lab-step">
+      <div class="step-header">
+        <h3 class="step-title">Step 5.1: Find All Custom MTUs Across All Interfaces</h3>
+        <span class="step-tag">Filter Pipeline</span>
+      </div>
+      <p>Extract every interface line containing an MTU specification:</p>
+
+      <div class="terminal-box">
+        <div class="terminal-header">
+          <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+          <span class="terminal-title">Router 1 — Operational Mode</span>
+        </div>
+        <pre><code><span class="p-user">employee@R1></span> <span class="cmd">show configuration interfaces | display set | match mtu</span>
+set interfaces xe-0/1/1 <span class="match-hl">mtu</span> 1800
+set interfaces xe-0/1/3 unit 0 family inet <span class="match-hl">mtu</span> 900</code></pre>
+      </div>
+
+      <div class="instructor-note">
+        <div class="instructor-title"><span>🎯</span> Instant Audit Result</div>
+        <p>In one command, we solved Audit Question #3: exactly two interfaces have custom MTUs configured:</p>
+        <ol>
+          <li><code>xe-0/1/1</code>: Layer 2 Physical MTU = 1800 bytes.</li>
+          <li><code>xe-0/1/3</code>: Layer 3 IPv4 Family MTU = 900 bytes.</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- STEP 5.2 -->
+    <div class="lab-step">
+      <div class="step-header">
+        <h3 class="step-title">Step 5.2: The "Hierarchy Match Trap" (Why Set View is Required)</h3>
+        <span class="step-tag">Critical Gotcha</span>
+      </div>
+      <p>Observe what happens if you pipe hierarchy view directly to <code>match</code> without <code>display set</code>:</p>
+
+      <div class="terminal-box">
+        <div class="terminal-header">
+          <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+          <span class="terminal-title">Router 1 — Operational Mode</span>
+        </div>
+        <pre><code><span class="p-user">employee@R1></span> <span class="cmd">show configuration interfaces | match mtu</span>
+        <span class="match-hl">mtu</span> 1800;
+                <span class="match-hl">mtu</span> 900;</code></pre>
+      </div>
+
+      <div class="gotcha-box">
+        <div class="gotcha-title"><span>⚠️</span> Exam & Field Gotcha: Context is Lost in Hierarchy Matching!</div>
+        <p>In hierarchy view, the interface names (<code>xe-0/1/1</code>, <code>xe-0/1/3</code>) appear on separate parent lines above <code>mtu</code>. When you match on <code>mtu</code>, you only get the isolated leaf lines without knowing <strong>which</strong> interface they belong to!</p>
+        <p><strong>Golden Rule:</strong> Always pipe to <code>display set</code> FIRST before piping to <code>match</code>: <code>| display set | match &lt;term&gt;</code>.</p>
+      </div>
+    </div>
+
+    <!-- STEP 5.3 -->
+    <div class="lab-step">
+      <div class="step-header">
+        <h3 class="step-title">Step 5.3: Filter for IPv4 Only (Avoiding inet6 Collisions)</h3>
+        <span class="step-tag">Exact String Match</span>
+      </div>
+      <p>Extract only IPv4 family configurations without capturing <code>family inet6</code> lines:</p>
+
+      <div class="terminal-box">
+        <div class="terminal-header">
+          <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+          <span class="terminal-title">Router 1 — Operational Mode</span>
+        </div>
+        <pre><code><span class="p-user">employee@R1></span> <span class="cmd">show configuration interfaces | display set | match "family inet "</span>
+set interfaces xe-0/1/0 unit 0 <span class="match-hl">family inet </span>address 198.51.100.2/30
+set interfaces xe-0/1/1 unit 0 <span class="match-hl">family inet </span>address 172.16.10.1/24
+set interfaces xe-0/1/2 unit 0 <span class="match-hl">family inet </span>address 172.16.20.1/24
+set interfaces xe-0/1/3 unit 0 <span class="match-hl">family inet </span>mtu 900
+set interfaces xe-0/1/3 unit 0 <span class="match-hl">family inet </span>address 172.16.30.1/24</code></pre>
+      </div>
+
+      <div class="instructor-note">
+        <div class="instructor-title"><span>💡</span> Syntax Secret: Trailing Space Inside Quotes</div>
+        <p>Because the string <code>inet</code> is a substring of <code>inet6</code>, running <code>match inet</code> returns both IPv4 and IPv6 lines. Putting quotes around <code>"family inet "</code> with a trailing space ensures strict IPv4 matching.</p>
+      </div>
+    </div>
+
+    <!-- STEP 5.4 -->
+    <div class="lab-step">
+      <div class="step-header">
+        <h3 class="step-title">Step 5.4: Count Interfaces with IPv6 Enabled</h3>
+        <span class="step-tag">Counting Filter</span>
+      </div>
+      <p>Count how many interface units have IPv6 configured:</p>
+
+      <div class="terminal-box">
+        <div class="terminal-header">
+          <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+          <span class="terminal-title">Router 1 — Operational Mode</span>
+        </div>
+        <pre><code><span class="p-user">employee@R1></span> <span class="cmd">show configuration interfaces | display set | match inet6 | count</span>
+Count: 3 lines</code></pre>
+      </div>
+    </div>
+
+    <!-- STEP 5.5 -->
+    <div class="lab-step">
+      <div class="step-header">
+        <h3 class="step-title">Step 5.5: Multi-Hierarchy Cross-Referencing for an Interface</h3>
+        <span class="step-tag">Global Search</span>
+      </div>
+      <p>Search across the ENTIRE configuration database for all references to <code>xe-0/1/1</code>:</p>
+
+      <div class="terminal-box">
+        <div class="terminal-header">
+          <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+          <span class="terminal-title">Router 1 — Operational Mode</span>
+        </div>
+        <pre><code><span class="p-user">employee@R1></span> <span class="cmd">show configuration | display set | match xe-0/1/1</span>
+set interfaces <span class="match-hl">xe-0/1/1</span> description "Corporate LAN Trunk"
+set interfaces <span class="match-hl">xe-0/1/1</span> mtu 1800
+set interfaces <span class="match-hl">xe-0/1/1</span> unit 0 family inet address 172.16.10.1/24
+set interfaces <span class="match-hl">xe-0/1/1</span> unit 0 family inet6 address 2001:db8:10::1/64
+set protocols lldp interface <span class="match-hl">xe-0/1/1</span></code></pre>
+      </div>
+
+      <div class="instructor-note">
+        <div class="instructor-title"><span>🔥</span> Power Technique: Full-Device Cross-Hierarchy Trace</div>
+        <p>Notice how this single command extracted lines from both the <code>interfaces</code> hierarchy AND the <code>protocols</code> hierarchy. This proves <code>xe-0/1/1</code> has LLDP enabled in protocols.</p>
+      </div>
+    </div>
+
+    <!-- STEP 5.6 -->
+    <div class="lab-step">
+      <div class="step-header">
+        <h3 class="step-title">Step 5.6: WAN Discovery Verification (Exclusion Filter)</h3>
+        <span class="step-tag">Except Filter</span>
+      </div>
+      <p>Confirm what protocols exist while excluding LLDP:</p>
+
+      <div class="terminal-box">
+        <div class="terminal-header">
+          <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+          <span class="terminal-title">Router 1 — Operational Mode</span>
+        </div>
+        <pre><code><span class="p-user">employee@R1></span> <span class="cmd">show configuration protocols | display set | except lldp</span>
+
+<span class="p-user">employee@R1></span> <span class="cmd">show configuration protocols lldp | display set</span>
+set protocols lldp interface xe-0/1/1
+set protocols lldp interface xe-0/1/2
+set protocols lldp interface xe-0/1/3</code></pre>
+      </div>
+
+      <div class="instructor-note">
+        <div class="instructor-title"><span>🛡️</span> Security Verification Passed</div>
+        <p>WAN port <code>xe-0/1/0</code> is <strong>absent</strong> from the LLDP protocol hierarchy. Link layer information is not leaking to untrusted upstream ISP networks.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PART 6: OFFICIAL AUDIT FINDINGS -->
+  <section id="lab-findings">
+    <h2>Part 6: Official Audit Findings Report & Solutions</h2>
+    <p>Based on your complete non-intrusive discovery, you can now present the formal audit findings to client management:</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Audit Category</th>
+          <th>Active State Found</th>
+          <th>Expected / Standard State</th>
+          <th>Severity & Recommendation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Hostname</strong></td>
+          <td><code>R1</code></td>
+          <td><code>Router1</code></td>
+          <td><span style="color:#d97706; font-weight:bold;">Medium:</span> Update hostname in next maintenance commit.</td>
+        </tr>
+        <tr>
+          <td><strong>Management Protocols</strong></td>
+          <td>SSH, NETCONF, and <strong>Telnet</strong></td>
+          <td>SSH & NETCONF only</td>
+          <td><span style="color:#dc2626; font-weight:bold;">High Risk:</span> Delete insecure Telnet service immediately (<code>delete system services telnet</code>).</td>
+        </tr>
+        <tr>
+          <td><strong>User Accounts</strong></td>
+          <td><code>employee</code> (super-user)</td>
+          <td>Individual named accounts</td>
+          <td><span style="color:#16a34a; font-weight:bold;">Normal:</span> Account secured with SHA-512; root authentication password configured.</td>
+        </tr>
+        <tr>
+          <td><strong>Interface MTUs</strong></td>
+          <td><code>xe-0/1/1</code> = L2 1800<br><code>xe-0/1/3</code> = L3 IPv4 900</td>
+          <td>Consistent 1514 (L2) / 1500 (L3) standard</td>
+          <td><span style="color:#d97706; font-weight:bold;">Medium:</span> MTU mismatch between LAN ports. Recommend normalizing in next change window.</td>
+        </tr>
+        <tr>
+          <td><strong>LLDP Protocol Scope</strong></td>
+          <td>Active on LAN ports <code>xe-0/1/1</code>, <code>xe-0/1/2</code>, <code>xe-0/1/3</code>; disabled on WAN <code>xe-0/1/0</code></td>
+          <td>Enabled on internal LAN only</td>
+          <td><span style="color:#16a34a; font-weight:bold;">Compliant:</span> Discovery protocol strictly confined to internal switching infrastructure.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- PART 7: COMMAND CHEAT SHEET -->
+  <section id="lab-cheat-sheet">
+    <h2>Part 7: Junos Configuration Navigation Command Cheat Sheet</h2>
+    <p>Keep these essential command recipes ready for daily administration and JNCIA-Junos exam scenarios:</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Task / Objective</th>
+          <th>CLI Command Syntax</th>
+          <th>Key Benefit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>View full config in default tree</td>
+          <td><code>show configuration</code></td>
+          <td>Shows full hierarchical indentation and braces</td>
+        </tr>
+        <tr>
+          <td>View full config in linear set commands</td>
+          <td><code>show configuration | display set</code></td>
+          <td>Compact, copy-pasteable, easy to grep</td>
+        </tr>
+        <tr>
+          <td>Scope to system hierarchy in set view</td>
+          <td><code>show configuration system | display set</code></td>
+          <td>Zooms to system host-name, services, users, syslog</td>
+        </tr>
+        <tr>
+          <td>Scope to specific interface in hierarchy view</td>
+          <td><code>show configuration interfaces &lt;int-name&gt;</code></td>
+          <td>Omits outer braces, saves vertical screen space</td>
+        </tr>
+        <tr>
+          <td>Find all custom MTU settings</td>
+          <td><code>show configuration interfaces | display set | match mtu</code></td>
+          <td>Finds both L2 physical and L3 family MTUs</td>
+        </tr>
+        <tr>
+          <td>Strict IPv4 address matching</td>
+          <td><code>show configuration interfaces | display set | match "family inet "</code></td>
+          <td>Trailing space inside quotes avoids <code>inet6</code> match</td>
+        </tr>
+        <tr>
+          <td>Count matching statements</td>
+          <td><code>show configuration interfaces | display set | match inet6 | count</code></td>
+          <td>Returns instant integer count of matching lines</td>
+        </tr>
+        <tr>
+          <td>Trace interface across all hierarchies</td>
+          <td><code>show configuration | display set | match &lt;int-name&gt;</code></td>
+          <td>Combines interface parameters + protocol bindings</td>
+        </tr>
+        <tr>
+          <td>Exclude specific protocol output</td>
+          <td><code>show configuration protocols | display set | except lldp</code></td>
+          <td>Hides matching lines to isolate remaining protocols</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</div>
+
+</body>
+</html>
