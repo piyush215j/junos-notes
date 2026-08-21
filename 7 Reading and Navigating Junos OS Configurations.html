@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Junos OS Configuration Analysis, Hierarchy vs. Set View & CLI Filtering | JNCIA-Junos Study Notes</title>
+<style>
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.65;
+    color: #1e293b;
+    background-color: #f8fafc;
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 32px 20px;
+  }
+  .content-wrapper {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 44px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  }
+  h1 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #0f172a;
+    border-bottom: 3px solid #0284c7;
+    padding-bottom: 14px;
+    margin-top: 0;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+  .subtitle {
+    font-size: 1.15rem;
+    color: #64748b;
+    margin-bottom: 32px;
+    font-weight: 500;
+  }
+  h2 {
+    font-size: 1.65rem;
+    font-weight: 700;
+    color: #0369a1;
+    border-bottom: 2px solid #e0f2fe;
+    padding-bottom: 10px;
+    margin-top: 52px;
+    letter-spacing: -0.01em;
+  }
+  h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-top: 32px;
+    color: #0c4a6e;
+  }
+  h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 24px;
+    color: #334155;
+  }
+  nav.toc {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 10px;
+    padding: 26px 32px;
+    margin-bottom: 44px;
+  }
+  nav.toc h2 {
+    margin-top: 0;
+    font-size: 1.35rem;
+    border-bottom: none;
+    padding-bottom: 0;
+    color: #0369a1;
+  }
+  nav.toc ol {
+    margin: 0;
+    padding-left: 22px;
+  }
+  nav.toc li {
+    margin: 9px 0;
+  }
+  nav.toc a {
+    color: #0284c7;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  nav.toc a:hover {
+    text-decoration: underline;
+    color: #0369a1;
+  }
+  .diagram-container {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 24px;
+    margin: 32px 0;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.04);
+    overflow-x: auto;
+  }
+  .diagram-caption {
+    font-size: 0.94rem;
+    color: #475569;
+    margin-top: 14px;
+    font-weight: 500;
+    text-align: center;
+    border-top: 1px dashed #e2e8f0;
+    padding-top: 10px;
+  }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    background-color: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    color: #0369a1;
+    border: 1px solid #e2e8f0;
+  }
+  pre {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    background-color: #0f172a;
+    color: #f8fafc;
+    padding: 18px 22px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 0.88rem;
+    line-height: 1.55;
+    margin: 18px 0;
+    border: 1px solid #334155;
+  }
+  pre code {
+    background-color: transparent;
+    padding: 0;
+    border: none;
+    color: inherit;
+    font-size: inherit;
+  }
+  .prompt-user { color: #38bdf8; font-weight: bold; }
+  .prompt-hash { color: #f43f5e; font-weight: bold; }
+  .cmd { color: #facc15; font-weight: 600; }
+  .comment { color: #94a3b8; font-style: italic; }
+  .highlight { color: #4ade80; font-weight: 600; }
+  .warn-text { color: #fb923c; font-weight: 600; }
+  
+  .added-context {
+    background-color: #f0fdf4;
+    border-left: 4px solid #16a34a;
+    padding: 18px 22px;
+    margin: 24px 0;
+    border-radius: 0 8px 8px 0;
+  }
+  .added-context-title {
+    font-weight: 700;
+    color: #15803d;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.02rem;
+  }
+  .gotcha-box {
+    background-color: #fff7ed;
+    border-left: 4px solid #ea580c;
+    padding: 18px 22px;
+    margin: 24px 0;
+    border-radius: 0 8px 8px 0;
+  }
+  .gotcha-title {
+    font-weight: 700;
+    color: #c2410c;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.02rem;
+  }
+  .hands-on-box {
+    background-color: #f8fafc;
+    border: 2px solid #0284c7;
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin: 36px 0;
+  }
+  .hands-on-title {
+    font-weight: 700;
+    color: #0369a1;
+    font-size: 1.15rem;
+    margin-top: 0;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #cbd5e1;
+    padding-bottom: 8px;
+  }
+  .table-container {
+    overflow-x: auto;
+    margin: 24px 0;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+    text-align: left;
+  }
+  th, td {
+    padding: 12px 16px;
+    border: 1px solid #cbd5e1;
+  }
+  th {
+    background-color: #f1f5f9;
+    font-weight: 700;
+    color: #0f172a;
+  }
+  tr:nth-child(even) {
+    background-color: #f8fafc;
+  }
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .badge-blue { background-color: #e0f2fe; color: #0369a1; }
+  .badge-green { background-color: #dcfce7; color: #15803d; }
+  .badge-orange { background-color: #ffedd5; color: #c2410c; }
+  .badge-purple { background-color: #f3e8ff; color: #7e22ce; }
+</style>
+</head>
+<body>
+
+<div class="content-wrapper">
+  <h1>Junos OS Configuration Architecture, Hierarchy vs. Set View & CLI Output Filtering</h1>
+  <div class="subtitle">Complete Study Notes & Illustrated Field Guide for JNCIA-Junos Certification</div>
+
+  <nav class="toc">
+    <h2>Table of Contents</h2>
+    <ol>
+      <li><a href="#sec-1">Customer Network Topology & Audit Scenario</a></li>
+      <li><a href="#sec-2">Junos Configuration Architecture: Active DB vs. Candidate Staging</a></li>
+      <li><a href="#sec-3">The Two Human CLI Views: Hierarchy View vs. Set View</a></li>
+      <li><a href="#sec-4">Junos Top-Level Configuration Hierarchies Overview</a></li>
+      <li><a href="#sec-5">Deconstructing the <code>system</code> Hierarchy (Hostname, Services, Users, Root & Syslog)</a></li>
+      <li><a href="#sec-6">Deconstructing the <code>interfaces</code> Hierarchy (Units, Families, MTU & IPv6 Link-Local)</a></li>
+      <li><a href="#sec-7">Deconstructing the <code>protocols</code> Hierarchy (LLDP, RSTP, IS-IS & MPLS Syntax)</a></li>
+      <li><a href="#sec-8">Sub-Hierarchy Scoping & Targeted Navigation</a></li>
+      <li><a href="#sec-9">Advanced CLI Output Filtering via Pipes (<code>| display set</code>, <code>match</code>, <code>except</code>, <code>count</code>)</a></li>
+      <li><a href="#sec-10">Step-by-Step Lab Walkthrough & Configuration Auditing</a></li>
+      <li><a href="#sec-11">JNCIA-Junos Exam Cheat Sheet & Key Takeaways</a></li>
+    </ol>
+  </nav>
+
+  <!-- SECTION 1 -->
+  <section id="sec-1">
+    <h2>1. Customer Network Topology & Audit Scenario</h2>
+    <p>As the on-site network engineer for a customer network, your task is to audit and inspect the configuration of their perimeter router (<strong>Router 1</strong>, a Juniper MX-204 Universal Routing Platform). Previous administrative personnel left behind several configuration discrepancies and security oversights that must be identified through configuration analysis before changes are staged and committed.</p>
+
+    <div class="diagram-container">
+      <svg viewBox="0 0 960 520" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,sans-serif">
+  <rect width="960" height="520" fill="#f8fafc" rx="10"/>
+
+  <!-- Internet Cloud -->
+  <ellipse cx="120" cy="180" rx="85" ry="50" fill="#64748b"/>
+  <text x="120" y="176" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">Internet</text>
+  <text x="120" y="194" fill="#e2e8f0" font-size="10" text-anchor="middle">WAN (Untrusted)</text>
+
+  <!-- WAN link -->
+  <line x1="205" y1="180" x2="310" y2="180" stroke="#64748b" stroke-width="3" stroke-dasharray="6,4"/>
+  <text x="258" y="170" fill="#64748b" font-size="9" font-weight="600" text-anchor="middle">xe-0/1/0</text>
+  <text x="258" y="200" fill="#c2410c" font-size="8" text-anchor="middle">No LLDP here</text>
+
+  <!-- Router 1 -->
+  <rect x="310" y="120" width="250" height="125" rx="10" fill="#0c4a6e" stroke="#0284c7" stroke-width="2"/>
+  <text x="435" y="145" fill="#38bdf8" font-size="14" font-weight="800" text-anchor="middle">Router 1 (MX-204)</text>
+  <text x="435" y="165" fill="#fca5a5" font-size="10" text-anchor="middle">Hostname: R1 (should be Router1)</text>
+  <text x="435" y="182" fill="#4ade80" font-size="10" text-anchor="middle">SSH: enabled  |  User: employee</text>
+  <text x="435" y="199" fill="#fb923c" font-size="10" text-anchor="middle">Telnet: enabled (security risk!)</text>
+  <text x="435" y="218" fill="#bae6fd" font-size="10" text-anchor="middle">4x 10GbE SFP+ ports (PIC 1)</text>
+
+  <!-- Router-to-Switch links -->
+  <line x1="560" y1="150" x2="680" y2="150" stroke="#0284c7" stroke-width="2.5"/>
+  <text x="620" y="142" fill="#0369a1" font-size="9" font-weight="600" text-anchor="middle">xe-0/1/1</text>
+
+  <line x1="560" y1="180" x2="680" y2="180" stroke="#0284c7" stroke-width="2.5"/>
+  <text x="620" y="172" fill="#0369a1" font-size="9" font-weight="600" text-anchor="middle">xe-0/1/2</text>
+
+  <line x1="560" y1="210" x2="680" y2="210" stroke="#0284c7" stroke-width="2.5"/>
+  <text x="620" y="228" fill="#0369a1" font-size="9" font-weight="600" text-anchor="middle">xe-0/1/3</text>
+
+  <!-- Switch -->
+  <rect x="680" y="130" width="240" height="100" rx="10" fill="#134e4a" stroke="#0d9488" stroke-width="2"/>
+  <text x="800" y="158" fill="#5eead4" font-size="13" font-weight="700" text-anchor="middle">Distribution Switch</text>
+  <text x="800" y="178" fill="#ccfbf1" font-size="10" text-anchor="middle">Juniper EX-Series</text>
+  <text x="800" y="196" fill="#5eead4" font-size="9" text-anchor="middle">LLDP active on all 3 LAN links</text>
+
+  <!-- Subnet Cards -->
+  <g transform="translate(230,300)">
+    <rect width="140" height="80" rx="8" fill="#fff" stroke="#0284c7" stroke-width="1.5"/>
+    <rect x="0" y="0" width="140" height="22" rx="6" fill="#0284c7"/>
+    <text x="70" y="15" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">Corporate LAN</text>
+    <text x="70" y="40" fill="#1e3a8a" font-size="10" font-weight="600" text-anchor="middle">172.16.10.0/24</text>
+    <text x="70" y="56" fill="#334155" font-size="9" text-anchor="middle">MTU: 1800 (L2)</text>
+    <text x="70" y="72" fill="#15803d" font-size="9" text-anchor="middle">LLDP: On  |  IPv4+IPv6</text>
+  </g>
+
+  <g transform="translate(410,300)">
+    <rect width="140" height="80" rx="8" fill="#fff" stroke="#0d9488" stroke-width="1.5"/>
+    <rect x="0" y="0" width="140" height="22" rx="6" fill="#0d9488"/>
+    <text x="70" y="15" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">Server LAN</text>
+    <text x="70" y="40" fill="#134e4a" font-size="10" font-weight="600" text-anchor="middle">172.16.20.0/24</text>
+    <text x="70" y="56" fill="#334155" font-size="9" text-anchor="middle">MTU: Default (1514)</text>
+    <text x="70" y="72" fill="#15803d" font-size="9" text-anchor="middle">LLDP: On  |  IPv4+IPv6</text>
+  </g>
+
+  <g transform="translate(590,300)">
+    <rect width="140" height="80" rx="8" fill="#fff" stroke="#ea580c" stroke-width="1.5"/>
+    <rect x="0" y="0" width="140" height="22" rx="6" fill="#ea580c"/>
+    <text x="70" y="15" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">Guest LAN</text>
+    <text x="70" y="40" fill="#7c2d12" font-size="10" font-weight="600" text-anchor="middle">172.16.30.0/24</text>
+    <text x="70" y="56" fill="#c2410c" font-size="9" font-weight="600" text-anchor="middle">IPv4 MTU: 900 (L3 only!)</text>
+    <text x="70" y="72" fill="#6b21a8" font-size="9" text-anchor="middle">IPv6: link-local only</text>
+  </g>
+
+  <!-- Audit Findings -->
+  <rect x="30" y="410" width="900" height="95" rx="8" fill="#fff1f2" stroke="#fca5a5" stroke-width="1.5"/>
+  <text x="50" y="432" fill="#9f1239" font-size="12" font-weight="700">Audit Findings on Router 1:</text>
+  <text x="50" y="452" fill="#334155" font-size="10">1. Hostname "R1" (wrong)  |  2. Telnet active (insecure)  |  3. Two incorrect IPv4 addresses on LAN ports</text>
+  <text x="50" y="472" fill="#334155" font-size="10">4. MTU inconsistency: L2 physical 1800 on Corp vs. L3 family-only 900 on Guest  |  5. LLDP correctly OFF on WAN</text>
+  <text x="50" y="492" fill="#94a3b8" font-size="9">All discovered by reading the active configuration — zero impact on live traffic</text>
+</svg>
+      <div class="diagram-caption">Figure 1.1 — Customer Enterprise Topology and Initial Perimeter Router Audit Findings</div>
+    </div>
+
+    <h3>Audit Objectives & Discovery Tasks</h3>
+    <p>Rather than jumping straight into modifying live device parameters, standard engineering protocol demands a complete non-intrusive audit of the active configuration. The four key discovery questions are:</p>
+    <ol>
+      <li><strong>Remote Management Protocols:</strong> Which remote management services are active on the device (SSH, Telnet, NETCONF)?</li>
+      <li><strong>User Accounts & Privileges:</strong> What custom user accounts exist, what permissions classes are assigned, and is the default <code>root</code> account secured?</li>
+      <li><strong>Custom Interface MTUs:</strong> Are there custom Maximum Transmission Unit (MTU) values configured at Layer 2 (physical) or Layer 3 (protocol family)?</li>
+      <li><strong>Discovery Protocols:</strong> Is Link Layer Discovery Protocol (LLDP) enabled on internal LAN ports and properly disabled on the untrusted external WAN port?</li>
+    </ol>
+  </section>
+
+  <!-- SECTION 2 -->
+  <section id="sec-2">
+    <h2>2. Junos Configuration Architecture: Active DB vs. Candidate Staging</h2>
+    <p>Unlike monolithic network operating systems (such as legacy Cisco IOS) where every typed command is executed immediately against the live running state, Junos OS implements a robust, database-driven, transactional configuration architecture.</p>
+
+    <div class="diagram-container">
+      <svg viewBox="0 0 960 440" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,sans-serif">
+  <defs>
+    <marker id="a2b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,1 L10,5 L0,9Z" fill="#0284c7"/>
+    </marker>
+    <marker id="a2g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,1 L10,5 L0,9Z" fill="#16a34a"/>
+    </marker>
+    <marker id="a2r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,1 L10,5 L0,9Z" fill="#dc2626"/>
+    </marker>
+  </defs>
+
+  <rect width="960" height="440" fill="#f8fafc" rx="10"/>
+
+  <!-- Zone labels -->
+  <rect x="15" y="15" width="640" height="410" rx="10" fill="none" stroke="#94a3b8" stroke-dasharray="6,4"/>
+  <text x="30" y="38" fill="#64748b" font-size="11" font-weight="600">CONTROL PLANE (Routing Engine)</text>
+
+  <rect x="670" y="15" width="275" height="410" rx="10" fill="none" stroke="#94a3b8" stroke-dasharray="6,4"/>
+  <text x="685" y="38" fill="#64748b" font-size="11" font-weight="600">FORWARDING PLANE (PFE)</text>
+
+  <!-- Engineer box -->
+  <rect x="30" y="60" width="160" height="90" rx="8" fill="#0f172a"/>
+  <text x="110" y="85" fill="#38bdf8" font-size="11" font-weight="700" text-anchor="middle">Engineer</text>
+  <text x="110" y="102" fill="#94a3b8" font-size="9" text-anchor="middle">SSH / Console</text>
+  <text x="110" y="120" fill="#facc15" font-size="10" text-anchor="middle">set / delete / edit</text>
+
+  <!-- Arrow 1: Engineer → Candidate -->
+  <line x1="190" y1="105" x2="270" y2="105" stroke="#0284c7" stroke-width="2.5" marker-end="url(#a2b)"/>
+  <text x="230" y="96" fill="#0284c7" font-size="10" font-weight="700" text-anchor="middle">1. Edit</text>
+
+  <!-- Candidate Config -->
+  <rect x="275" y="55" width="230" height="100" rx="8" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+  <text x="390" y="78" fill="#92400e" font-size="12" font-weight="700" text-anchor="middle">Candidate Config</text>
+  <text x="390" y="96" fill="#78350f" font-size="10" text-anchor="middle">Temporary draft in RAM</text>
+  <text x="390" y="113" fill="#78350f" font-size="10" text-anchor="middle">Zero impact on live network</text>
+  <text x="390" y="130" fill="#92400e" font-size="9" text-anchor="middle">Discard with: rollback 0</text>
+
+  <!-- Arrow 2: Candidate → commit box -->
+  <line x1="390" y1="155" x2="390" y2="195" stroke="#16a34a" stroke-width="2.5" marker-end="url(#a2g)"/>
+  <text x="430" y="180" fill="#16a34a" font-size="10" font-weight="700">2. commit</text>
+
+  <!-- Commit box -->
+  <rect x="310" y="200" width="190" height="60" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="405" y="222" fill="#14532d" font-size="11" font-weight="700" text-anchor="middle">Atomic Commit</text>
+  <text x="405" y="240" fill="#166534" font-size="9" text-anchor="middle">Validate → Write → Push to PFE</text>
+  <text x="405" y="254" fill="#166534" font-size="9" text-anchor="middle">All-or-nothing (never partial)</text>
+
+  <!-- Arrow 3: Commit → Active DB -->
+  <line x1="310" y1="255" x2="200" y2="300" stroke="#0284c7" stroke-width="2.5" marker-end="url(#a2b)"/>
+  <text x="230" y="280" fill="#0284c7" font-size="9" font-weight="700">3. Save</text>
+
+  <!-- Active DB -->
+  <rect x="30" y="280" width="240" height="120" rx="8" fill="#dbeafe" stroke="#0284c7" stroke-width="2"/>
+  <text x="150" y="303" fill="#1e3a8a" font-size="12" font-weight="700" text-anchor="middle">Active Configuration DB</text>
+  <text x="150" y="322" fill="#1e40af" font-size="10" text-anchor="middle">Persistent (flash/SSD)</text>
+  <text x="150" y="340" fill="#1e40af" font-size="10" text-anchor="middle">This is what runs on the device</text>
+  <text x="150" y="358" fill="#1e40af" font-size="10" text-anchor="middle">show configuration reads this</text>
+  <text x="150" y="376" fill="#0369a1" font-size="9" text-anchor="middle">Rollback archive: up to 50 versions</text>
+
+  <!-- Rollback arrow: Active DB → Candidate -->
+  <path d="M60,280 Q60,170 275,90" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#a2r)"/>
+  <text x="95" y="200" fill="#dc2626" font-size="9" font-weight="700">rollback N</text>
+  <text x="95" y="215" fill="#dc2626" font-size="8">(revert edits)</text>
+
+  <!-- Arrow 4: Commit → PFE -->
+  <line x1="500" y1="230" x2="685" y2="230" stroke="#0284c7" stroke-width="2.5" marker-end="url(#a2b)"/>
+  <text x="592" y="222" fill="#0284c7" font-size="10" font-weight="700" text-anchor="middle">4. Push tables</text>
+
+  <!-- PFE box -->
+  <rect x="690" y="60" width="240" height="340" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+  <text x="810" y="88" fill="#14532d" font-size="12" font-weight="700" text-anchor="middle">Packet Forwarding</text>
+  <text x="810" y="106" fill="#14532d" font-size="12" font-weight="700" text-anchor="middle">Engine (PFE)</text>
+  <text x="810" y="130" fill="#166534" font-size="10" text-anchor="middle">Custom ASICs</text>
+  <text x="810" y="150" fill="#166534" font-size="10" text-anchor="middle">Wire-speed forwarding</text>
+
+  <rect x="704" y="170" width="212" height="55" rx="6" fill="#dcfce7" stroke="#86efac"/>
+  <text x="810" y="192" fill="#14532d" font-size="10" font-weight="600" text-anchor="middle">Forwarding Table (FIB)</text>
+  <text x="810" y="210" fill="#166534" font-size="9" text-anchor="middle">prefix → next-hop → interface</text>
+
+  <rect x="704" y="240" width="212" height="45" rx="6" fill="#dcfce7" stroke="#86efac"/>
+  <text x="810" y="260" fill="#14532d" font-size="10" font-weight="600" text-anchor="middle">Physical Interfaces + MTU</text>
+  <text x="810" y="276" fill="#166534" font-size="9" text-anchor="middle">VLAN tagging, policing</text>
+
+  <rect x="704" y="300" width="212" height="55" rx="6" fill="#fef9c3" stroke="#fbbf24"/>
+  <text x="810" y="320" fill="#78350f" font-size="10" font-weight="700" text-anchor="middle">KEY POINT</text>
+  <text x="810" y="338" fill="#92400e" font-size="9" text-anchor="middle">RE crash does NOT stop</text>
+  <text x="810" y="350" fill="#92400e" font-size="9" text-anchor="middle">forwarding of transit traffic</text>
+</svg>
+      <div class="diagram-caption">Figure 2.1 — Junos Configuration Transaction Model: Candidate Workspace, Active Database & PFE Push</div>
+    </div>
+
+    <h3>Core Architectural Concepts</h3>
+    <ul>
+      <li><strong>Active Configuration:</strong> The operational, committed configuration that governs device behavior. It is stored internally in a relational configuration database on the flash drive/SSD. When viewing configurations in operational mode (<code>show configuration</code>), you are querying this active database.</li>
+      <li><strong>Candidate Configuration:</strong> A staging copy of the configuration stored in volatile memory (RAM). When an engineer enters configuration mode (<code>configure</code>) and issues <code>set</code> or <code>delete</code> commands, only the candidate configuration is modified. Traffic flow and live operations remain 100% unaffected.</li>
+      <li><strong>Atomic Commit Operation:</strong> Executing <code>commit</code> checks syntax across all hierarchies simultaneously, writes the entire state to the active configuration database, and pushes the updated routing/forwarding tables to the Packet Forwarding Engine (PFE). If any part fails validation, the entire commit fails cleanly without leaving partial changes.</li>
+      <li><strong>Configuration Rollback:</strong> Junos automatically archives up to 50 previous active configurations (numbered <code>rollback 0</code> through <code>rollback 49</code>). <code>rollback 0</code> returns the candidate configuration to the currently active state, discarding uncommitted edits.</li>
+    </ul>
+
+    <div class="added-context">
+      <div class="added-context-title">📘 Added context: Control Plane (RE) vs. Forwarding Plane (PFE) Separation</div>
+      <p>Junos is built on FreeBSD-based modular architecture. The <strong>Routing Engine (RE)</strong> runs user-space management daemons (like <code>mgd</code> for management and configuration, and <code>rpd</code> for routing protocols). The <strong>Packet Forwarding Engine (PFE)</strong> contains custom ASICs dedicated to line-rate packet switching. When you commit, <code>mgd</code> compiles the new configuration and pushes FIB updates across an internal internal link to the PFE. Even if the RE experiences high CPU or crashes, the PFE continues forwarding established transit traffic without interruption.</p>
+    </div>
+
+    <div class="gotcha-box">
+      <div class="gotcha-title">⚠️ Common Beginner Mistake: Confusing Uncommitted Edits with Active State</div>
+      <p>Typing <code>set</code> commands in configuration mode does NOT activate them on the router. Beginners often troubleshoot why a new IP or interface is "not working" before realizing they never issued <code>commit</code>. Conversely, typing <code>show configuration</code> in operational mode only displays what is currently active — to view uncommitted candidate edits, you must use <code>show | compare</code> inside configuration mode.</p>
+    </div>
+
+    <div class="hands-on-box">
+      <div class="hands-on-title">🛠️ Hands-on Tasks — Section 2</div>
+      <p><strong>Task 2.1 (Verification):</strong> From operational mode, view the active running configuration on the device:</p>
+      <pre><code><span class="prompt-user">user@Router1></span> <span class="cmd">show configuration</span></code></pre>
+      <p><strong>Task 2.2 (Scenario Question):</strong> An engineer types <code>set system host-name Core-Gateway</code> in configuration mode and disconnects without issuing <code>commit</code>. What is the active hostname of the router, and what happens to the typed command?</p>
+      <p><em>Answer:</em> The active hostname remains unchanged (<code>Router1</code>). The uncommitted candidate edit remains in the candidate configuration buffer until committed, overwritten, or discarded via <code>rollback 0</code>.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 3 -->
+  <section id="sec-3">
+    <h2>3. The Two Human CLI Views: Hierarchy View vs. Set View</h2>
+    <p>Although Junos maintains a single active configuration database, it provides two primary human-readable text representations in the CLI: <strong>Hierarchy View</strong> and <strong>Set View</strong>.</p>
+
+    <div class="diagram-container">
+      <svg viewBox="0 0 960 500" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,sans-serif">
+  <rect width="960" height="500" fill="#f8fafc" rx="10"/>
+
+  <!-- Title -->
+  <text x="480" y="28" fill="#0f172a" font-size="14" font-weight="800" text-anchor="middle">Same Configuration — Two Display Formats</text>
+
+  <!-- LEFT: Hierarchy View -->
+  <rect x="15" y="42" width="450" height="440" rx="10" fill="#0f172a" stroke="#0284c7" stroke-width="2"/>
+  <rect x="15" y="42" width="450" height="36" rx="8" fill="#0284c7"/>
+  <text x="240" y="66" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">HIERARCHY VIEW (default)</text>
+
+  <text x="35" y="100" fill="#94a3b8" font-size="10">Command: show configuration</text>
+  <text x="35" y="128" fill="#38bdf8" font-size="12" font-weight="700">system {</text>
+  <text x="55" y="150" fill="#f8fafc" font-size="11">host-name R1;</text>
+  <text x="55" y="172" fill="#38bdf8" font-size="12" font-weight="700">services {</text>
+  <text x="75" y="194" fill="#4ade80" font-size="11">ssh;</text>
+  <text x="75" y="216" fill="#fb923c" font-size="11">telnet;</text>
+  <text x="55" y="238" fill="#38bdf8" font-size="11">}</text>
+  <text x="35" y="258" fill="#38bdf8" font-size="11">}</text>
+  <text x="35" y="286" fill="#38bdf8" font-size="12" font-weight="700">interfaces {</text>
+  <text x="55" y="308" fill="#f8fafc" font-size="11">xe-0/1/1 {</text>
+  <text x="75" y="330" fill="#f8fafc" font-size="11">unit 0 {</text>
+  <text x="95" y="352" fill="#f8fafc" font-size="11">family inet {</text>
+  <text x="115" y="374" fill="#facc15" font-size="11">address 172.16.10.1/24;</text>
+  <text x="95" y="394" fill="#f8fafc" font-size="10">} } } }</text>
+
+  <!-- Callouts -->
+  <rect x="300" y="120" width="150" height="24" rx="5" fill="#1e3a8a"/>
+  <text x="375" y="136" fill="#bfdbfe" font-size="9" font-weight="600" text-anchor="middle">Top-level hierarchy</text>
+  <line x1="295" y1="132" x2="135" y2="126" stroke="#60a5fa" stroke-width="1" stroke-dasharray="3,2"/>
+
+  <rect x="300" y="166" width="150" height="24" rx="5" fill="#365314"/>
+  <text x="375" y="182" fill="#bbf7d0" font-size="9" font-weight="600" text-anchor="middle">Sub-hierarchy block</text>
+  <line x1="295" y1="178" x2="178" y2="170" stroke="#4ade80" stroke-width="1" stroke-dasharray="3,2"/>
+
+  <rect x="300" y="365" width="150" height="24" rx="5" fill="#431407"/>
+  <text x="375" y="381" fill="#fed7aa" font-size="9" font-weight="600" text-anchor="middle">Leaf value (the data)</text>
+  <line x1="295" y1="377" x2="285" y2="372" stroke="#fb923c" stroke-width="1" stroke-dasharray="3,2"/>
+
+  <text x="35" y="430" fill="#94a3b8" font-size="9">Pros: Easy to see parent-child structure</text>
+  <text x="35" y="448" fill="#94a3b8" font-size="9">Pros: Best for complex configs (policies, filters)</text>
+  <text x="35" y="466" fill="#94a3b8" font-size="9">Cons: Takes more screen space</text>
+
+  <!-- RIGHT: Set View -->
+  <rect x="495" y="42" width="450" height="440" rx="10" fill="#0f172a" stroke="#16a34a" stroke-width="2"/>
+  <rect x="495" y="42" width="450" height="36" rx="8" fill="#16a34a"/>
+  <text x="720" y="66" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">SET VIEW (on-demand)</text>
+
+  <text x="515" y="100" fill="#94a3b8" font-size="10">Command: show configuration | display set</text>
+  <text x="515" y="130" fill="#f8fafc" font-size="11"><tspan fill="#4ade80">set</tspan> system host-name R1</text>
+  <text x="515" y="155" fill="#f8fafc" font-size="11"><tspan fill="#4ade80">set</tspan> system services ssh</text>
+  <text x="515" y="180" fill="#f8fafc" font-size="11"><tspan fill="#4ade80">set</tspan> system services telnet</text>
+  <text x="515" y="210" fill="#f8fafc" font-size="11"><tspan fill="#4ade80">set</tspan> interfaces xe-0/1/1 mtu 1800</text>
+  <text x="515" y="235" fill="#f8fafc" font-size="10"><tspan fill="#4ade80">set</tspan> interfaces xe-0/1/1 unit 0</text>
+  <text x="530" y="252" fill="#facc15" font-size="10">family inet address 172.16.10.1/24</text>
+  <text x="515" y="278" fill="#f8fafc" font-size="11"><tspan fill="#4ade80">set</tspan> protocols lldp interface xe-0/1/1</text>
+
+  <!-- Anatomy breakdown -->
+  <rect x="510" y="310" width="420" height="100" rx="6" fill="#1e293b"/>
+  <text x="520" y="332" fill="#38bdf8" font-size="10" font-weight="700">ANATOMY OF A SET COMMAND:</text>
+  <text x="520" y="358" fill="#f8fafc" font-size="11" font-weight="600">set  system  services  ssh</text>
+  <line x1="520" y1="363" x2="545" y2="363" stroke="#4ade80" stroke-width="2"/>
+  <line x1="551" y1="363" x2="597" y2="363" stroke="#38bdf8" stroke-width="2"/>
+  <line x1="603" y1="363" x2="660" y2="363" stroke="#fbbf24" stroke-width="2"/>
+  <line x1="666" y1="363" x2="695" y2="363" stroke="#f472b6" stroke-width="2"/>
+  <text x="532" y="382" fill="#4ade80" font-size="8.5">keyword</text>
+  <text x="565" y="382" fill="#38bdf8" font-size="8.5">hierarchy</text>
+  <text x="622" y="382" fill="#fbbf24" font-size="8.5">sub-hierarchy</text>
+  <text x="672" y="382" fill="#f472b6" font-size="8.5">leaf</text>
+  <text x="520" y="402" fill="#94a3b8" font-size="9">Each word = one level deeper in the config tree</text>
+
+  <text x="515" y="430" fill="#94a3b8" font-size="9">Pros: Compact, grep-friendly, copy-pasteable</text>
+  <text x="515" y="448" fill="#94a3b8" font-size="9">Pros: Shows exact commands to type</text>
+  <text x="515" y="466" fill="#94a3b8" font-size="9">Cons: Dense wall of text on large configs</text>
+</svg>
+      <div class="diagram-caption">Figure 3.1 — Structural Comparison: Hierarchy Tree Indentation vs. Linear Set Statements</div>
+    </div>
+
+    <h3>Detailed Comparison: Hierarchy View vs. Set View</h3>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Attribute</th>
+            <th>Hierarchy View (Default)</th>
+            <th>Set View (<code>| display set</code>)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>CLI Command</strong></td>
+            <td><code>show configuration</code></td>
+            <td><code>show configuration | display set</code></td>
+          </tr>
+          <tr>
+            <td><strong>Format Structure</strong></td>
+            <td>Indented blocks with opening/closing curly braces (<code>{ }</code>) and terminating semicolons (<code>;</code>).</td>
+            <td>One self-contained command per line, prefixed with the keyword <code>set</code>.</td>
+          </tr>
+          <tr>
+            <td><strong>Best Used For</strong></td>
+            <td>Complex, highly nested configurations (BGP policies, firewall filter term conditions, QoS schedulers).</td>
+            <td>Small/compact configurations, rapid CLI copy-pasting, script generation, and line-by-line grep/matching.</td>
+          </tr>
+          <tr>
+            <td><strong>Visual Characteristics</strong></td>
+            <td>Expansive white-space; easy to visualize parent-child relationships and scope.</td>
+            <td>High text density; compact screen utilization; potential word-wrap on long strings (e.g. encrypted hashes).</td>
+          </tr>
+          <tr>
+            <td><strong>Native Storage</strong></td>
+            <td>Native database representation and default export format on backup servers.</td>
+            <td>Generated dynamically on-the-fly by the Junos parser when requested.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="gotcha-box">
+      <div class="gotcha-title">⚠️ Common Beginner Mistake: Over-reliance on Set View</div>
+      <p>New students frequently rely exclusively on <code>set</code> view because it feels familiar and compact. However, in enterprise and service provider networks with 500-line routing policies or 20-term firewall filters, set view turns into an unreadable wall of text. Professional Junos engineers use <strong>both views fluently</strong>: hierarchy view for structural comprehension and set view for targeted grepping and script deployment.</p>
+    </div>
+
+    <div class="hands-on-box">
+      <div class="hands-on-title">🛠️ Hands-on Tasks — Section 3</div>
+      <p><strong>Task 3.1 (Command Practice):</strong> Output the entire active configuration in set format:</p>
+      <pre><code><span class="prompt-user">user@Router1></span> <span class="cmd">show configuration | display set</span></code></pre>
+      <p><strong>Task 3.2 (Conversion Exercise):</strong> Convert the following hierarchical block into its equivalent set commands:</p>
+      <pre><code>system {
+    services {
+        netconf {
+            ssh;
+        }
+    }
+}</code></pre>
+      <p><em>Solution:</em> <code>set system services netconf ssh</code></p>
+    </div>
+  </section>
+
+  <!-- SECTION 4 -->
+  <section id="sec-4">
+    <h2>4. Junos Top-Level Configuration Hierarchies Overview</h2>
+    <p>Junos organizes all configuration parameters into standardized, top-level functional categories. Regardless of whether you manage an SRX firewall, EX switch, or MX core router, these top-level hierarchies follow an identical organizational model.</p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Top-Level Hierarchy</th>
+            <th>Primary Purpose & Scope</th>
+            <th>Key Sub-Hierarchies Covered in Transcript</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>system</code></td>
+            <td>Device-level parameters, management protocols, user accounts, system logging, time/NTP, and authentication.</td>
+            <td><code>host-name</code>, <code>services</code>, <code>login</code>, <code>root-authentication</code>, <code>syslog</code></td>
+          </tr>
+          <tr>
+            <td><code>chassis</code></td>
+            <td>Hardware-specific attributes, port aggregation speeds, FPC/PIC redundancy, and power management.</td>
+            <td><code>fpc</code>, <code>pic</code>, <code>redundancy</code></td>
+          </tr>
+          <tr>
+            <td><code>interfaces</code></td>
+            <td>Physical port properties (speed, MTU, descriptions) and logical protocol units (<code>unit 0</code>, <code>family inet</code>, <code>family inet6</code>).</td>
+            <td><code>xe-0/1/0</code> through <code>xe-0/1/3</code>, <code>unit</code>, <code>family</code></td>
+          </tr>
+          <tr>
+            <td><code>protocols</code></td>
+            <td>Configuration and activation of Layer 2/3 protocols (discovery, spanning tree, dynamic routing, MPLS).</td>
+            <td><code>lldp</code>, <code>rstp</code>, <code>isis</code>, <code>mpls</code>, <code>bgp</code>, <code>ospf</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="added-context">
+      <div class="added-context-title">📘 Added context: Additional Junos Top-Level Hierarchies for JNCIA-Junos</div>
+      <p>In addition to the core four covered above, JNCIA-Junos candidates should recognize:
+      <ul>
+        <li><code>routing-options</code>: Static routes, default gateways, Router ID, Autonomous System (AS) number.</li>
+        <li><code>firewall</code>: Stateless packet filtering rules, terms (match/then actions), and policers.</li>
+        <li><code>policy-options</code>: Routing policy statements (prefix lists, BGP community maps, AS-path filters).</li>
+        <li><code>security</code>: Stateful firewall policies, security zones, and NAT (specifically on SRX Series).</li>
+      </ul>
+      </p>
+    </div>
+
+    <div class="gotcha-box">
+      <div class="gotcha-title">⚠️ Key Architectural Distinction: Interface Properties vs. Protocol Bindings</div>
+      <p>A fundamental Junos design rule: <strong>Interface configuration belongs under <code>interfaces</code>, but running a protocol over that interface belongs under <code>protocols</code></strong>. For instance, IP addresses and MTUs are configured under <code>interfaces xe-0/1/1 unit 0</code>, while enabling LLDP or OSPF on that link is configured under <code>protocols lldp interface xe-0/1/1</code>. This guarantees all protocol settings remain consolidated in a single hierarchy.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 5 -->
+  <section id="sec-5">
+    <h2>5. Deconstructing the <code>system</code> Hierarchy</h2>
+    <p>The <code>system</code> hierarchy contains all foundational settings required for device identification, administrative access, user permissions, and auditing.</p>
+
+    <div class="diagram-container">
+      <svg viewBox="0 0 960 480" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,sans-serif">
+  <rect width="960" height="480" fill="#f8fafc" rx="10"/>
+
+  <!-- Root: system -->
+  <rect x="370" y="12" width="220" height="40" rx="8" fill="#0284c7"/>
+  <text x="480" y="28" fill="#fff" font-size="14" font-weight="800" text-anchor="middle">system { }</text>
+  <text x="480" y="44" fill="#bae6fd" font-size="9" text-anchor="middle">Top-level: all device-level settings</text>
+
+  <!-- Branch lines -->
+  <line x1="480" y1="52" x2="100" y2="80" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="480" y1="52" x2="300" y2="80" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="480" y1="52" x2="500" y2="80" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="480" y1="52" x2="680" y2="80" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="480" y1="52" x2="870" y2="80" stroke="#94a3b8" stroke-width="1.5"/>
+
+  <!-- host-name -->
+  <rect x="20" y="80" width="160" height="72" rx="6" fill="#fff" stroke="#0284c7" stroke-width="1.5"/>
+  <rect x="20" y="80" width="160" height="22" rx="4" fill="#0284c7"/>
+  <text x="100" y="96" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">host-name</text>
+  <text x="30" y="118" fill="#334155" font-size="10">Value: R1</text>
+  <text x="30" y="136" fill="#dc2626" font-size="9">Should be: Router1</text>
+  <text x="30" y="148" fill="#64748b" font-size="8">set system host-name R1</text>
+
+  <!-- services -->
+  <rect x="200" y="80" width="200" height="140" rx="6" fill="#fff" stroke="#0284c7" stroke-width="1.5"/>
+  <rect x="200" y="80" width="200" height="22" rx="4" fill="#0284c7"/>
+  <text x="300" y="96" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">services</text>
+  <rect x="210" y="108" width="180" height="24" rx="4" fill="#dcfce7"/>
+  <text x="300" y="124" fill="#15803d" font-size="10" text-anchor="middle">ssh  (secure, TCP 22)</text>
+  <rect x="210" y="138" width="180" height="24" rx="4" fill="#fff7ed"/>
+  <text x="300" y="154" fill="#c2410c" font-size="10" text-anchor="middle">telnet  (insecure! remove)</text>
+  <rect x="210" y="168" width="180" height="24" rx="4" fill="#f0f9ff"/>
+  <text x="300" y="184" fill="#0369a1" font-size="10" text-anchor="middle">netconf ssh  (API, TCP 830)</text>
+
+  <!-- root-authentication -->
+  <rect x="420" y="80" width="160" height="90" rx="6" fill="#fff" stroke="#7c3aed" stroke-width="1.5"/>
+  <rect x="420" y="80" width="160" height="22" rx="4" fill="#7c3aed"/>
+  <text x="500" y="96" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">root-authentication</text>
+  <text x="430" y="118" fill="#4c1d95" font-size="10">Default root account</text>
+  <text x="430" y="136" fill="#6b21a8" font-size="9">UID 0, full access</text>
+  <text x="430" y="152" fill="#dc2626" font-size="9" font-weight="600">MANDATORY before 1st commit</text>
+
+  <!-- login -->
+  <rect x="600" y="80" width="160" height="115" rx="6" fill="#fff" stroke="#0284c7" stroke-width="1.5"/>
+  <rect x="600" y="80" width="160" height="22" rx="4" fill="#0284c7"/>
+  <text x="680" y="96" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">login</text>
+  <text x="610" y="118" fill="#0369a1" font-size="10" font-weight="600">user: employee</text>
+  <text x="610" y="136" fill="#334155" font-size="9">class: super-user (full access)</text>
+  <text x="610" y="153" fill="#334155" font-size="9">uid: 2001 (auto-assigned)</text>
+  <text x="610" y="170" fill="#334155" font-size="9">auth: SHA-512 encrypted hash</text>
+  <text x="610" y="187" fill="#64748b" font-size="8">You type plaintext, Junos hashes it</text>
+
+  <!-- syslog -->
+  <rect x="780" y="80" width="160" height="110" rx="6" fill="#fff" stroke="#0369a1" stroke-width="1.5"/>
+  <rect x="780" y="80" width="160" height="22" rx="4" fill="#0369a1"/>
+  <text x="860" y="96" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">syslog</text>
+  <text x="790" y="118" fill="#334155" font-size="9" font-weight="600">file messages:</text>
+  <text x="800" y="133" fill="#64748b" font-size="8.5">any notice / authorization info</text>
+  <text x="790" y="153" fill="#334155" font-size="9" font-weight="600">file interactive-commands:</text>
+  <text x="800" y="168" fill="#64748b" font-size="8.5">logs all CLI commands</text>
+  <text x="790" y="185" fill="#64748b" font-size="8">stored in /var/log/</text>
+
+  <!-- Login class hierarchy reference -->
+  <rect x="200" y="240" width="260" height="55" rx="6" fill="#fef9c3" stroke="#fbbf24"/>
+  <text x="210" y="258" fill="#92400e" font-size="10" font-weight="700">LOGIN CLASS HIERARCHY:</text>
+  <text x="210" y="278" fill="#78350f" font-size="10">super-user  ›  operator  ›  read-only  ›  unauthorized</text>
+  <text x="210" y="290" fill="#64748b" font-size="8">Custom classes also possible with specific permission bits</text>
+
+  <!-- Syslog severity reference -->
+  <rect x="500" y="240" width="440" height="55" rx="6" fill="#f0f9ff" stroke="#7dd3fc"/>
+  <text x="510" y="258" fill="#0369a1" font-size="10" font-weight="700">SYSLOG SEVERITY LEVELS (high to low):</text>
+  <text x="510" y="278" fill="#334155" font-size="10">emergency › alert › critical › error › warning › notice › info › debug</text>
+  <text x="510" y="290" fill="#64748b" font-size="8">Setting a level captures that level AND all higher severities</text>
+
+  <!-- SET COMMANDS STRIP -->
+  <rect x="20" y="315" width="920" height="150" rx="8" fill="#0f172a"/>
+  <text x="35" y="337" fill="#64748b" font-size="10" font-weight="600">KEY COMMANDS:</text>
+  <text x="35" y="358" fill="#facc15" font-size="10">set system host-name Router1</text>
+  <text x="35" y="377" fill="#4ade80" font-size="10">set system services ssh</text>
+  <text x="35" y="396" fill="#fb923c" font-size="10">delete system services telnet</text>
+  <text x="35" y="415" fill="#facc15" font-size="10">set system login user employee class super-user</text>
+  <text x="35" y="434" fill="#facc15" font-size="10">set system login user employee authentication plain-text-password</text>
+  <text x="35" y="453" fill="#38bdf8" font-size="10">show configuration system | display set</text>
+
+  <text x="500" y="358" fill="#64748b" font-size="9">← set hostname correctly</text>
+  <text x="500" y="377" fill="#64748b" font-size="9">← enable SSH</text>
+  <text x="500" y="396" fill="#64748b" font-size="9">← remove insecure Telnet</text>
+  <text x="500" y="415" fill="#64748b" font-size="9">← create user with full access</text>
+  <text x="500" y="434" fill="#64748b" font-size="9">← Junos will prompt for password, then hash it</text>
+  <text x="500" y="453" fill="#64748b" font-size="9">← view system config in set format</text>
+</svg>
+      <div class="diagram-caption">Figure 5.1 — Decomposition of the Junos OS <code>system</code> Configuration Tree</div>
+    </div>
+
+    <h3>1. Hostname Configuration</h3>
+    <pre><code><span class="cmd">set system host-name R1</span></code></pre>
+    <p>Defines the system identity displayed in the CLI prompt (e.g. <code>employee@R1></code>). To fix the customer requirement, this will be modified to <code>Router1</code>.</p>
+
+    <h3>2. Management Services (SSH, Telnet & NETCONF)</h3>
+    <pre><code><span class="cmd">set system services ssh</span>
+<span class="cmd">set system services telnet</span>
+<span class="cmd">set system services netconf ssh</span></code></pre>
+    <ul>
+      <li><code>ssh</code>: Enables secure shell access over TCP port 22 with encrypted transport.</li>
+      <li><code>telnet</code>: Enables unencrypted cleartext access over TCP port 23. <span class="badge badge-orange">Security Risk</span> In production, Telnet should always be disabled.</li>
+      <li><code>netconf ssh</code>: Activates the XML-based Network Configuration Protocol over SSH subsystem (TCP port 830), allowing automated Python/Ansible scripts and base config loaders to manipulate device state programmatically.</li>
+    </ul>
+
+    <h3>3. User Accounts, Password Encryption & Login Classes</h3>
+    <pre><code><span class="cmd">set system login user employee class super-user</span>
+<span class="cmd">set system login user employee authentication encrypted-password "$6$b7zY..."</span>
+<span class="cmd">set system login user employee uid 2001</span></code></pre>
+    <ul>
+      <li><strong>Login Classes:</strong> Determine the permission matrix for the user:
+        <ul>
+          <li><code>super-user</code>: Full access to all configuration and operational commands (root-equivalent).</li>
+          <li><code>operator</code>: Can view configuration and clear/reset network counters, but cannot modify configuration.</li>
+          <li><code>read-only</code>: View-only access across operational and configuration modes.</li>
+          <li><code>unauthorized</code>: Blocked from executing commands.</li>
+        </ul>
+      </li>
+      <li><strong>Interactive Passwords vs. Stored Hashes:</strong> When configuring a password in the CLI (<code>set system login user employee authentication plain-text-password</code>), Junos prompts for plaintext input, hashes it with a one-way salt (SHA-512 / <code>$6$</code>), and stores only the resulting hash in the configuration.</li>
+      <li><strong>User ID (UID):</strong> An internal Unix system identifier. If omitted during manual configuration, Junos automatically generates and assigns a unique UID.</li>
+    </ul>
+
+    <h3>4. Root Authentication</h3>
+    <pre><code><span class="cmd">set system root-authentication encrypted-password "$6$k8Lp..."</span></code></pre>
+    <p>Sets the administrative password for the built-in <code>root</code> account (UNIX UID 0). Junos enforces a strict mandatory security rule: <strong>a factory-default Junos device will reject any initial <code>commit</code> if a root authentication password has not been configured</strong>.</p>
+
+    <h3>5. System Logging (<code>syslog</code>)</h3>
+    <pre><code><span class="cmd">set system syslog file messages any notice</span>
+<span class="cmd">set system syslog file messages authorization info</span>
+<span class="cmd">set system syslog file interactive-commands commands any</span></code></pre>
+    <p>Junos provides standard pre-defined system log files stored in <code>/var/log/</code>:</p>
+    <ul>
+      <li><code>file messages</code>: Captures all system events at severity <code>notice</code> and higher, plus all user authentication events at severity <code>info</code> and higher.</li>
+      <li><code>file interactive-commands</code>: Logs every operational and configuration command executed by users for auditing and compliance.</li>
+    </ul>
+
+    <div class="added-context">
+      <div class="added-context-title">📘 Added context: Junos Syslog Severity Hierarchy</div>
+      <p>Junos adheres to standard BSD syslog severity levels from highest (0) to lowest (7):<br>
+      <code>emergency (0)</code> &gt; <code>alert (1)</code> &gt; <code>critical (2)</code> &gt; <code>error (3)</code> &gt; <code>warning (4)</code> &gt; <code>notice (5)</code> &gt; <code>info (6)</code> &gt; <code>debug (7)</code>.<br>
+      Configuring a level logs that level and all higher severities (e.g., <code>notice</code> captures notice, warning, error, critical, alert, and emergency).</p>
+    </div>
+
+    <div class="hands-on-box">
+      <div class="hands-on-title">🛠️ Hands-on Tasks — Section 5</div>
+      <p><strong>Task 5.1 (Scoping):</strong> Display only the login user accounts configured on the router in set format:</p>
+      <pre><code><span class="prompt-user">user@Router1></span> <span class="cmd">show configuration system login | display set</span></code></pre>
+      <p><strong>Task 5.2 (Audit Question):</strong> Reviewing the system services output, which command is required to close the security vulnerability discovered on Router 1?</p>
+      <p><em>Solution:</em> <code>delete system services telnet</code></p>
+    </div>
+  </section>
+
+  <!-- SECTION 6 -->
+  <section id="sec-6">
+    <h2>6. Deconstructing the <code>interfaces</code> Hierarchy</h2>
+    <p>The <code>interfaces</code> hierarchy defines both the physical hardware layer (Media Access Control, port framing, Layer 2 MTU) and the logical layer (Logical Units, Protocol Families, IP Addressing, Layer 3 MTU).</p>
+
+    <div class="diagram-container">
+      <svg viewBox="0 0 960 560" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,sans-serif">
+  <rect width="960" height="560" fill="#f8fafc" rx="10"/>
+
+  <!-- MX-204 Chassis -->
+  <rect x="15" y="12" width="930" height="110" rx="8" fill="#1e293b" stroke="#475569" stroke-width="2"/>
+  <text x="70" y="35" fill="#38bdf8" font-size="13" font-weight="800">JUNIPER MX-204</text>
+  <text x="70" y="52" fill="#94a3b8" font-size="9">1RU  •  2 PICs</text>
+
+  <!-- Mgmt ports -->
+  <rect x="30" y="62" width="90" height="45" rx="4" fill="#0f172a" stroke="#334155"/>
+  <text x="75" y="80" fill="#94a3b8" font-size="9" text-anchor="middle">CON | fxp0</text>
+  <text x="75" y="98" fill="#64748b" font-size="8" text-anchor="middle">Management</text>
+
+  <!-- PIC 0 -->
+  <rect x="140" y="62" width="280" height="45" rx="4" fill="#0f172a" stroke="#334155"/>
+  <text x="280" y="78" fill="#64748b" font-size="9" text-anchor="middle">PIC 0: 4x 100GbE QSFP28</text>
+  <text x="280" y="96" fill="#94a3b8" font-size="8" text-anchor="middle">et-0/0/0  |  et-0/0/1  |  et-0/0/2  |  et-0/0/3</text>
+
+  <!-- PIC 1 — highlighted -->
+  <rect x="440" y="62" width="490" height="45" rx="4" fill="#0c3050" stroke="#0284c7" stroke-width="2"/>
+  <text x="685" y="78" fill="#38bdf8" font-size="9" font-weight="700" text-anchor="middle">PIC 1: 4x 10GbE SFP+ — THESE PORTS ARE USED IN THIS MODULE</text>
+  <rect x="455" y="86" width="80" height="18" rx="3" fill="#7f1d1d"/>
+  <text x="495" y="99" fill="#fca5a5" font-size="9" text-anchor="middle">xe-0/1/0</text>
+  <rect x="545" y="86" width="80" height="18" rx="3" fill="#1e3a8a"/>
+  <text x="585" y="99" fill="#bfdbfe" font-size="9" text-anchor="middle">xe-0/1/1</text>
+  <rect x="635" y="86" width="80" height="18" rx="3" fill="#1e3a8a"/>
+  <text x="675" y="99" fill="#bfdbfe" font-size="9" text-anchor="middle">xe-0/1/2</text>
+  <rect x="725" y="86" width="80" height="18" rx="3" fill="#7c2d12"/>
+  <text x="765" y="99" fill="#fed7aa" font-size="9" text-anchor="middle">xe-0/1/3</text>
+  <text x="850" y="99" fill="#64748b" font-size="8">WAN  Corp  Srv  Guest</text>
+
+  <!-- Port naming anatomy -->
+  <rect x="15" y="130" width="420" height="40" rx="6" fill="#0f172a"/>
+  <text x="25" y="147" fill="#38bdf8" font-size="12" font-weight="700">xe - 0 / 1 / 1</text>
+  <text x="160" y="147" fill="#94a3b8" font-size="10">type(10GE) - FPC(0) / PIC(1) / port(1)</text>
+  <text x="25" y="164" fill="#64748b" font-size="9">xe=10GbE  et=100GbE  ge=1GbE</text>
+
+  <!-- Physical vs Logical Structure -->
+  <rect x="15" y="180" width="930" height="365" rx="8" fill="#fff" stroke="#334155" stroke-width="1.5"/>
+  <text x="480" y="204" fill="#0f172a" font-size="13" font-weight="700" text-anchor="middle">Physical Interface → Logical Unit → Address Family → IP Address</text>
+
+  <!-- Physical level -->
+  <rect x="30" y="215" width="890" height="45" rx="6" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="40" y="237" fill="#0f172a" font-size="11" font-weight="700">Physical Interface: xe-0/1/1</text>
+  <text x="40" y="253" fill="#0369a1" font-size="10">set interfaces xe-0/1/1 description "Corporate LAN"     |     set interfaces xe-0/1/1 mtu 1800  (Layer 2 MTU)</text>
+
+  <!-- Logical unit -->
+  <rect x="50" y="270" width="850" height="35" rx="6" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="60" y="293" fill="#1e40af" font-size="11" font-weight="700">Logical Unit: unit 0  (required for IP — one unit per untagged link, multiple with VLANs)</text>
+
+  <!-- family inet -->
+  <rect x="70" y="315" width="400" height="65" rx="6" fill="#dcfce7" stroke="#86efac"/>
+  <text x="80" y="335" fill="#14532d" font-size="11" font-weight="700">family inet (IPv4)</text>
+  <text x="80" y="355" fill="#166534" font-size="10">address 172.16.10.1/24  (CIDR slash notation)</text>
+  <text x="80" y="372" fill="#64748b" font-size="9">Optional: mtu 900  (limits IPv4 packets ONLY)</text>
+
+  <!-- family inet6 -->
+  <rect x="490" y="315" width="400" height="65" rx="6" fill="#f3e8ff" stroke="#c084fc"/>
+  <text x="500" y="335" fill="#6b21a8" font-size="11" font-weight="700">family inet6 (IPv6)</text>
+  <text x="500" y="355" fill="#7e22ce" font-size="10">address 2001:db8:10::1/64  (global unicast)</text>
+  <text x="500" y="372" fill="#6b21a8" font-size="9">OR just "family inet6" = link-local only (fe80::)</text>
+
+  <!-- MTU comparison box -->
+  <rect x="30" y="395" width="890" height="95" rx="6" fill="#fff7ed" stroke="#fbbf24"/>
+  <text x="475" y="415" fill="#92400e" font-size="12" font-weight="700" text-anchor="middle">MTU: Physical (L2) vs. Family (L3) — Key Distinction</text>
+  <text x="40" y="437" fill="#0f172a" font-size="10" font-weight="600">Physical MTU (on interface name):</text>
+  <text x="270" y="437" fill="#0369a1" font-size="10">set interfaces xe-0/1/1 mtu 1800  =  max Ethernet frame (header + payload + FCS)</text>
+  <text x="40" y="460" fill="#0f172a" font-size="10" font-weight="600">Family MTU (on address family):</text>
+  <text x="270" y="460" fill="#ea580c" font-size="10">set ... unit 0 family inet mtu 900  =  max IPv4 packet only. IPv6 is NOT affected.</text>
+  <text x="40" y="483" fill="#dc2626" font-size="9" font-weight="600">Mismatch warning: Corp LAN has L2 MTU 1800, Guest LAN has L3 IPv4 MTU 900 — different layers!</text>
+
+  <!-- Config code strip -->
+  <rect x="30" y="498" width="890" height="40" rx="6" fill="#0f172a"/>
+  <text x="40" y="516" fill="#38bdf8" font-size="9">View one interface:  show configuration interfaces xe-0/1/1</text>
+  <text x="400" y="516" fill="#38bdf8" font-size="9">Find all MTUs:  show configuration interfaces | display set | match mtu</text>
+  <text x="780" y="516" fill="#38bdf8" font-size="9">Result: 2 lines</text>
+</svg>
+      <div class="diagram-caption">Figure 6.1 — Juniper MX-204 Hardware Port Layout & Detailed Interface Parameter Anatomy</div>
+    </div>
+
+    <h3>1. Physical vs. Logical Interfaces (<code>unit 0</code>)</h3>
+    <p>In Junos, hardware ports are referenced as physical interfaces (e.g. <code>xe-0/1/1</code>). However, <strong>IP protocol stacks cannot be bound directly to a physical interface</strong>. Junos requires a <strong>logical unit</strong> (typically <code>unit 0</code> for single untagged connections) to host address families.</p>
+    <pre><code><span class="cmd">set interfaces xe-0/1/1 description "Corporate LAN"</span>
+<span class="cmd">set interfaces xe-0/1/1 unit 0 family inet address 172.16.10.1/24</span>
+<span class="cmd">set interfaces xe-0/1/1 unit 0 family inet6 address 2001:db8:10::1/64</span></code></pre>
+    <p>Notice that Junos uses CIDR slash notation (<code>/24</code>, <code>/64</code>) directly instead of legacy dotted-decimal subnet masks (<code>255.255.255.0</code>).</p>
+
+    <h3>2. Physical MTU (Layer 2) vs. Protocol Family MTU (Layer 3)</h3>
+    <p>Understanding MTU configuration levels is essential for network reliability:</p>
+
+    <div class="diagram-container">
+      <svg viewBox="0 0 960 320" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,sans-serif">
+  <rect width="960" height="320" fill="#f8fafc" rx="10"/>
+
+  <text x="480" y="26" fill="#0f172a" font-size="13" font-weight="800" text-anchor="middle">MTU Layer Comparison — L2 Frame vs L3 Packet</text>
+
+  <!-- ROW 1: L2 Ethernet Frame -->
+  <text x="15" y="58" fill="#1e3a8a" font-size="10" font-weight="700">L2 Physical MTU</text>
+  <text x="15" y="72" fill="#1e3a8a" font-size="9">xe-0/1/1: mtu 1800</text>
+  <rect x="145" y="44" width="800" height="40" rx="6" fill="#dbeafe" stroke="#0284c7" stroke-width="2"/>
+  <rect x="149" y="48" width="55" height="32" rx="3" fill="#93c5fd"/>
+  <text x="176" y="68" fill="#1e3a8a" font-size="8" text-anchor="middle">Eth Hdr</text>
+  <rect x="208" y="48" width="685" height="32" rx="3" fill="#eff6ff"/>
+  <text x="550" y="68" fill="#1e3a8a" font-size="11" font-weight="600" text-anchor="middle">Payload (up to ~1782 bytes of IP packet data)</text>
+  <rect x="897" y="48" width="44" height="32" rx="3" fill="#93c5fd"/>
+  <text x="919" y="68" fill="#1e3a8a" font-size="8" text-anchor="middle">FCS</text>
+  <text x="550" y="42" fill="#0284c7" font-size="9" font-weight="600" text-anchor="middle">1800 bytes total frame</text>
+
+  <!-- ROW 2: Normal IPv4 (no family mtu restriction) -->
+  <text x="15" y="116" fill="#15803d" font-size="10" font-weight="700">IPv4 — no family MTU set</text>
+  <text x="15" y="130" fill="#15803d" font-size="9">Uses full L2 payload</text>
+  <rect x="208" y="100" width="685" height="40" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <rect x="212" y="104" width="70" height="32" rx="3" fill="#86efac"/>
+  <text x="247" y="124" fill="#14532d" font-size="8" text-anchor="middle">IP Hdr 20B</text>
+  <rect x="286" y="104" width="603" height="32" rx="3" fill="#f0fdf4"/>
+  <text x="587" y="124" fill="#14532d" font-size="11" font-weight="600" text-anchor="middle">IP Payload — NOT restricted</text>
+
+  <!-- ROW 3: IPv4 with family inet mtu 900 -->
+  <text x="15" y="176" fill="#c2410c" font-size="10" font-weight="700">IPv4 — family inet mtu 900</text>
+  <text x="15" y="190" fill="#c2410c" font-size="9">xe-0/1/3 Guest LAN</text>
+  <rect x="208" y="160" width="685" height="40" rx="6" fill="#ffedd5" stroke="#ea580c" stroke-width="2"/>
+  <rect x="212" y="164" width="70" height="32" rx="3" fill="#fdba74"/>
+  <text x="247" y="184" fill="#7c2d12" font-size="8" text-anchor="middle">IP Hdr 20B</text>
+  <rect x="286" y="164" width="280" height="32" rx="3" fill="#fff7ed"/>
+  <text x="426" y="184" fill="#c2410c" font-size="10" font-weight="600" text-anchor="middle">Max 880B payload</text>
+  <rect x="570" y="164" width="319" height="32" rx="3" fill="#fee2e2" stroke="#fca5a5" stroke-dasharray="5,3"/>
+  <text x="729" y="184" fill="#dc2626" font-size="10" font-weight="700" text-anchor="middle">BLOCKED (exceeds 900B limit)</text>
+
+  <!-- ROW 4: IPv6 unaffected -->
+  <text x="15" y="236" fill="#6b21a8" font-size="10" font-weight="700">IPv6 — NOT restricted</text>
+  <text x="15" y="250" fill="#6b21a8" font-size="9">by family inet mtu 900</text>
+  <rect x="208" y="220" width="685" height="40" rx="6" fill="#f3e8ff" stroke="#a855f7" stroke-width="2"/>
+  <rect x="212" y="224" width="70" height="32" rx="3" fill="#c084fc"/>
+  <text x="247" y="244" fill="#4c1d95" font-size="8" text-anchor="middle">IPv6 Hdr 40B</text>
+  <rect x="286" y="224" width="603" height="32" rx="3" fill="#faf5ff"/>
+  <text x="587" y="244" fill="#6b21a8" font-size="11" font-weight="600" text-anchor="middle">IPv6 Payload — uses physical interface MTU, NOT family inet mtu</text>
+
+  <!-- Summary -->
+  <rect x="15" y="275" width="930" height="35" rx="6" fill="#0f172a"/>
+  <text x="480" y="297" fill="#38bdf8" font-size="10" text-anchor="middle">KEY: family inet mtu only restricts IPv4 traffic  |  IPv6 always uses the physical interface MTU  |  Physical mtu restricts ALL traffic</text>
+</svg>
+      <div class="diagram-caption">Figure 6.2 — Packet/Frame Encapsulation: Physical Layer 2 MTU vs. Protocol Family Layer 3 MTU</div>
+    </div>
+
+    <ul>
+      <li><strong>Physical Interface MTU (<code>set interfaces xe-0/1/1 mtu 1800</code>):</strong> Specifies the maximum Ethernet frame size (including L2 header, payload, and FCS) that the physical transceiver and ASIC will transmit or receive.</li>
+      <li><strong>Family MTU (<code>set interfaces xe-0/1/3 unit 0 family inet mtu 900</code>):</strong> Caps the maximum IP packet size (IP header + payload) strictly for IPv4 packets. IPv6 packets on the same logical interface are <strong>unaffected</strong> and adhere to the default interface MTU.</li>
+    </ul>
+
+    <h3>3. IPv6 Link-Local Only Configuration (<code>family inet6</code>)</h3>
+    <pre><code><span class="cmd">set interfaces xe-0/1/3 unit 0 family inet6</span></code></pre>
+    <p>When <code>family inet6</code> is enabled without specifying an explicit IPv6 address, Junos automatically provisions an IEEE EUI-64/modified link-local address (<code>fe80::/64</code>). In core enterprise and ISP transit networks, this is a standard design best practice: routing protocols (like IS-IS or OSPFv3) form neighbor adjacencies across link-local addresses, while edge devices communicate using stable, always-on loopback (<code>lo0.0</code>) IPv6 addresses, completely eliminating transit link IP subnet administration.</p>
+
+    <div class="gotcha-box">
+      <div class="gotcha-title">⚠️ Common Gotcha: MTU Mismatches Cause Silent Failures</div>
+      <p>A mismatch between Layer 2 and Layer 3 MTUs can cause insidious network issues. Small ICMP pings succeed, but large data transfers (TCP MSS negotiation failures, Path MTU Discovery blackholes) or routing protocol adjacency handshakes (such as OSPF DBD exchange getting stuck in <code>EXSTART/EXCHANGE</code> state) fail silently.</p>
+    </div>
+
+    <div class="hands-on-box">
+      <div class="hands-on-title">🛠️ Hands-on Tasks — Section 6</div>
+      <p><strong>Task 6.1 (Audit Command):</strong> Use the CLI to display only interface <code>xe-0/1/1</code> in hierarchy view:</p>
+      <pre><code><span class="prompt-user">user@Router1></span> <span class="cmd">show configuration interfaces xe-0/1/1</span></code></pre>
+      <p><strong>Task 6.2 (Verification Question):</strong> If an engineer sends a 1200-byte IPv6 packet and a 1200-byte IPv4 packet out of interface <code>xe-0/1/3</code>, what happens to each packet?</p>
+      <p><em>Answer:</em> The IPv6 packet traverses successfully (subject to the 1500-byte default L2 MTU). The IPv4 packet is fragmented or dropped with "Packet Too Big" ICMP message because IPv4 is explicitly restricted to <code>mtu 900</code> under <code>family inet</code>.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 7 -->
+  <section id="sec-7">
+    <h2>7. Deconstructing the <code>protocols</code> Hierarchy</h2>
+    <div class="diagram-container">
+      <svg viewBox="0 0 960 440" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,sans-serif">
+  <rect width="960" height="440" fill="#f8fafc" rx="10"/>
+  <text x="480" y="26" fill="#0f172a" font-size="14" font-weight="800" text-anchor="middle">protocols { } Hierarchy — Protocol Binding Model</text>
+
+  <!-- LEFT: LLDP config + explanation -->
+  <rect x="15" y="40" width="440" height="185" rx="8" fill="#0f172a" stroke="#0284c7" stroke-width="2"/>
+  <text x="235" y="62" fill="#38bdf8" font-size="11" font-weight="700" text-anchor="middle">LLDP Configuration on Router 1</text>
+  <text x="30" y="88" fill="#f8fafc" font-size="11"><tspan fill="#4ade80">set</tspan> protocols lldp interface xe-0/1/1</text>
+  <text x="30" y="110" fill="#f8fafc" font-size="11"><tspan fill="#4ade80">set</tspan> protocols lldp interface xe-0/1/2</text>
+  <text x="30" y="132" fill="#f8fafc" font-size="11"><tspan fill="#4ade80">set</tspan> protocols lldp interface xe-0/1/3</text>
+  <text x="30" y="155" fill="#fb923c" font-size="10"># xe-0/1/0 NOT listed = LLDP off on WAN</text>
+  <text x="30" y="178" fill="#94a3b8" font-size="9">LLDP uses physical port name (not unit 0)</text>
+  <text x="30" y="196" fill="#94a3b8" font-size="9">because it is a Layer 2 protocol</text>
+  <text x="30" y="214" fill="#94a3b8" font-size="9">Never enable LLDP on untrusted (WAN) links</text>
+
+  <!-- RIGHT: Key principle -->
+  <rect x="475" y="40" width="470" height="185" rx="8" fill="#fff" stroke="#334155" stroke-width="1.5"/>
+  <text x="710" y="62" fill="#0f172a" font-size="11" font-weight="700" text-anchor="middle">Why protocols live here, NOT in "interfaces"</text>
+  <text x="490" y="88" fill="#334155" font-size="10">interfaces { } = properties OF the port itself</text>
+  <text x="510" y="106" fill="#64748b" font-size="9">(MTU, description, IP address, speed)</text>
+  <text x="490" y="130" fill="#334155" font-size="10">protocols { } = protocols RUNNING on the port</text>
+  <text x="510" y="148" fill="#64748b" font-size="9">(LLDP, OSPF, BGP, MPLS, IS-IS)</text>
+  <rect x="490" y="162" width="440" height="48" rx="5" fill="#dcfce7"/>
+  <text x="710" y="182" fill="#14532d" font-size="10" font-weight="700" text-anchor="middle">BENEFIT: All config for one protocol</text>
+  <text x="710" y="200" fill="#166534" font-size="10" text-anchor="middle">lives in exactly ONE place in the config tree</text>
+
+  <!-- Protocol reference table -->
+  <rect x="15" y="240" width="930" height="185" rx="8" fill="#fff" stroke="#334155" stroke-width="1.5"/>
+  <text x="480" y="264" fill="#0f172a" font-size="12" font-weight="700" text-anchor="middle">Protocol Syntax Pattern:  set protocols [name] interface [port]</text>
+
+  <!-- Table headers -->
+  <rect x="25" y="278" width="910" height="24" rx="4" fill="#f1f5f9"/>
+  <text x="35" y="294" fill="#0f172a" font-size="10" font-weight="700">Protocol</text>
+  <text x="130" y="294" fill="#0f172a" font-size="10" font-weight="700">Full Name</text>
+  <text x="400" y="294" fill="#0f172a" font-size="10" font-weight="700">Layer / Purpose</text>
+  <text x="630" y="294" fill="#0f172a" font-size="10" font-weight="700">Example Command</text>
+
+  <!-- Rows -->
+  <text x="35" y="320" fill="#0d9488" font-size="10" font-weight="700">lldp</text>
+  <text x="130" y="320" fill="#334155" font-size="10">Link Layer Discovery Protocol</text>
+  <text x="400" y="320" fill="#334155" font-size="10">L2 • Neighbor discovery</text>
+  <text x="630" y="320" fill="#0369a1" font-size="9">set protocols lldp interface xe-0/1/1</text>
+
+  <text x="35" y="344" fill="#1d4ed8" font-size="10" font-weight="700">rstp</text>
+  <text x="130" y="344" fill="#334155" font-size="10">Rapid Spanning Tree</text>
+  <text x="400" y="344" fill="#334155" font-size="10">L2 • Loop prevention</text>
+  <text x="630" y="344" fill="#0369a1" font-size="9">set protocols rstp interface xe-0/1/1</text>
+
+  <text x="35" y="368" fill="#92400e" font-size="10" font-weight="700">ospf</text>
+  <text x="130" y="368" fill="#334155" font-size="10">Open Shortest Path First</text>
+  <text x="400" y="368" fill="#334155" font-size="10">L3 • Link-state IGP routing</text>
+  <text x="630" y="368" fill="#0369a1" font-size="9">set protocols ospf area 0 interface xe-0/1/1.0</text>
+
+  <text x="35" y="392" fill="#7e22ce" font-size="10" font-weight="700">isis</text>
+  <text x="130" y="392" fill="#334155" font-size="10">IS-IS</text>
+  <text x="400" y="392" fill="#334155" font-size="10">L3 • SP-grade IGP routing</text>
+  <text x="630" y="392" fill="#0369a1" font-size="9">set protocols isis interface xe-0/1/1.0</text>
+
+  <text x="35" y="416" fill="#701a75" font-size="10" font-weight="700">mpls</text>
+  <text x="130" y="416" fill="#334155" font-size="10">Multiprotocol Label Switching</text>
+  <text x="400" y="416" fill="#334155" font-size="10">L2.5 • Label-switched tunnels</text>
+  <text x="630" y="416" fill="#0369a1" font-size="9">set protocols mpls interface xe-0/1/1</text>
+</svg>
+      <div class="diagram-caption">Figure 7.1 — The <code>protocols</code> Hierarchy: LLDP Architecture, Neighbor Discovery Model, and Protocol Binding Syntax</div>
+    </div>
+
+    <p>The <code>protocols</code> hierarchy contains all protocol-specific operational states, timer adjustments, and interface bindings.</p>
+
+    <h3>1. Link Layer Discovery Protocol (LLDP - IEEE 802.1AB)</h3>
+    <pre><code><span class="cmd">set protocols lldp interface xe-0/1/1</span>
+<span class="cmd">set protocols lldp interface xe-0/1/2</span>
+<span class="cmd">set protocols lldp interface xe-0/1/3</span></code></pre>
+    <ul>
+      <li><strong>Physical Binding:</strong> Notice that LLDP is enabled on physical ports (<code>xe-0/1/1</code>) rather than logical units (<code>unit 0</code>). This is because LLDP is a Layer 2 discovery protocol operating directly over Ethernet frames.</li>
+      <li><strong>WAN Security Boundary:</strong> Interface <code>xe-0/1/0</code> (the WAN connection to the Internet) is intentionally excluded from the LLDP hierarchy to avoid broadcasting internal system details, chassis models, and software revisions to untrusted external networks.</li>
+    </ul>
+
+    <h3>2. Protocol Hierarchy Uniformity across Junos OS</h3>
+    <p>Junos adheres to an intuitive, predictable command grammar across virtually all networking protocols:</p>
+    <pre><code><span class="cmd">set protocols rstp interface xe-0/1/1</span>      <span class="comment"># Rapid Spanning Tree Protocol (L2 loop prevention)</span>
+<span class="cmd">set protocols isis interface xe-0/1/1</span>      <span class="comment"># Intermediate System to Intermediate System (L3 IGP)</span>
+<span class="cmd">set protocols mpls interface xe-0/1/1</span>      <span class="comment"># Multiprotocol Label Switching (L2.5 label switching)</span></code></pre>
+    <p>Once you understand how to bind interfaces and configure parameters for one protocol, navigating other advanced protocols becomes second nature.</p>
+
+    <div class="hands-on-box">
+      <div class="hands-on-title">🛠️ Hands-on Tasks — Section 7</div>
+      <p><strong>Task 7.1 (Scoping):</strong> View all enabled protocols on the router in set format:</p>
+      <pre><code><span class="prompt-user">user@Router1></span> <span class="cmd">show configuration protocols | display set</span></code></pre>
+      <p><strong>Task 7.2 (Scenario Question):</strong> Your security policy states LLDP must not run on internet-facing links. Verify if <code>xe-0/1/0</code> is configured under LLDP.</p>
+      <pre><code><span class="prompt-user">user@Router1></span> <span class="cmd">show configuration protocols lldp | display set</span></code></pre>
+      <p><em>Verification:</em> The output confirms only <code>xe-0/1/1</code>, <code>xe-0/1/2</code>, and <code>xe-0/1/3</code> are listed. <code>xe-0/1/0</code> is absent, confirming compliance.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 8 -->
+  <section id="sec-8">
+    <h2>8. Sub-Hierarchy Scoping & Targeted Navigation</h2>
+    <p>On large production routers running thousands of lines of configuration, viewing the entire configuration is inefficient. Junos allows you to scope your <code>show configuration</code> query directly to any specific branch or sub-hierarchy level.</p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Target Configuration Area</th>
+            <th>Scoped Hierarchy Command</th>
+            <th>Equivalent Scoped Set Command</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>System Services (SSH, Telnet, NETCONF)</td>
+            <td><code>show configuration system services</code></td>
+            <td><code>show configuration system services | display set</code></td>
+          </tr>
+          <tr>
+            <td>User Login Accounts & Classes</td>
+            <td><code>show configuration system login</code></td>
+            <td><code>show configuration system login | display set</code></td>
+          </tr>
+          <tr>
+            <td>Single Specific Interface (<code>xe-0/1/2</code>)</td>
+            <td><code>show configuration interfaces xe-0/1/2</code></td>
+            <td><code>show configuration interfaces xe-0/1/2 | display set</code></td>
+          </tr>
+          <tr>
+            <td>Specific User Account (<code>employee</code>)</td>
+            <td><code>show configuration system login user employee</code></td>
+            <td><code>show configuration system login user employee | display set</code></td>
+          </tr>
+          <tr>
+            <td>LLDP Protocol Only</td>
+            <td><code>show configuration protocols lldp</code></td>
+            <td><code>show configuration protocols lldp | display set</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="added-context">
+      <div class="added-context-title">📘 Added context: Truncation Behavior in Hierarchy Scoping</div>
+      <p>When executing <code>show configuration interfaces xe-0/1/2</code> in hierarchy view, Junos automatically skips the outer <code>interfaces { xe-0/1/2 { ... } }</code> headers in the output, starting the indented display directly at <code>unit 0</code>. This intelligent truncation maximizes terminal space and readability.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 9 -->
+  <section id="sec-9">
+    <h2>9. Advanced CLI Output Filtering with Pipes (<code>|</code>)</h2>
+    <p>The Junos CLI contains a powerful UNIX-style text processing pipeline that allows engineers to filter, transform, count, and isolate specific configuration parameters instantly.</p>
+
+    <div class="diagram-container">
+      <svg viewBox="0 0 960 420" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,sans-serif">
+  <defs>
+    <marker id="a8" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,1 L10,5 L0,9Z" fill="#0284c7"/>
+    </marker>
+  </defs>
+  <rect width="960" height="420" fill="#f8fafc" rx="10"/>
+  <text x="480" y="26" fill="#0f172a" font-size="14" font-weight="800" text-anchor="middle">CLI Pipe Pipeline — How Output Filtering Works</text>
+
+  <!-- Stage 1 -->
+  <rect x="15" y="40" width="180" height="100" rx="8" fill="#0c4a6e" stroke="#0284c7" stroke-width="2"/>
+  <text x="105" y="62" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">1. Query Scope</text>
+  <text x="25" y="82" fill="#bae6fd" font-size="9">show configuration</text>
+  <text x="25" y="98" fill="#bae6fd" font-size="9">show config system</text>
+  <text x="25" y="114" fill="#bae6fd" font-size="9">show config interfaces</text>
+  <text x="25" y="130" fill="#bae6fd" font-size="9">show config protocols</text>
+
+  <text x="210" y="92" fill="#0284c7" font-size="20" font-weight="900">|</text>
+  <line x1="225" y1="88" x2="250" y2="88" stroke="#0284c7" stroke-width="2" marker-end="url(#a8)"/>
+
+  <!-- Stage 2 -->
+  <rect x="255" y="40" width="180" height="100" rx="8" fill="#422006" stroke="#ca8a04" stroke-width="2"/>
+  <text x="345" y="62" fill="#fef9c3" font-size="11" font-weight="700" text-anchor="middle">2. display set</text>
+  <text x="265" y="82" fill="#fef9c3" font-size="9">Converts hierarchy</text>
+  <text x="265" y="98" fill="#fef9c3" font-size="9">→ flat set commands</text>
+  <text x="265" y="118" fill="#92400e" font-size="9">(Optional — can skip)</text>
+
+  <text x="450" y="92" fill="#0284c7" font-size="20" font-weight="900">|</text>
+  <line x1="465" y1="88" x2="490" y2="88" stroke="#0284c7" stroke-width="2" marker-end="url(#a8)"/>
+
+  <!-- Stage 3 -->
+  <rect x="495" y="40" width="180" height="100" rx="8" fill="#14532d" stroke="#16a34a" stroke-width="2"/>
+  <text x="585" y="62" fill="#bbf7d0" font-size="11" font-weight="700" text-anchor="middle">3. Filter</text>
+  <text x="505" y="82" fill="#4ade80" font-size="10">match "text"  → keep</text>
+  <text x="505" y="100" fill="#4ade80" font-size="10">except "text" → hide</text>
+  <text x="505" y="118" fill="#4ade80" font-size="10">count → line count</text>
+
+  <text x="690" y="92" fill="#0284c7" font-size="20" font-weight="900">→</text>
+
+  <!-- Stage 4: Output -->
+  <rect x="710" y="40" width="235" height="100" rx="8" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+  <text x="827" y="62" fill="#38bdf8" font-size="11" font-weight="700" text-anchor="middle">4. Terminal Output</text>
+  <text x="720" y="85" fill="#facc15" font-size="10">...xe-0/1/1 mtu 1800</text>
+  <text x="720" y="105" fill="#facc15" font-size="10">...xe-0/1/3 ...inet mtu 900</text>
+  <text x="720" y="125" fill="#64748b" font-size="9">2 lines (from hundreds!)</text>
+
+  <!-- Examples -->
+  <rect x="15" y="160" width="930" height="245" rx="8" fill="#0f172a"/>
+  <text x="480" y="184" fill="#38bdf8" font-size="12" font-weight="700" text-anchor="middle">ESSENTIAL FILTER RECIPES — Used Daily by Junos Engineers</text>
+
+  <text x="30" y="210" fill="#94a3b8" font-size="9">Find all custom MTUs:</text>
+  <text x="30" y="228" fill="#facc15" font-size="10">show configuration interfaces | display set | match mtu</text>
+
+  <text x="500" y="210" fill="#94a3b8" font-size="9">Find ALL references to one interface:</text>
+  <text x="500" y="228" fill="#facc15" font-size="10">show configuration | display set | match xe-0/1/1</text>
+
+  <text x="30" y="258" fill="#94a3b8" font-size="9">List ONLY IPv4 addresses (exclude inet6):</text>
+  <text x="30" y="276" fill="#facc15" font-size="10">show configuration interfaces | display set | match "family inet "</text>
+  <text x="545" y="276" fill="#fca5a5" font-size="9">Note: trailing space avoids matching "inet6"</text>
+
+  <text x="30" y="306" fill="#94a3b8" font-size="9">Count interfaces with IPv6:</text>
+  <text x="30" y="324" fill="#facc15" font-size="10">show configuration interfaces | display set | match inet6 | count</text>
+
+  <text x="500" y="306" fill="#94a3b8" font-size="9">Show protocols except LLDP:</text>
+  <text x="500" y="324" fill="#facc15" font-size="10">show configuration protocols | display set | except lldp</text>
+
+  <text x="30" y="354" fill="#94a3b8" font-size="9">Drill into specific user:</text>
+  <text x="30" y="372" fill="#facc15" font-size="10">show configuration system login user employee | display set</text>
+
+  <rect x="25" y="386" width="916" height="20" rx="4" fill="#450a0a"/>
+  <text x="480" y="400" fill="#fca5a5" font-size="9" text-anchor="middle">Always use | display set BEFORE | match — hierarchy view may split matching text across lines, causing missed results</text>
+</svg>
+      <div class="diagram-caption">Figure 9.1 — The Junos CLI Pipe Data Processing Pipeline</div>
+    </div>
+
+    <h3>Essential Pipe Filter Actions</h3>
+    <ul>
+      <li><code>| display set</code>: Converts hierarchical output into linear <code>set</code> commands.</li>
+      <li><code>| match &lt;regex/text&gt;</code>: Includes only lines containing the specified case-insensitive regular expression/string (equivalent to Unix <code>grep</code>).</li>
+      <li><code>| except &lt;regex/text&gt;</code>: Excludes lines containing the specified string (equivalent to Unix <code>grep -v</code>).</li>
+      <li><code>| count</code>: Returns only the total number of lines matched.</li>
+    </ul>
+
+    <h3>High-Yield Real-World Diagnostic Examples</h3>
+    
+    <h4>1. Auditing All Custom MTUs Across Every Interface:</h4>
+    <pre><code><span class="prompt-user">user@Router1></span> <span class="cmd">show configuration interfaces | display set | match mtu</span>
+<span class="highlight">set interfaces xe-0/1/1 mtu 1800</span>
+<span class="highlight">set interfaces xe-0/1/3 unit 0 family inet mtu 900</span></code></pre>
+
+    <h4>2. Finding All References to an Interface Across the ENTIRE Device:</h4>
+    <pre><code><span class="prompt-user">user@Router1></span> <span class="cmd">show configuration | display set | match xe-0/1/1</span>
+<span class="highlight">set interfaces xe-0/1/1 description "Corporate LAN"</span>
+<span class="highlight">set interfaces xe-0/1/1 mtu 1800</span>
+<span class="highlight">set interfaces xe-0/1/1 unit 0 family inet address 172.16.10.1/24</span>
+<span class="highlight">set interfaces xe-0/1/1 unit 0 family inet6 address 2001:db8:10::1/64</span>
+<span class="highlight">set protocols lldp interface xe-0/1/1</span></code></pre>
+    <p>This single command searches across <code>interfaces</code>, <code>protocols</code>, <code>firewall</code>, and <code>policy-options</code> simultaneously, preventing the engineer from having to hunt across individual hierarchies.</p>
+
+    <h4>3. Filtering IPv4 vs. IPv6 Address Families:</h4>
+    <div class="gotcha-box">
+      <div class="gotcha-title">⚠️ CLI Filtering Tip: The Space in "family inet "</div>
+      <p>Because the string <code>inet</code> is a substring of <code>inet6</code>, running <code>| match inet</code> matches both IPv4 and IPv6 lines. To isolate <strong>only IPv4</strong> configurations, include a trailing space inside quotes: <code>| match "family inet "</code>.</p>
+    </div>
+    <pre><code><span class="prompt-user">user@Router1></span> <span class="cmd">show configuration interfaces | display set | match "family inet "</span></code></pre>
+
+    <div class="hands-on-box">
+      <div class="hands-on-title">🛠️ Hands-on Tasks — Section 9</div>
+      <p><strong>Task 9.1 (Pipe Chaining):</strong> Count how many interfaces have custom MTUs configured on the router:</p>
+      <pre><code><span class="prompt-user">user@Router1></span> <span class="cmd">show configuration interfaces | display set | match mtu | count</span>
+<span class="highlight">Count: 2 lines</span></code></pre>
+      <p><strong>Task 9.2 (Cross-Audit):</strong> Display all protocol configurations on the router excluding LLDP:</p>
+      <pre><code><span class="prompt-user">user@Router1></span> <span class="cmd">show configuration protocols | display set | except lldp</span></code></pre>
+    </div>
+  </section>
+
+  <!-- SECTION 10 -->
+  <section id="sec-10">
+    <h2>10. Step-by-Step Lab Walkthrough & Configuration Auditing</h2>
+    <p>This section documents the exact lab workflow from the hands-on practice session on <code>router1</code>, executing base config loading, hierarchy navigation, and precision filtering.</p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Lab Step</th>
+            <th>CLI Command Executed</th>
+            <th>Technical Purpose & Key Verification Point</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Lab 3.1</strong></td>
+            <td><code>show configuration | display set</code></td>
+            <td>Display full router active configuration in linear set format. Identifies consecutive repeated prefixes (e.g. <code>set system</code>, <code>set interfaces</code>).</td>
+          </tr>
+          <tr>
+            <td><strong>Lab 3.2</strong></td>
+            <td><code>show configuration system | display set</code></td>
+            <td>Isolates all 11 lines of system configuration, including hostname, services, root password hash, and syslog.</td>
+          </tr>
+          <tr>
+            <td><strong>Lab 3.3</strong></td>
+            <td><code>show configuration system services | display set</code></td>
+            <td>Verifies active management services: <code>ssh</code>, <code>telnet</code>, and <code>netconf ssh</code> (leveraged by the automation loader script).</td>
+          </tr>
+          <tr>
+            <td><strong>Lab 3.4</strong></td>
+            <td><code>show configuration system login | display set</code></td>
+            <td>Audits custom user accounts, confirming user <code>employee</code> with <code>class super-user</code> and UID 2001.</td>
+          </tr>
+          <tr>
+            <td><strong>Lab 3.5</strong></td>
+            <td><code>show configuration system syslog | display set</code></td>
+            <td>Inspects standard logging destinations for <code>file messages</code> and <code>file interactive-commands</code>.</td>
+          </tr>
+          <tr>
+            <td><strong>Lab 3.6</strong></td>
+            <td><code>show configuration chassis | display set</code></td>
+            <td>Verifies hardware-specific chassis settings (FPC/PIC parameters).</td>
+          </tr>
+          <tr>
+            <td><strong>Lab 3.7</strong></td>
+            <td><code>show configuration interfaces | display set</code></td>
+            <td>Displays all physical and logical interface statements across Gigabit Ethernet ports.</td>
+          </tr>
+          <tr>
+            <td><strong>Lab 3.8</strong></td>
+            <td><code>show configuration interfaces ge-0/0/2 | display set</code></td>
+            <td>Deep-drills directly into port <code>ge-0/0/2</code> configuration in set format.</td>
+          </tr>
+          <tr>
+            <td><strong>Lab 3.9</strong></td>
+            <td><code>show configuration protocols | display set</code></td>
+            <td>Audits active protocol bindings under <code>protocols lldp</code>.</td>
+          </tr>
+          <tr>
+            <td><strong>Lab 4.1</strong></td>
+            <td><code>show configuration</code></td>
+            <td>Inspects full configuration in Hierarchy View; uses spacebar to paginate past <code>---(more)---</code> prompt.</td>
+          </tr>
+          <tr>
+            <td><strong>Lab 4.2</strong></td>
+            <td><code>show configuration system</code></td>
+            <td>Drills into system hierarchy in indented tree format; verifies indented sub-blocks (<code>login</code>, <code>services</code>, <code>syslog</code>).</td>
+          </tr>
+          <tr>
+            <td><strong>Lab 4.3</strong></td>
+            <td><code>show configuration interfaces ge-0/0/1</code></td>
+            <td>Scopes directly to <code>ge-0/0/1</code>; verifies that output starts cleanly at <code>unit 0</code> indentation.</td>
+          </tr>
+          <tr>
+            <td><strong>Lab 4.4</strong></td>
+            <td><code>show configuration system login user lab</code></td>
+            <td>Demonstrates multi-level deep hierarchy scoping for a specific user account.</td>
+          </tr>
+          <tr>
+            <td><strong>Lab 5.1</strong></td>
+            <td><code>show configuration interfaces | display set | match "set interfaces ge-"</code></td>
+            <td>Filters all Gigabit Ethernet interfaces in set view.</td>
+          </tr>
+          <tr>
+            <td><strong>Lab 5.3</strong></td>
+            <td><code>show configuration interfaces | display set | match "unit 0 family" | count</code></td>
+            <td>Counts total active logical interface protocol families across the chassis.</td>
+          </tr>
+          <tr>
+            <td><strong>Lab 5.4</strong></td>
+            <td><code>show configuration interfaces | display set | match "family inet6"</code></td>
+            <td>Audits all interfaces configured for IPv6 transport.</td>
+          </tr>
+          <tr>
+            <td><strong>Lab 5.8</strong></td>
+            <td><code>show configuration | display set | match ge-0/0/1</code></td>
+            <td>Cross-hierarchy audit locating all references to <code>ge-0/0/1</code> across interface definitions and protocol trees.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECTION 11 -->
+  <section id="sec-11">
+    <h2>11. JNCIA-Junos Exam Cheat Sheet & Key Takeaways</h2>
+
+    <div class="diagram-container">
+      <svg viewBox="0 0 960 380" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,sans-serif">
+  <rect width="960" height="380" fill="#0f172a" rx="10"/>
+  <text x="480" y="28" fill="#38bdf8" font-size="14" font-weight="800" text-anchor="middle">JNCIA-JUNOS QUICK REFERENCE</text>
+
+  <!-- Card 1: Config States -->
+  <rect x="15" y="45" width="300" height="320" rx="8" fill="#1e293b"/>
+  <rect x="15" y="45" width="300" height="30" rx="6" fill="#0284c7"/>
+  <text x="165" y="66" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">Configuration States</text>
+  <text x="28" y="95" fill="#facc15" font-size="10" font-weight="700">Candidate</text>
+  <text x="130" y="95" fill="#f8fafc" font-size="9">In RAM, your draft workspace</text>
+  <text x="28" y="118" fill="#38bdf8" font-size="10" font-weight="700">Active DB</text>
+  <text x="130" y="118" fill="#f8fafc" font-size="9">On flash, currently running</text>
+  <text x="28" y="141" fill="#4ade80" font-size="10" font-weight="700">commit</text>
+  <text x="130" y="141" fill="#f8fafc" font-size="9">Validate + activate + push PFE</text>
+  <text x="28" y="164" fill="#fb923c" font-size="10" font-weight="700">rollback N</text>
+  <text x="130" y="164" fill="#f8fafc" font-size="9">Revert to previous (0-49)</text>
+  <text x="28" y="187" fill="#a78bfa" font-size="10" font-weight="700">commit check</text>
+  <text x="130" y="187" fill="#f8fafc" font-size="9">Validate only, no activation</text>
+  <rect x="25" y="205" width="280" height="80" rx="5" fill="#0f172a"/>
+  <text x="35" y="222" fill="#fca5a5" font-size="9" font-weight="700">EXAM GOTCHAS:</text>
+  <text x="35" y="240" fill="#94a3b8" font-size="9">set commands do NOT go live until commit</text>
+  <text x="35" y="258" fill="#94a3b8" font-size="9">show configuration reads ACTIVE only</text>
+  <text x="35" y="276" fill="#94a3b8" font-size="9">Root password required before 1st commit</text>
+
+  <!-- Card 2: CLI Commands -->
+  <rect x="330" y="45" width="305" height="320" rx="8" fill="#1e293b"/>
+  <rect x="330" y="45" width="305" height="30" rx="6" fill="#166534"/>
+  <text x="482" y="66" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">CLI Views and Filters</text>
+  <text x="343" y="95" fill="#38bdf8" font-size="9" font-weight="700">HIERARCHY (default):</text>
+  <text x="343" y="112" fill="#facc15" font-size="9">show configuration</text>
+  <text x="343" y="135" fill="#4ade80" font-size="9" font-weight="700">SET VIEW (on-demand):</text>
+  <text x="343" y="152" fill="#facc15" font-size="9">show configuration | display set</text>
+  <text x="343" y="178" fill="#fb923c" font-size="9" font-weight="700">PIPE FILTERS:</text>
+  <text x="343" y="195" fill="#facc15" font-size="9">| display set → convert to set format</text>
+  <text x="343" y="212" fill="#facc15" font-size="9">| match "text" → show matching lines</text>
+  <text x="343" y="229" fill="#facc15" font-size="9">| except "text" → hide matching lines</text>
+  <text x="343" y="246" fill="#facc15" font-size="9">| count → count output lines</text>
+  <rect x="340" y="260" width="285" height="48" rx="5" fill="#0f172a"/>
+  <text x="350" y="278" fill="#fca5a5" font-size="8.5">Tip: "family inet " (trailing space) avoids inet6</text>
+  <text x="350" y="296" fill="#fca5a5" font-size="8.5">Tip: Always | display set before | match</text>
+
+  <!-- Card 3: Hierarchy Map -->
+  <rect x="650" y="45" width="295" height="320" rx="8" fill="#1e293b"/>
+  <rect x="650" y="45" width="295" height="30" rx="6" fill="#7c3aed"/>
+  <text x="797" y="66" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">Hierarchy Map</text>
+  <rect x="660" y="84" width="275" height="40" rx="4" fill="#0f172a"/>
+  <text x="670" y="100" fill="#38bdf8" font-size="10" font-weight="700">system { }</text>
+  <text x="670" y="118" fill="#94a3b8" font-size="8.5">hostname, services, login, syslog</text>
+  <rect x="660" y="130" width="275" height="46" rx="4" fill="#0f172a"/>
+  <text x="670" y="148" fill="#38bdf8" font-size="10" font-weight="700">interfaces { }</text>
+  <text x="670" y="164" fill="#94a3b8" font-size="8.5">port → unit → family inet/inet6 → address</text>
+  <text x="670" y="174" fill="#64748b" font-size="7.5">MTU on interface = L2  |  MTU on family = L3</text>
+  <rect x="660" y="182" width="275" height="40" rx="4" fill="#0f172a"/>
+  <text x="670" y="200" fill="#38bdf8" font-size="10" font-weight="700">protocols { }</text>
+  <text x="670" y="216" fill="#94a3b8" font-size="8.5">lldp, rstp, ospf, isis, bgp, mpls</text>
+  <rect x="660" y="232" width="275" height="80" rx="4" fill="#172554"/>
+  <text x="670" y="250" fill="#60a5fa" font-size="9" font-weight="700">CRITICAL RULES:</text>
+  <text x="670" y="268" fill="#93c5fd" font-size="8.5">1. Port properties → interfaces</text>
+  <text x="670" y="284" fill="#93c5fd" font-size="8.5">2. Protocols on ports → protocols</text>
+  <text x="670" y="300" fill="#93c5fd" font-size="8.5">3. LLDP on physical port, not unit 0</text>
+  <text x="670" y="316" fill="#93c5fd" font-size="8.5">4. family inet6 alone = link-local only</text>
+</svg>
+      <div class="diagram-caption">Figure 11.1 — Summary Concept Matrix for JNCIA-Junos Certification</div>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Core Concept / Exam Question Focus</th>
+            <th>Correct Junos Architecture Behavior</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Where do uncommitted changes live?</strong></td>
+            <td>In the <strong>Candidate Configuration</strong> in RAM. They have zero effect on live network operations until committed.</td>
+          </tr>
+          <tr>
+            <td><strong>What is the default configuration display format?</strong></td>
+            <td><strong>Hierarchy View</strong> (indented tree blocks with curly braces). Set format is generated on the fly via <code>| display set</code>.</td>
+          </tr>
+          <tr>
+            <td><strong>How are IPv4 and IPv6 address families denoted?</strong></td>
+            <td><code>family inet</code> for IPv4, and <code>family inet6</code> for IPv6.</td>
+          </tr>
+          <tr>
+            <td><strong>What happens if physical MTU is 1800 and family inet MTU is 900?</strong></td>
+            <td>The physical interface supports frames up to 1800 bytes. IPv4 packets are capped at 900 bytes, but IPv6 packets can use up to the physical frame limit.</td>
+          </tr>
+          <tr>
+            <td><strong>Why is LLDP configured under <code>protocols</code> and not <code>interfaces</code>?</strong></td>
+            <td>Junos maintains strict architectural separation: interface parameters live under <code>interfaces</code>, while protocols running across those interfaces live under <code>protocols</code>.</td>
+          </tr>
+          <tr>
+            <td><strong>How do you search for an interface across all hierarchies?</strong></td>
+            <td><code>show configuration | display set | match &lt;interface-name&gt;</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>

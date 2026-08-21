@@ -1,0 +1,1097 @@
+=== Session – 20 Aug at 9:53 AM ===
+Date: 20/8/2026, 9:53 AM
+Model: base  Language: Auto
+Duration: 1:29:37
+────────────────────────────────────────────────────────────
+
+[00:00] various settings that were configured by someone.
+[00:02] For example, you've already verified elements such as a custom host
+[00:04] custom host name. You've learned a lot.
+[00:15] A lot of new information so far in this course so you can take a moment
+[00:18] take a moment to refresh your memory on what has happened so far.
+[00:21] We've started a new job as the on-
+[00:22] as the on-site network engineer for a customer.
+[00:25] Here, you can see their simple topology with
+[00:27] with one router, one switch, three subnets, and an internet connection, the WAN
+[00:31] WAN or WIDE area network.
+[00:34] In previous modules, you were tasked with...
+[00:36] with verifying various pieces of information on this box.
+[00:38] Unfortunately, although everything was mostly
+[00:40] was mostly correct. It seems that a previous employee has name is supposed to be Router 1,
+[00:44] as shown here.
+[00:45] shown here. However, you've seen that the host name is currently R1. In addition, two of the land interface
+[00:49] land interfaces currently have incorrect IPv 4 addresses.
+[00:53] There are also other things that you've just
+[00:54] that you've decided to improve, such as setting the time in a more accurate way, and creating your own unique use
+[00:58] unique user account with a more secure password.
+[01:01] In this module, you're going to learn how to read a full
+[01:03] a full basic Junos configuration.
+[01:06] In doing so, you'll learn how these mistakes...
+[01:07] these mistakes were configured, which will empower you to fix these mistakes in an upcoming
+[01:12] module. Your customer's router contains various
+[01:12] module.
+[01:16] various settings that were configured by someone. For example, you've already verified elements such as a custom
+[01:21] as a custom host name, unique IP addresses on four interfaces, an LLDP that's
+[01:25] that's link layer discovery protocol enabled on the three interfaces and the fact that you can SS8.
+[01:30] and SSH to the device using the username employee.
+[01:33] All of this information can be found in one-
+[01:34] one single configuration file. IP addresses on interfaces, protocols, log-in
+[01:39] Login information, monitoring information, and much more can all be found inside this one file.
+[01:43] this one file. Everything you need, all in one single place. In this module...
+[01:48] You're going to learn two different ways to display this text file and how to read it this
+[01:52] This file is known as the Active Configuration because it is the configuration that is currently active.
+[01:57] active and running on the device. Whenever you commit your configuration, these changes are written
+[02:01] are written to this text-based configuration file.
+[02:04] Actually, to be more precise, the configuration
+[02:06] Configuration is stored in a database.
+[02:08] Configuration changes are written to this database,
+[02:10] and you then view the results in a human readable text format.
+[02:10] and you then...
+[02:13] However, the vast majority of you-
+[02:15] majority of users will not interact with this database directly.
+[02:17] Instead, they will interact with the configuration
+[02:19] configuration and text format.
+[02:21] For this reason, it is accurate enough
+[02:22] to say that there is a configuration file.
+[02:24] file that contains all the configuration on the device, and that you can read this file and export
+[02:28] and export it as a text file to a backup server.
+[02:31] Just keep in the back of your mind that, strictly speaking, this
+[02:33] This configuration file is a human-friendly way of viewing what is ultimately stored in the configuration data.
+[02:37] configuration database.
+[02:57] Although the configuration file displays...
+[03:36] is the entire active configuration. There is one thing that this active configuration
+[03:40] configuration file doesn't contain. Interestingly, the one thing you won't find in this file is any configuration
+[03:45] configuration changes that you've typed, but that you haven't yet deployed and saved.
+[03:49] In fact, your changes...
+[03:49] Your changes do not go live until you actually save them,
+[03:52] or, as Junos calls it, committing your changes.
+[03:54] changes. Instead, your changes in progress are all placed into a second temporary
+[03:58] temporary location called the candidate configuration.
+[04:01] This config is so called because all the config-
+[04:03] the configuration in this file is a candidate to be deployed. This temporary file gives you the ability
+[04:07] gives you the ability to review all your changes, fix mistakes, remove unwanted changes, and
+[04:12] and tweak your proposed configuration, all with zero impact on your production network.
+[04:12] tweak...
+[04:16] If you're coming to Junos from other vendors, you might notice that this is slightly different
+[04:16] If you're-
+[04:20] from other network operating systems.
+[04:21] operating systems you might have used in the past.
+[04:23] Some vendors push each individual line of configuration
+[04:25] configuration to your live environment, the moment you type it.
+[04:28] This means that if you make a typing mistake,
+[04:30] mistake, you could well take down your network without a single chance to review and undo the mistake.
+[04:34] This example alone shows the advantage of this candidate configuration.
+[04:38] When the idea clicks...
+[04:39] The idea clicks in your brain.
+[04:40] We promise that you'll never want it any other way.
+[04:43] You'll learn all about the can-
+[04:43] about the candidate configuration in the next module, titled Configuring Juno's OS.
+[04:48] OS, the basics.
+[04:50] This is also the module where you'll start to fix the configuration mistakes
+[04:52] mistakes on this router. For the moment, this module will focus on reading the active
+[04:57] configuration. That is the configuration that has been committed so that it is saved.
+[05:01] saved and currently running on the device.
+[05:06] Although there is only one text-based active configuration file, there are actually multiple
+[05:10] actually multiple ways of displaying the information inside it.
+[05:13] Two of these methods are used by human engineers when you-
+[05:15] engineers when using the CLI. One method is called hierarchy view, and the other is called set view.
+[05:19] set view. Actually, these aren't official names for these views. Their names that this course has
+[05:24] course has created so that you can learn about each option.
+[05:27] A short preview of each method is
+[05:28] method is shown here.
+[05:29] Each of these views offers its own unique advantages.
+[05:32] As such,
+[05:33] professional Junos engineers regularly use both these methods to read the
+[05:36] configuration of
+[05:37] of a Juno device, although you may not yet understand the exact text in each of these two boxes.
+[05:42] two boxes, you will immediately notice a difference between them.
+[05:45] One of them shows the configuration as a C-
+[05:46] as a series of hierarchically indented lines.
+[05:49] As such, this is known as the hierarchy.
+[05:51] hierarchy view. The other view shows you the actual configuration statements that are typed to
+[05:55] to configure the device.
+[05:57] If you look.
+[07:54] closely you'll see that each new line begins with
+[07:57] begins with the word set.
+[07:58] That's a hint for the future.
+[08:00] In configuration mode, you use set command.
+[08:01] set commands to configure Junos OS. For this reason, this view is called set view.
+[08:06] set view. There are also other views that have been built to make it very easy for computer
+[08:10] code.
+[08:10] and Automation Platform.
+[08:15] Forms to interact with Juno's devices you'll learn more about these later in the course for now
+[08:19] For now, though, in terms of the options most commonly used by humans, these two methods are by far-
+[08:24] by far the most popular views.
+[08:27] Let's start with a more thorough intro-
+[08:28] thorough introduction to hierarchy view.
+[08:30] Junos sorts the configuration logically into hierarchy
+[08:33] to hierarchical categories.
+[08:34] When you read the configuration in hierarchy view,
+[08:37] these categories become
+[08:37] categories become very apparent because they are shown as a series of indented tabs.
+[08:42] These indentations are helpful because they logically
+[08:44] sort the configuration in such a way that each
+[08:46] that each indented line relates hierarchically
+[08:49] to the piece above it.
+[08:50] This example shows a sample.
+[08:51] a sample of your customer's router configuration and introduces you to the
+[08:54] interface's hierarchy.
+[08:55] As you might imagine, all interface configuration can be found within this hierarchy.
+[08:59] Let's break it down.
+[09:00] Let's break it down.
+[09:01] Reading the output, notice that this example
+[09:03] starts at the interface's hierarchy.
+[09:04] is hierarchy. If you look closely, you'll see that two interfaces, xe011.
+[09:09] 011 and XC012 are indented underneath this hierarchy.
+[09:13] Then, below each interface, you'll see further indentations.
+[09:17] From this, you can see that all-
+[09:18] You can see that all the configuration that relates to Interface XC011 is shown directly
+[09:22] underneath it.
+[09:22] underneath it, and dent it a little to the right. In this respect, you'll notice how easy it is for your eyes to glow.
+[09:27] to glide over the screen and identify which pieces of configuration relate to the things above it.
+[09:31] For example here, you can see an IP address of 172.16.
+[09:36] 16.10.1-24.
+[09:38] The layout of this configuration makes it simple to associate
+[09:40] to associate this IP with Unit 0 on Interface XC011.
+[09:45] Now that you know how hierarchy view works, let's consider the advantages of using it.
+[09:49] using it, along with some potential trade-offs.
+[09:52] Higher ARCHEVUE is extremely helpful when you-
+[09:54] helpful when you're reading long complicated
+[09:55] configs because it gives you immediate
+[09:57] visibility of how each L
+[09:58] each element relates to the pieces that are hierarchically above or below it.
+[10:02] Plus, as you can see,
+[10:03] you can see, this view is very easy on the eye. Both of these elements are helpful when
+[10:07] when you have a large configur-
+[10:07] configuration with lots of moving parts. However, when you're reading a small
+[10:11] configuration, this higher
+[10:12] This hierarchical view can seem inefficient.
+[10:14] New students point out that there is not much information on the screen.
+[10:16] on the screen, and that there is a lot of white space in the CLI window.
+[10:20] To be fair, when you're
+[10:21] When you're looking at a small configuration such as this, you're absolutely correct.
+[10:24] However, in reality,
+[10:25] production devices rarely have configurations as simple as the one shown here.
+[10:29] When you come to
+[10:30] When you come to learn about elements such as firewall filters, routing policies and virtual routers, the Ben
+[10:34] The benefits of this hierarchical view will become very clear to you.
+[10:40] To view the configuration in this hierarchical view, use the command SHOOT
+[10:43] Show configuration. It's interesting that you use this simple command to see the hierarchy view.
+[10:48] view because this clues you into something important. This is the default view of the configuration.
+[10:52] For example, you'll soon learn that you can automatically push configurations to a backup
+[10:56] server of your choice.
+[10:57] of your choice. If you were to log into this server and open the file in a text editor,
+[11:01] you would see that the
+[11:01] see that the configuration is stored in this hierarchical view, just like in this diagram.
+[15:57] .
+[16:04] .
+[16:11] .
+[16:18] .
+[17:00] The other view of the configuration
+[17:01] configuration file displays the information in the form of the actual commands you type to configure.
+[17:06] configure the device. Each configuration statement begins with the word set, which is why
+[17:10] which is why this view is often called the set view.
+[17:13] Interestingly, the actual text is
+[17:15] Next is identical in set view as it is in the hierarchical view.
+[17:19] In other words, if you...
+[17:19] If you look closely, you'll see that the hierarchy is still there.
+[17:23] However, instead of being shown...
+[17:24] being shown as a series of indented lines, the various hierarchies are shown on one single line.
+[17:28] For example, you can see here that the interface's hierarchy is still very much a part of the output.
+[17:33] output. Many of the lines of output here begin with the text set interfaces. In
+[17:37] addition, you can see...
+[17:37] you can see two new hierarchies called system and protocols.
+[17:40] For a deeper example, you can see here
+[17:42] can see here that we have highlighted a few lines, starting with the text Set Interfaces
+[17:46] XC011.
+[17:46] and with the text set interfaces XC01-2.
+[17:50] Notice that these lines show you XC01-2.
+[17:51] show you exactly the same information as you saw in the hierarchy view.
+[17:55] The text is identical.
+[17:55] is identical.
+[17:56] It's just displayed in a different way.
+[17:58] If you were to read this output line by line, you'd notice
+[18:00] you'd notice that some of these configuration statements read almost like natural English.
+[18:04] For example, the
+[18:04] the line-set system hostname R1 sets the system hostname to R1.
+[18:08] Once you've
+[18:09] Once you've learned a few underlying concepts, you'll be very satisfied with how often you can read a new Junos config-
+[18:13] knows configuration, and understand what it's doing.
+[18:17] Having said that, don't worry for the moment of...
+[18:18] the moment about reading this output line by line. In a moment you'll take a closer look at each
+[18:22] each individual line, along with its meaning.
+[19:33] On the one hand, this set view can sometimes
+[19:34] can sometimes be overwhelming to new students
+[19:37] when compared to hierarchy view.
+[19:38] After all, there's a lot of
+[19:39] There's a lot of text here at once.
+[19:41] Despite this, set view is actually a very popular choice
+[19:43] with newcomers.
+[19:43] newcomers. The reason for this is that set view is actually an excellent choice when reading
+[19:48] small
+[19:48] small, short, simple configurations,
+[19:51] like the kind that is currently on your customer's device.
+[19:52] As you can see here, this view displays a lot of information on the screen at once.
+[19:57] If you're comfortable reading this view, you can quickly get a good overview of a device configuration.
+[20:01] without having to scroll up and down through your CLI window.
+[20:04] No wonder many newcomers favor this
+[20:06] favors this view in almost all situations. However, you might find it more difficult to
+[20:10] read complicated conf-
+[20:10] configurations in this view. You can probably imagine that a very large
+[20:14] configuration in this view
+[20:15] in this view might look like a long, dense wall of text.
+[20:18] This means that various elements might not
+[20:19] This might not immediately jump out at you, like they do in the hierarchy view, where
+[20:23] the various elements are given room to breathe.
+[20:24] room to breathe on the screen.
+[20:26] Professional Junos engineers really do use both views to solve different challenges.
+[20:28] challenges. There is no one right or wrong way to read a Junos configuration. Both views
+[20:33] views offer advantages in different situations.
+[20:44] Although you use set commands to configure Junos...
+[20:46] You've seen already that Junos does not show the configuration in this format by default.
+[20:51] fault. Instead, it displays the configuration in the hierarchical format. Instead, if
+[20:55] If you want to view the configuration in Set Format, Junos generates it for you on the fly.
+[21:00] fly whenever you request it. To see the configuration in this format, use the
+[21:04] command show config
+[21:04] Show Configuration Pipe Display Set.
+[21:33] Staying with the set view for the moment, let's...
+[23:42] Let's talk more
+[23:42] Let's talk more about this concept of top-level higher arcies.
+[23:45] We've said a few times now that Juno's story-
+[23:46] Do you know stores its configuration in a logical, hierarchical fashion?
+[23:50] This is true regardless of whether you...
+[23:51] of whether you view the configuration in hierarchy view or in set view.
+[23:55] This example shows a redacted
+[23:55] a redacted portion of your customer's configuration to illustrate this.
+[23:59] Notice that the top lines of configur-
+[24:00] of configuration begin with the text set system, followed by lines that begin with set interfaces.
+[24:04] faces, and finally, there are some lines at the bottom that begin with set protocols.
+[24:09] Each of these words are examples of top-level hierarchies.
+[24:12] This is so intuitive that it almost...
+[24:13] that it almost feels redundant explaining it.
+[24:16] You'll find all system configuration in the system hierarchy
+[24:18] hierarchy, you'll find all interface configuration in the
+[24:21] interfaces hierarchy and you'll find all
+[24:22] You'll find all protocols enabled in the protocols hierarchy.
+[24:26] The configuration is always in this or-
+[24:27] in this order no matter what kind of device you're using, you can be confident in logging
+[24:31] into it.
+[24:31] and finding system settings at the top,
+[24:33] interface further down.
+[24:35] The eagle eyeed among you might...
+[24:36] you might have noticed that the protocol's hierarchy mentions an interface.
+[24:40] To be clear, the interface...
+[24:40] The interface's hierarchy relates to settings on the actual interface itself.
+[24:44] By contrast,
+[24:45] If you enable a protocol on an interface, you'll find this in the protocol's higher arki.
+[24:50] This is a good thing because it means you can be sure that all of your protocol configuration is located in
+[24:54] located in one place. In fact, there are more top level hierarchies than just these three.
+[24:58] As this course progresses, you'll learn where you can figure rules to filter traffic, where you can figure hard...
+[25:03] and figure hardware settings, and much more.
+[25:09] At first glance, this set view looks radically different from the high
+[25:12] from the hierarchy view. However, if you actually read the output of both views, line by line...
+[25:16] Line by line, you'll see that they are, surprisingly,
+[25:19] not as different as they might appear.
+[25:21] For example, here, we've focused on just the configuration of the host name of the device, the first box.
+[25:21] For example...
+[25:25] The first box shows the set view, and the second box shows the hierarchy view.
+[25:30] Although the set view shows the full configuration command that you would type
+[25:34] with the word set at the beginning-
+[25:34] at the beginning. Notice how the hierarchy view still broadly shows the exact same
+[25:39] same text. You see the word system, immediately followed by the text, hostname r1
+[25:43] R1 indented underneath it.
+[25:46] The point of this comparison is to show you that the two views display-
+[25:48] use display exactly the same information.
+[25:50] They just display that information in very different ways.
+[25:52] If you read a hierarchical view configuration, you can see here how it's easily possible
+[25:57] easily possible to identify the configuration statements that create it.
+[26:01] Once that point sinks in, you will...
+[26:01] you will easily be able to read both configuration views.
+[27:18] Welcome to
+[27:18] Welcome to the Reading the System Hierarchy of a Junos OS Configuration in Set View Module.
+[27:22] module. By the end of this module, you should be able to explain how to read the Junos OS
+[27:27] System Configuration Hierarchy.
+[27:37] Once again, your manager has some tasks for you. Your manager has asked you to gather
+[27:40] you to gather some information from this device. However, instead of using operational mode commands
+[27:45] like show interfaces and show LLDP neighbors, they've asked you to solve these challenges by viewing
+[27:49] by viewing the configuration file directly.
+[27:52] Your manager wants you to read the full configuration of your
+[27:54] of your customer's router and then answer the four questions.
+[27:57] What remote management protocols are enabling
+[27:58] calls are enabled on this device.
+[28:00] Are there any custom user login accounts
+[28:02] configured on this device?
+[28:03] device, other than your current employee login.
+[28:06] Are there any interfaces with custom MTU configuration?
+[28:07] configuration, you may remember this stands for Maximum Transmission Unit, the largest
+[28:12] the size of pat
+[28:12] size of packet or frame that can transit a network interface.
+[28:15] Does Link Layer Discovery Protocol, or-
+[28:16] protocol, or LLDP configured on the internet facing WAN interface.
+[28:21] Junos makes it a-
+[28:21] This makes it a breeze to solve all of these challenges.
+[28:23] You'll see for yourself in just a moment.
+[28:33] In this section, you're going to learn how to read
+[28:34] learn how to read every single line of your customer's router configuration. Students often find it easiest to learn
+[28:39] to learn Junos by starting with this mode because they find it more natural to understand a configuration file.
+[28:43] configuration file by looking directly at the configuration statements that create that file.
+[28:47] This also has
+[28:48] This also has the added bonus that you're learning to write while you read.
+[28:51] By reading a configuration file in
+[28:52] file and set view. You're learning the exact same configuration statements you'll type to
+[28:57] configure the...
+[28:57] and figure the device later on.
+[28:59] This will put you at a real advantage
+[29:00] when you actually deploy new lines of
+[29:01] lines of configuration of your own. Do you remember how to display the configuration in set view?
+[29:06] set view. The answer is shown here. You use the command show configuration pipe display
+[29:10] playset.
+[29:11] set.
+[29:11] Bear in mind that some lines of configuration are so long that they will word wrap in
+[29:15] in the output. This is especially true of the two highlighted lines here, which you might know
+[29:19] which you might notice show encrypted passwords.
+[29:22] To identify each individual configuration statement,
+[29:24] Look out for lines that begin with the word set.
+[29:33] Configuration files can get very long so it can be helpful when you're new to Junos to read
+[29:37] to read just one hierarchy at a time.
+[29:40] Luckily, Junos enables you to do exactly this.
+[29:42] this. The consistent nature of the hierarchy means that you can easily view just one specific
+[29:46] specific hierarchical section. For example, you could type show configuration system pipe
+[29:51] display set to view the system section in set view. With that in mind you're
+[29:51] display.
+[29:55] going to explore once
+[29:55] lower one section at a time. First, you'll look at the system hierarchy, then you'll
+[29:59] look at the interfaces higher.
+[30:00] faces hierarchy. Finally, you'll look at the protocols hierarchy.
+[30:05] This example shows the results of typing show configuration system on your customer's MX
+[30:09] Mars MX-204 router, and then piping it to display set.
+[30:13] Engineers commonly say...
+[30:13] say pipe-to-display set or pipe-to-match some text.
+[30:18] In fact, in for-
+[30:18] Informally, you will even more commonly hear engineers say show configuration display
+[30:22] set.
+[30:22] set without mentioning a pipe. Don't be confused if you hear people talking like this. It's just a nice time
+[30:27] a nice time saver. This command shows 11 lines of system configuration output on your
+[30:31] put on your customer router.
+[30:33] If you read it slowly, you will get a feel for the hierarchical nature of a Juno
+[30:36] of a Junos configuration, because even within the system hierarchy, there are some visible
+[30:40] sub-hierarchies.
+[30:40] hierarchies. For example, there is a login sub hierarchy, which includes your
+[30:45] username and your
+[30:45] and your password in an encrypted format.
+[30:48] Notice the service's sub hierarchy, where
+[30:49] We're Telnet and SSH are enabled.
+[30:51] Don't worry too much for the moment about reading every single line about...
+[30:54] line of output here, you'll soon see full explanation for every single line of this output.
+[31:15] Let's start by looking at
+[31:16] looking at three lines of configuration that are so easy to understand that they're almost self-explanatory.
+[31:21] explanatory.
+[31:22] Each of the examples here do exactly what you think they do.
+[31:25] If you want to config-
+[31:25] You want to configure a host name, you type set system host name, followed by your host
+[31:29] name.
+[31:30] You know already that you need to change the host name at some point, from R1 to Router1, as you can see here.
+[31:34] see here, it's as simple as typing one line of config. Enabling SSH is as simple as
+[31:39] as typing set system services, followed by the word SSH.
+[31:43] You can also see here...
+[31:43] also see here that the same idea is true for Telnet.
+[31:46] All three of these commands begin with set system because they-
+[31:48] because they are in the system hierarchy. Within this, hostname and services are sub-higher-
+[31:52] sub-hier arcies.
+[31:54] Once you've read it...
+[36:57] Set a few configurations and deploy to few-
+[36:58] Deployed a few lines yourself, this hierarchy will become second nature to you.
+[37:03] You'll quickly find yourself-
+[37:03] find yourself guessing the configuration statements you need and you'll very easily locate the information you need on
+[37:07] you need on any device, even if you're logging into it for the first time.
+[37:11] You can no doubt see what we-
+[37:12] see what we mean about how easy it is to understand each individual line. The vast majority of Junos can
+[37:16] Juneau's configuration options are very similar to plain English.
+[37:20] As long as you know the technology and
+[37:21] and the protocol that is being configured,
+[37:23] you will often have a good chance of understanding a particular piece.
+[37:25] particular piece of configuration, even if it's your very first time reading it.
+[37:29] Remember as well that these are the
+[37:30] These are the actual configuration commands that you type in configuration mode.
+[37:34] you're learning to read and write
+[37:34] to read and write at the same time.
+[37:36] As you can see, it's very easy to configure a Junos device.
+[37:39] device. By the way, this example answers task one on your list. You were asked...
+[37:43] You were asked, what remote management protocols
+[37:46] are enabled on this device?
+[37:47] Thanks to this config.
+[37:48] config, you can confidently answer that SSH and telnet are currently enabled.
+[37:52] Task complete.
+[37:52] some features require multiple lines of configuration
+[38:31] to deploy. Let's use the configuration of
+[38:33] of your employee username as an example, you can see three lines of output here as it has
+[38:37] As it happens, you only have to type two of them.
+[38:40] The first line shows the definition of a user name and
+[38:42] name and its class, which means the permissions this user has on the device.
+[38:46] In this case, you're...
+[38:46] Your user has super user permissions, which means that they have full access to every single command
+[38:51] command on the device. As you progress through this course, you'll learn about some other built-in
+[38:55] and permission.
+[38:55] permission classes and how you can make custom classes of your own.
+[38:59] Next, you can see a password.
+[39:00] a password. The configuration here shows a very long encrypted password. However,
+[39:04] However, you'll be relieved to hear that you don't need to type this long encrypted password
+[39:08] yourself. Later…
+[39:09] Later, you'll see that you can type your regular plaintext password directly into the CLI.
+[39:14] Junos will then encrypt it for you also notice that this is actually one single line of
+[39:18] line of configuration, even though it actually word wraps over multiple lines.
+[39:22] The final line contains a numerical user ID or UID.
+[39:26] You don't need to type this state.
+[39:27] to type this statement yourself.
+[39:28] Junos adds this line for you.
+[39:30] The UID is just an internal system number.
+[39:31] system number, which is defined for consistency. However, you do have the option of configuring
+[39:36] if you want to. The result of these three lines of configuration of which you only need to type
+[39:36] it man.
+[39:40] we need to type 2, is a username called Employee, with full admin privileges, a pat-
+[39:45] a password, and a unique user ID for internal Juno's purposes.
+[39:49] This is the only you-
+[39:49] the only user configured on this device, which means that Task 2 is now complete. Good job!
+[39:54] Good job.
+[39:56] There are just two more sections to look.
+[39:58] to look at in this configuration.
+[40:00] They're both simple.
+[40:01] They also relate to concepts you're going to...
+[40:03] you're going to revisit later in the course.
+[40:05] For the time being, we just offer a brief explanation.
+[40:07] so that you can understand what you're looking at.
+[40:09] First, you see a sub-hierarchy called Root Authent-
+[40:12] root authentication. This defines the password for the default root username, which has full
+[40:16] full permissions on the device.
+[40:17] Permission.
+[40:18] This account has some unique qualities.
+[40:20] You'll learn more about this in the...
+[40:21] this in the module titled, setting up a brand new Juno's OS device.
+[40:25] Next, you see three lines that collectively define the existence of two log files, called
+[40:25] Next,
+[40:30] called interactive commands and messages.
+[40:30] Interact
+[40:33] Both of these are configured under the Syslog sub-hierarch.
+[40:34] sub hierarchy. These two log files come pre-defined out of the box. Later on...
+[40:39] Later on, you'll see how you can create your own custom log files to collect logs on almost anything you can think of.
+[40:43] think of.
+[40:44] For the moment, you can keep in mind that notice and info are levels of logging that you
+[40:48] can enable.
+[40:48] The messages file collects any logs at notice level and above, and additionally collects logs relayed
+[40:52] related to authorization at a level of info and above.
+[40:55] And with that, you now understand the meaning of
+[40:57] the meaning of every single line of config on your customer's device in the system section.
+[41:01] Next, you will get...
+[41:01] You will get a chance to see it all in one place, one final time.
+[41:06] Now that you understand each individual line of configuration in the system hierarchy, this output
+[41:10] This output shows it all to you again, all in one place.
+[41:14] Just a few minutes ago, you might have looked
+[41:15] you might have looked at this wall of text
+[41:16] and wondered what on earth was going on.
+[41:18] However, now that you look at it again, with
+[41:19] Again, with your new knowledge, you can see that it is quite understandable and that you
+[41:23] can have a good feeling of broadly knowing.
+[41:24] broadly knowing what all of it does.
+[41:26] That's really great news.
+[41:27] Good work.
+[41:28] You can see that we've highlighted each-
+[41:28] highlighted each sub hierarchy to help you to read it.
+[44:48] Welcome to the Reading the Interfaces and Protocols, Higher Arkeys.
+[44:51] hierarchies of a Junos OS configuration in set view module. By the end of this module, you
+[44:55] You should be able to explain how to read the Juno's OS interfaces and protocols configuration hierarchy.
+[45:00] hierarchy.
+[45:01] Now.
+[45:04] Now, let's move on to the next top-level hierarchy, which is interfaces.
+[45:08] Before you see the entire...
+[45:09] see the entire output of the interfaces hierarchy, you will look at specific interfaces.
+[45:13] First, you'll look at the Corporate Lands Interface XE0111 and then you'll look at some
+[45:14] First,
+[45:18] look at some different settings that are on the Guest Lands Interface, XE01-3. Once you want
+[45:22] Once you understand what the individual lines of configuration achieve,
+[45:25] you'll then look at the entire interface's
+[45:27] faces hierarchy on your customer's device.
+[45:47] This output focuses on the configuration for interface
+[45:49] Interface Xe 011, which is the interface connected to your customer's corporate land.
+[45:54] In total this interface has four lines of configuration. The first line adds a
+[45:58] adds a description to this interface.
+[46:00] Notice that the description is in quotation marks.
+[46:03] We're confident that you can understand how this configuration works.
+[46:03] We're caught.
+[46:06] It might sound silly, but try...
+[46:07] But try reading the configuration out loud, just so that you can become familiar with the precise syntax.
+[46:12] in tax. Next, you can see an MTU of 1800. Notice that this is configured to
+[46:16] configured directly on the physical interface.
+[46:19] This means this interface now has a Layer 2 MTU.
+[46:21] to you of 1800. You may remember that this sets the maximum frame size that the interface
+[46:25] can accept, that is the maximum data size, up to and including the Ethernet header.
+[46:30] Next are the IPv4 and IPv6 addresses.
+[46:34] Each address is confirmed-
+[46:34] is configured on its own individual line.
+[46:37] The IPv4 addresses are configured with the text
+[46:39] with the text iNet address. The IPv6 addresses are configured with the text iNet
+[46:43] iNet 6 Address. You may remember that iNet and iNet 6 are the Juno's names.
+[46:48] those names for these two protocols. Notice that all of these IP addresses are configured
+[46:52] under the logic
+[46:52] the logical interface, which in this case is Unit 0. Also, notice that Juno's
+[46:57] that Juno's uses slash notation for its subnet masks.
+[47:00] This is true for both IPv4.
+[47:01] 4 and IPv6. This is much easier than typing something like 172.6.
+[47:06] 2.16.10.1, 255.255.255.0.
+[47:10] zero, which is required on some other vendors and operating systems. As you can see, it's far
+[47:15] It's far quicker and more readable to just use Slash24.
+[47:19] You're careful earlier studies about...
+[47:19] Studies about physical interfaces and logical units
+[47:22] have made this section a breeze, along with your studies
+[47:24] about what the number 0-1-1 in the interface name actually mean.
+[47:24] about what the-
+[47:38] The configuration on the other interfaces is quite similar. Next, you'll see the configure
+[47:42] the configuration of the full interface's hierarchy on this device.
+[47:45] First though, it's worth taking a look at...
+[47:46] taking a look at Interface XE013.
+[47:49] In particular, we want you to look at the two lines that are
+[47:51] lines that are highlighted here because they both offer something interesting and new.
+[47:55] the first highlighted-
+[47:55] highlighted line shows an MTU configuration that is slightly different to the one you
+[47:59] just saw.
+[48:00] Earlier, you saw the MTU configuration on a physical interface, which sets the layer to MTU.
+[48:04] M2M2U. Here though, notice that the M2U config is set at the family iNet level.
+[48:09] level. This means that IPv4 traffic on this interface will have a layer 3MTU.
+[48:13] that is the total packet size up to the IPv4 header of 900 bytes.
+[48:18] 100 bytes. IPv6 traffic will not be affected. The second highlighted line...
+[48:22] line, shows an IPv6 configuration that you might initially think is incomplete.
+[48:27] It simply says family iNet 6 on the logical interface.
+[48:30] In fact, though, this configuration is
+[48:31] configuration is completely valid and indeed is quite a common choice because this configuration
+[48:36] configuration enables IPv6 in such a way that there is only a link local address.
+[48:40] without also configuring an explicit address.
+[48:41] That'll...
+[48:43] Later on, you'll learn about routing protocols.
+[48:45] protocols, which are a way for routers to talk to exchange information about each other's
+[48:49] prefixes.
+[48:49] enabling end-to-end communication.
+[48:51] You'll also learn about something called
+[48:53] a loop back in
+[48:54] back interface, which is an always on virtual address that can be accessed via any
+[48:58] any network interface. Once you've learned these two concepts, you will
+[49:02] understand why many large notes
+[49:03] large networks choose to only configure family iNet 6 for link local addressing on core links.
+[49:07] links without also adding an explicit address.
+[49:10] In short, though, we'll tell you now that the reason is
+[49:12] reason is because explicit addresses are not needed.
+[49:15] As long as the devices have link local addresses,
+[49:16] addresses, routing protocols will work.
+[49:19] In addition, as long as the devices have an always-on loopback-
+[49:21] on loop back address, remote devices can communicate with each other.
+[49:26] Now that you've seen one interface you're ready to read the full interfaces hierarchy
+[49:30] This example explores the output of the Show Configuration Interfaces command, piped
+[49:34] piped to display set.
+[49:36] Once again, you can see how helpful it is to focus on just a specific
+[49:39] specific piece of the hierarchy. We've added some color to this output to make it easier for you to
+[49:43] for you to see each individual interface.
+[49:45] Thanks to your studies earlier, you can now read almost...
+[49:48] almost every line of this output. For example, immediately your eyes will recognize the
+[49:52] the very same four gigabit ethernet interfaces you verified earlier on in the two modules.
+[49:57] modules on network interfaces.
+[49:59] You can see configuration that relates to LAN interfaces, xe-z
+[50:01] xe011 to xe013, and then also van interface xe011
+[50:06] You can also see a few incorrect IP addresses, which you'll fix very soon.
+[50:10] soon.
+[50:11] In this particular configuration, every interface has a description, and one's...
+[50:15] and one single logical unit on it, configured as unit zero.
+[50:19] Again, this is exact-
+[50:19] This is exactly what you learned earlier on interfaces.
+[50:22] Every physical interface always has at least one logical unit.
+[50:24] logical unit.
+[50:25] Further, the unit number is usually zero when there is just one unit.
+[50:28] Later on you'll see some exceptions to this when you learn how to add VLAN tags onto an interface.
+[50:33] interface, but for a regular untagged IP interface, unit zero is always the number you'll see.
+[50:37] you'll see. One of the tasks...
+[50:42] One of the tasks on your list was to answer the question, are there any interfaces with
+[50:46] custom MTU configures?
+[50:46] you configuration. Earlier you saw every single line of interface configuration on your
+[50:51] customer's router.
+[50:51] router. If you were to read it slowly, you would find the answer. However, the task
+[50:55] The task becomes more challenging on a device with hundreds of interfaces.
+[50:56] become
+[50:59] In this case, there is a high chance...
+[51:00] high chance of you missing a line of configuration.
+[51:03] Luckily, we have a trick to teach you.
+[51:05] Here's a quick way to solve this task.
+[51:07] Use the Juno search tools to your advantage.
+[51:09] Notice here that you can see the very same show configuration interfaces pipe display set command that you
+[51:13] command that you learned earlier.
+[51:15] However, something is different here.
+[51:17] Notice that in addition, the command is piped.
+[51:18] command is piped one more time so that the output is sent to the match command.
+[51:22] In particular, notice the
+[51:22] Notice that you are asking for every line of output that contains the text M-T-U.
+[51:26] The result is...
+[51:27] result is far more manageable.
+[51:29] With no effort at all, you can easily see that there are two interfaces.
+[51:31] interfaces with custom MTU settings, XE011 and XE013.
+[51:36] pause for a moment here to enjoy how simple this was there could be dozens of
+[51:40] of interfaces on a device in your own network.
+[51:41] Enter
+[51:43] And as you can see, all it takes is one single command.
+[51:45] demand to find a list of all interfaces with custom MTUs.
+[51:49] In fact, because you're just...
+[51:49] because you're just searching for a string of text,
+[51:51] your command finds both Layer 2 and Layer 3 MT.
+[51:54] You can imagine how helpful this command is.
+[51:57] In fact, Junos engineers use the
+[51:58] engineers use this trick every single day, it's very powerful.
+[52:02] Another task complete.
+[52:24] The concept of M.T.U often confuses...
+[52:25] and confuses newcomers, which is a shame because incorrect Mtu settings are a common cause
+[52:30] common cause of network problems.
+[52:32] For this reason, this example takes a moment once again...
+[52:34] Once again, to make it crystal clear what the difference is between the two configuration
+[52:38] statements shown here.
+[52:39] here. One of these config statements affects the physical MTU. The other affects the IPv4
+[52:43] for MTU. The terminology gets a bit confusing here because you might remember that the
+[52:48] the physical layer is known as layer one.
+[52:48] There's a-
+[52:51] For this reason, you might also hear people talk about
+[52:52] We'll talk about the Ethernet MTU, or the Media MTU, just to avoid misunderstanding.
+[52:57] understandings. As you can see, the physical Ethernet M.T.U. is set by the first
+[53:01] 1st Configuration Statement, affecting interface, XE01-1.
+[53:06] If you configure the M.T.U. directly onto a physical interface, this affects the layer 2 M.T.U.
+[53:10] to MTU. In other words, the largest frame, including the Ethernet header. By contrast,
+[53:15] By contrast, Interface XC013 only has a custom MTU for I-
+[53:19] for IPv4 traffic. You can see here that family i-net on this interface has a
+[53:24] a custom MTU of 900. If you configure the MTU on the family of a logical
+[53:24] the custom
+[53:28] The configuration will only affect that address family.
+[53:29] inner
+[53:32] In this case, I...
+[53:33] IPv6 traffic will not be affected.
+[53:36] Make a note of the fact that both XC01-
+[53:37] 0-1-1 and XC-0-1-3 have custom MTU settings.
+[53:42] Later on, you might find-
+[53:42] you might find that you need to delete these settings.
+[53:46] Finally, let's look at the product-
+[53:46] at the protocol's hierarchy in set view. You can probably guess what command you would use to view this.
+[53:51] You use Show Configuration Protocol's Pipe Display Set.
+[53:54] At this early stage in your studies,
+[53:55] studies, you might not yet have learned any protocols. However, you have at least had a
+[53:59] quick introduction to LL-
+[54:00] to LLDP, the link layer discovery protocol.
+[54:03] You can see from this output that it is
+[54:04] that it is often astonishingly easy to enable a protocol on an interface.
+[54:08] It is usually as soon as...
+[54:09] as mentioning the interface under the protocol's hierarchy for that protocol.
+[54:13] For example...
+[54:13] For example, LLDP is found under protocols LLDP where you can simply list each interface
+[54:18] interface that you want to enable LLDP.
+[54:20] With that in mind, you can see here that we have enabled LLDP-
+[54:22] LLDP on the three LAN interfaces that connect to the customer switch.
+[54:26] That's another task complete.
+[54:27] complete, LLDP is not enabled on the WAN interface.
+[54:31] By the way, notice here that...
+[54:31] Notice here that LLDP is enabled on the physical interface and not the logical unit.
+[54:36] This makes sense when you remember that as the name suggests this is a link layer protocol
+[54:40] layer protocol. Before you proceed, take a moment to really think about the fact that this
+[54:45] This protocol was not enabled under the interface's hierarchy, but was instead enabled within a higher...
+[54:45] Product
+[54:49] within a hierarchy dedicated to protocols.
+[54:52] The interface's hierarchy is dedicated to the can-
+[54:54] to the configuration of the interface itself rather than the protocols that run on that interface.
+[54:58] interface. This gives you the confidence of knowing that all configurations for a particular
+[55:03] protocol will
+[55:03] will be found only within its logical hierarchy.
+[55:09] This configuration hierarchy makes it so easy to enable
+[55:12] to enable protocols that you'll probably be able to guess how to enable most protocols.
+[55:16] In fact,
+[55:16] In fact, it's often as easy as the syntax, set protocols, protocol name, interface, interface
+[55:21] name.
+[55:21] It's not true for every single protocol, but it is true for many of them here. You can see
+[55:25] you can see three examples using protocols called RSTP, ISIS, and MPLS.
+[55:30] There's a strong chance you don't yet know anything about the protocols or even what these acronyms stand for.
+[55:34] stand for. That's fine. You'll learn more about them in time. However, even though you don't yet know these
+[55:39] don't yet know these protocols, you can see that you do know how to enable them in
+[55:42] Junos.
+[55:43] That's a pretty empowered-
+[55:43] pretty empowering thought. What you've learned so far in this module reveals some
+[55:48] It reveals something important.
+[55:50] You won't find 100% of interface configuration in the interface
+[55:52] interfaces hierarchy. If you enable a protocol on an interface, there's a good
+[55:56] chance that you'll find that...
+[55:57] you'll find this configuration in the protocol's hierarchy.
+[56:00] Is this a problem?
+[56:01] Does this mean that you...
+[56:01] That you need to use up your vital emergency troubleshooting time searching the configuration file for all the
+[56:06] for all the pieces of configuration that concern a particular interface?
+[56:09] Not at all. Earlier on...
+[56:10] Earlier on, you saw the power of the command show configuration pipe display set pipe match thing.
+[56:15] thing. We mentioned that Junos engineers use it all the time. You can use this very same
+[56:19] command to display...
+[56:19] to display configuration from multiple higher arkeys at once. Here, you can see the results of a command that's
+[56:24] command that starts with show configuration, which is then piped to display set.
+[56:28] it is then piped a second.
+[56:28] pipe the second time with a match condition.
+[56:31] In particular, it is being piped to match any line
+[56:33] any line of configuration that mentions the text xe0111 the result is a
+[56:37] The result is a combination of lines of configuration from both the interfaces and the protocols
+[56:42] higher arkeys.
+[56:42] The output here shows you the actual interface configuration and it also shows you the
+[56:46] shows you the fact that LLDP has been enabled on this interface.
+[56:50] If there were other protocols...
+[56:51] protocols enabled on this interface, this command would also reveal it.
+[56:55] Using this search command,
+[56:55] You can search for all mentions of an interface name throughout the entire configuration regardless.
+[57:00] regardless of the hierarchy that the interface is mentioned in.
+[57:03] This is very powerful stuff.
+[57:04] stuff.
+[59:46] Welcome to the reading the different hierarchy levels of a Junos OS configuration in hierarchy view module.
+[59:51] view module. By the end of this module, you should be able to explain how to read a Junos OS router
+[59:55] router configuration in hierarchy view.
+[1:00:03] Now that you understand how
+[1:00:04] Understand how set view works. It's time to compare it to the hierarchy view. This example shows
+[1:00:09] This example shows just the first few lines of the full output of the show configuration
+[1:00:13] command.
+[1:00:13] as shown by the word, more, at the bottom of the output.
+[1:00:17] This view actually shows exactly-
+[1:00:18] exactly the same information as in set view. This might be surprising to hear
+[1:00:22] considering that the information is clearly laid out in a radically different way.
+[1:00:26] However, if...
+[1:00:27] If you read it slowly you will see that in fact the two are more similar than you might think
+[1:00:31] you might think. For example, you can see we've highlighted the word system in red to show that this
+[1:00:36] show that this is one of the top level hierarchies. Then, you can see we've highlighted in blue
+[1:00:40] and blue some of the next level sub-hierarchies, such as host name, root authentication.
+[1:00:45] Login and services. Under each of those sub hierarchies you can then see
+[1:00:49] you can then see specific settings
+[1:00:51] that relate to that hierarchy.
+[1:00:53] For example, under services, you can
+[1:00:54] as you can see the words SSH and Telnet.
+[1:00:57] This really isn't that different from seeing one single line-
+[1:00:58] single line that says set system services SSH. In that respect, the output
+[1:01:03] The output here emphasizes the hierarchical nature of Junos OS.
+[1:01:07] The hierarchy is on fold-
+[1:01:07] on full display in this view.
+[1:01:11] This example redacts much of...
+[1:01:12] acts much of the output. To focus just on the configuration of your
+[1:01:38] employee user
+[1:01:39] user name. Notice that this example highlights each hierarchy in turn. Once again...
+[1:01:43] Once again, the output starts with the system hierarchy.
+[1:01:47] This hierarchy contains all the configures
+[1:01:48] the configuration that relates to the logical configuration of the system.
+[1:01:52] You know this already?
+[1:01:52] But a reminder never hurts the system log in hierarchy is where you find any pieces of config
+[1:01:57] of configuration that relate to custom usernames.
+[1:02:00] The system login user employee hierarchy.
+[1:02:01] hierarchy is where you find all the configuration for this user name in particular.
+[1:02:09] Just like in set view you can choose to view
+[1:02:10] choose to view any configuration of your choosing, starting from any point in the hierarchy.
+[1:02:15] This example shows the first half of the output of the Show Configuration Interfaces command.
+[1:02:20] If you look carefully, you'll see that the three LAN interfaces, xe0, 1,
+[1:02:24] 1-1-3 are shown, each with their unique configuration indented underneath.
+[1:02:29] You can see the highlighted interface, Xe012 and the IPv forage.
+[1:02:33] D4 address on this.
+[1:04:56] It's interface.
+[1:04:57] case. Clearly, this hierarchical view takes up more screen real estate when compared
+[1:05:01] to set view. However, notice that in this view, the dense wall of text is replaced with some
+[1:05:06] placed with something much easier on the eye, where all of the individual elements stand
+[1:05:10] out.
+[1:05:10] Thanks to the addition of some blank space in the output, it is far easier for specific
+[1:05:11] Thanks to the
+[1:05:14] pieces of configuration.
+[1:05:15] to grab your attention.
+[1:05:17] It is also very easy to see, hierarchically,
+[1:05:19] what these p-
+[1:05:19] what these pieces of configuration relate to.
+[1:05:22] By the way, notice in this output
+[1:05:23] that the configuration skips the
+[1:05:24] and skips the word interfaces in the actual output.
+[1:05:27] This is helpful because it means that screen space isn't
+[1:05:28] space isn't wasted. This command states that you want to read the configuration, starting
+[1:05:32] from the Interface's...
+[1:05:33] faces hierarchy, and as such, the output starts from one indentation down.
+[1:05:40] Earlier, you saw how to view the configuration from the point of view-
+[1:05:42] from the point of view of a particular hierarchy,
+[1:05:44] using the command, show configuration interfaces.
+[1:05:46] cases. In fact, though, you can even view the configuration starting at a sub-hierarchy.
+[1:05:51] This example shows the results of the Command Show Configuration Interfaces XC01.
+[1:05:55] 012. This displays all the pieces of configuration in that specific section of the hierarchy.
+[1:06:00] hierarchy. Notice that the output starts from the unit zero section because your show configuration
+[1:06:04] configuration command stated where in the hierarchy you want to start from.
+[1:06:08] If you have a device that has dozens of
+[1:06:09] dozens of interfaces on it, this kind of knowledge can be very helpful.
+[1:06:13] As you learn more about protocol-
+[1:06:13] about protocols and firewall filters,
+[1:06:15] you'll see many helpful uses
+[1:06:17] of this sub-hierarchical configuration.
+[1:06:18] And of course, you can always pipe to display set to see the information and set...
+[1:06:22] in set view. In this case, you do see the entire configuration statement. To give a
+[1:06:27] To give a second example, imagine a router that is running five different protocols.
+[1:06:31] Now that you know you can view...
+[1:06:31] You can view any specific part of the hierarchy.
+[1:06:34] You can easily zoom into something like show configuration
+[1:06:36] configuration protocols LLDP to focus just on that protocol and nothing else.
+[1:06:41] Later on when you learn a few more protocols you'll see examples that do exactly this
+[1:06:45] the true value of the hierarchy mode is not all
+[1:06:49] is not always obvious to new students, because they start learning Junos on smaller,
+[1:06:53] more simple configuration
+[1:06:54] configurations, such as the one on your customer's router. This means that you don't get the
+[1:06:58] chance to see the power
+[1:06:58] see the power that the hierarchy provides you.
+[1:07:01] For this reason, many students prefer to use set view.
+[1:07:03] to set view in their early Juno studies.
+[1:07:05] They find it more intuitive because they also get to see the commands that
+[1:07:07] commands that configure the device.
+[1:07:09] In addition, they like the fact that they can see more
+[1:07:11] information on the screen at once.
+[1:07:12] the screen at once. On smaller and more simple devices, this is completely understandable.
+[1:07:16] However, the problem here is that new students often favor set views so much that
+[1:07:21] that they never even try to become comfortable with a hierarchy view.
+[1:07:24] After all, what's the point?
+[1:07:25] point. When set view gives you everything you need. You might notice that you will become more
+[1:07:30] more comfortable with b-
+[1:07:30] with both modes as the course progresses.
+[1:07:32] Over the coming modules, you will be introduced to increased
+[1:07:34] increasingly more complicated concepts.
+[1:07:37] In doing so, the value of hierarchy mode will soon...
+[1:07:39] will soon become clear to you. In doing so, you will see just how frequently you will use the hierarchy view...
+[1:07:43] ARCHI view in your own production networks.
+[1:07:46] Remember, professional Junos engineers use both views.
+[1:07:48] views because each view offers this advantage, emphasized enough just how important it is to become familiar
+[1:07:52] familiar with both views, if you can become comfortable with hierarchy view on a similar configuration, you'll
+[1:07:57] You'll have no problems at all reading a more complicated configuration in that same view take it
+[1:08:01] Take advantage of the fact that you can build your confidence with hierarchy view on a relatively small and simple configuration.
+[1:08:06] configuration. Trust us, the future you will thank you for it.
+[1:09:29] Welcome to the Reading a Juno's OS Configuration.
+[1:09:31] configuration lab module.
+[1:09:36] To begin this lab, you must have completed these prerequisites.
+[1:09:42] In this lab module, you learn how to read and navigate the
+[1:09:45] the configuration on a Juno's device. You become familiar with the two ways Juno
+[1:09:49] ways Junos can display a configuration and the advantages of each method.
+[1:09:54] This will help you to understand how to read and manipulate Juno's configuration to
+[1:09:58] to aid in your real-world day-to-day networking tasks.
+[1:10:02] As a bonus, you let-
+[1:10:03] you learn some CLI tips along the way.
+[1:10:06] To do this, you should log on to the
+[1:10:07] on to the device called router one.
+[1:10:10] Before you log on to router one, you should study the
+[1:10:12] study the topology of your lab, learn how to connect to the devices, and load the bass
+[1:10:16] load the base configuration for each device from the virtual student desktop.
+[1:10:21] At the end of this lab, you will be able to view the full device configuration.
+[1:10:25] in both set and hierarchy view.
+[1:10:28] Identify the Juno's hierarchy...
+[1:10:30] hierarchies in both views.
+[1:10:32] Display only the parts of the Juno's hierarchy
+[1:10:34] you want to see. Use Juno CLI filtering tools to only display specific
+[1:10:34] that you want to see.
+[1:10:39] specific lines of configuration.
+[1:10:41] Click continue to begin the lab.
+[1:10:46] This lab consists of five parts.
+[1:10:48] parts. Click each part to view its guided demonstration.
+[1:11:13] Part 2. Loading the base configuration.
+[1:11:15] configuration. In this lab part you load the starting configuration for your device.
+[1:11:19] device, and you analyze the Logical Lab Topology Diagram and the Management Network Diagram.
+[1:11:24] diagram in the Lab Diagram section to identify the additional details you need
+[1:11:28] you need to be aware of for this lab.
+[1:11:31] Once this operation is complete, you log on...
+[1:11:33] You log onto your device from the virtual student desktop.
+[1:11:38] You can view each step of this lab part and perform the task in your lab
+[1:11:42] in your lab environment to the best of your ability.
+[1:11:45] If you need assistance, click play-
+[1:11:46] play demo to view a guided demonstration. To begin, click the first step
+[1:11:51] the first step in the steps column.
+[1:11:57] 1. From your virtual student desktop
+[1:12:00] top, open a new CLI window.
+[1:12:03] On the CLI, run the last...
+[1:12:04] Run the Lab 3 command.
+[1:12:07] This isn't a standard command in Linux.
+[1:12:09] In fact,
+[1:12:09] In fact, it's an alias for a longer command.
+[1:12:12] This command runs a script that...
+[1:12:13] grip that logs onto your device and configures it with the base configuration for this lab.
+[1:12:18] lab. Once you have deployed this command, you should see the script connecting to router
+[1:12:22] 1 and loading a configuration. If this operation is successful, the output
+[1:12:22] One.
+[1:12:27] The output indicates when you can progress to the next step in the lab.
+[1:12:31] The script takes...
+[1:12:31] The script takes approximately one minute in total to run.
+[1:13:12] Part 3. Viewing the device configuration using SET.
+[1:13:16] set view. In this lab part you become familiar with the way Junos
+[1:13:21] Let's configure it.
+[1:13:21] configuration is displayed in set view
+[1:13:24] and you learn how to use the Juno's hierarchy.
+[1:13:25] hierarchy to your benefit.
+[1:13:27] You become more proficient in reading Juno's configuration.
+[1:13:30] By learning to identify the various hierarchies and how to spot important
+[1:13:34] important pieces of information in the configuration.
+[1:13:38] You can view each step of this
+[1:13:39] step of this lab part and perform the task in your lab environment to the best of your ability.
+[1:13:43] If you need assistance, click play demo to view a guided demonstration.
+[1:13:48] To begin, click the first step in the steps column.
+[1:14:45] one from your CL
+[1:14:46] From your CLI session to router 1, type the command that displays the full device configuration.
+[1:14:51] configuration in set view, and then press enter.
+[1:14:55] Look for pieces of text that...
+[1:14:55] text that are the same between two or more consecutive lines, for example, set
+[1:15:00] Set System or Set Interfaces GE001.
+[1:15:00] system.
+[1:15:04] These elements help you...
+[1:15:04] help you understand the wider structure of the configuration.
+[1:15:07] You should recognize almost all of this
+[1:15:09] All of this configuration but keep an eye out for any lines that are completely new to you.
+[1:15:13] For the moment, just make a mental note of them, you'll be asked about them as this
+[1:15:18] as this module progresses.
+[1:15:20] Also, we want to reassure you by saying that you've learned
+[1:15:22] you've learned a lot of new concepts in a short space of time, so don't worry if there are
+[1:15:27] there are individual lines who's meaning you've forgotten.
+[1:15:30] As you progress through this lab...
+[1:15:31] lab, you'll come to understand the entire configuration on router 1.
+[1:15:53] 2. Type the command
+[1:15:54] Type the command that only shows the system section of the configuration, display it and set format.
+[1:15:58] format.
+[1:16:14] 3. Type the command that only shows you this
+[1:16:16] shows you the system services section of the configuration.
+[1:16:20] Display the output and set format.
+[1:16:21] set format. In the output, there is one piece of configuration that is new to you.
+[1:16:25] view. The netconf part of the configuration refers to a protocol that allows
+[1:16:30] allows remote devices to modify the configuration of a Junos device.
+[1:16:34] You might remember that at the beginning of this lab, you ran a script to load the base configuration.
+[1:16:39] configuration for this lab. You did, in fact, leverage the NetConf protocol.
+[1:16:43] protocol to do that operation. You'll learn more about Netconf later.
+[1:16:48] For now, just know that this is the configuration that enables it.
+[1:17:08] 4. Type the command that only
+[1:17:10] that only shows the system log-in section of the configuration.
+[1:17:14] Display it in Set 4-
+[1:17:15] set format. Notice how using the Juno's Hierarchy enables you to display on
+[1:17:19] only the parts of the configuration that you are interested in.
+[1:17:38] 5. Type the command that only shows you the syslog section of the
+[1:17:42] of the configuration.
+[1:17:44] Display it in the
+[1:18:01] 6. Type the command that only shows you the chassis section of the configure
+[1:18:04] the configuration, display it and set format.
+[1:18:35] 7. Type the command
+[1:18:36] the command that displays only the interfaces section of the configuration.
+[1:18:40] play it in set format. Once again, as you read this, look out for times
+[1:18:45] for times where the same text appears on multiple lines of output.
+[1:18:49] When you notice this, consider how this relates to the hierarchy of the configuration.
+[1:18:49] and you noticed.
+[1:19:08] 8. Type the command that only displays the Interfaces GE
+[1:19:12] BEE002 part of the configuration, display the output in set view.
+[1:19:16] and set view.
+[1:19:38] 9. Type the command
+[1:19:39] Select the command that displays just the protocol's hierarchy of the configuration, and set view.
+[1:20:00] Part 4
+[1:20:02] viewing the device configuration using hierarchical view.
+[1:20:06] In this lab part...
+[1:20:06] In this lab part, you become familiar with a different way of displaying Juno's configuration.
+[1:20:11] hierarchy view. You learn how to use this view to identify some of the
+[1:20:15] Some of the Juno's configuration hierarchies you already know about, along with some new ones.
+[1:20:19] some new ones. You gain an understanding of how to use this view to your advantage, and
+[1:20:24] and drill down into the Juno's hierarchy to display only the information that you are in.
+[1:20:28] that you are interested in.
+[1:20:31] You can view each step of this lab part and perform the
+[1:20:33] Perform the task in your lab environment to the best of your ability.
+[1:20:37] If you need assistance...
+[1:20:37] Click Play Demo to view a guided demonstration.
+[1:20:41] To begin...
+[1:20:42] click the first step in the steps column.
+[1:20:52] 1. Type the command that shows the full device configured
+[1:20:55] configuration in a hierarchical view, and then press Enter.
+[1:21:00] Press spacebar multiple times when you see the text more at the bottom of the page to reach
+[1:21:04] to reach the end of the command output.
+[1:21:07] The output is long and can be overwhelming it.
+[1:21:09] overwhelming at first. But don't worry, remember that this is the same text you saw
+[1:21:13] you saw in step 2.1, only it is displayed in a different format.
+[1:21:18] First, try to find the top level hierarchies.
+[1:21:22] You can identify...
+[1:21:22] You can identify them by the words that are left most in the configuration output.
+[1:21:27] Then look within each of these top level hierarchies to find the sub
+[1:21:31] the sub hierarchies, and then the sub-sub hierarchies, and so on.
+[1:21:36] With practice, you will soon be able to easily spot any configuration you might...
+[1:21:36] With...
+[1:21:40] you might be looking for.
+[1:21:56] 2. You can use the show configure
+[1:21:58] configuration command to drill down into specific parts of the hierarchy, and only do
+[1:22:03] only display the configuration that you are interested in.
+[1:22:07] The next three steps will show...
+[1:22:07] will show you how to use this important feature.
+[1:22:10] Type the command that only shows
+[1:22:12] shows the system section of the configuration. Display the output in higher
+[1:22:16] hierarchy view. When you compare the output with the output in the previous step,
+[1:22:17] Hey, Rocky.
+[1:22:21] Notice how the top level hierarchies have changed when you are viewing this
+[1:22:25] this section of the configuration.
+[1:22:42] three type the
+[1:22:43] Type the command that only shows the configuration for interface GE-0s.
+[1:22:48] 0-0-1, display the output in hierarchy view.
+[1:23:14] 4
+[1:23:15] Type the command that only shows the configuration for the user lab.
+[1:23:20] Display this configuration in Hierarchy view.
+[1:23:23] Notice how far you...
+[1:23:24] far you've managed to drill down into the hierarchy to view very specific parts.
+[1:23:28] parts of the configuration. This feature of the Juno's hierarchy is a
+[1:23:33] is a great time saver.
+[1:24:19] 5. There is an actual text file on the box that stores the conf-
+[1:24:22] the configuration. Later you'll learn how to export this file to other places
+[1:24:27] other places such as an external backup server.
+[1:24:31] For the moment...
+[1:24:31] moment, this step asks you a question about the contents of this file.
+[1:24:36] There are no CLI commands associated with this step.
+[1:24:39] This question is here to test your knowledge.
+[1:24:40] your knowledge.
+[1:24:56] Part 5, filtering output using the two
+[1:24:58] using the two configuration views.
+[1:25:01] In this lab part, you use the knowledge you've gained
+[1:25:03] you've gained in part 2 and part 3 of this lab to improve your information finding
+[1:25:07] finding skills. You might not always want to display the entire configuration under a
+[1:25:12] under a particular hierarchy.
+[1:25:14] In the next few steps, you learn how to use the built-
+[1:25:16] the built-in Juno's filtering tools to display the exact parts of the configuration.
+[1:25:21] that you are interested in. You can view each step of this lab part and
+[1:25:25] and perform the task in your lab environment to the best of your ability.
+[1:25:29] If you need assistance,
+[1:25:30] assistance, click Play Demo to view a guided demonstration.
+[1:25:34] To begin...
+[1:25:34] Begin.
+[1:25:35] Click the first step in the steps column.
+[1:25:52] 1. Suppose you were asked to create a list of all the configured gigabit ethernet
+[1:25:57] internet interfaces on this device.
+[1:25:59] You could do this using either set view.
+[1:26:01] view or hierarchy view.
+[1:26:04] The next two steps explore both options.
+[1:26:06] options and ask you to consider which method would be the best to achieve this goal.
+[1:26:10] this goal. Type the command that displays all the configured gigabit ethernet inner
+[1:26:15] Internet interfaces on this device.
+[1:26:17] Display the configuration using set view.
+[1:26:19] that view.
+[1:26:30] 2. Type the command that allows you to see all the
+[1:26:33] to see all the configured GE interfaces, but this time, use hierarchy view to...
+[1:26:37] to display the configuration.
+[1:26:53] 3. Type the command that shows you how-
+[1:26:55] shows you how many GE interfaces are configured on the device.
+[1:26:59] Use the Count Action...
+[1:27:00] to display the number of interfaces.
+[1:27:03] Step two in part four of this lab module.
+[1:27:04] Lab module, clues you in on which configuration view you need to use to display this information.
+[1:27:09] information.
+[1:27:28] 4. Display the GE interfaces that are configured with IPv-
+[1:27:31] IPv6 addresses.
+[1:27:33] Display this out.
+[1:27:55] 5. This step emphasizes to you how important it is to run these
+[1:27:58] to run these search commands using set view rather than hierarchy view.
+[1:28:03] If you choose the
+[1:28:03] If you choose the wrong view, you might not get the results you'd hoped for.
+[1:28:07] Type the same command again.
+[1:28:07] And again, but this time, display the command output in hierarchy view.
+[1:28:22] 6. Type the command that reveals the IPv4
+[1:28:25] 4 and IPv6 addresses that are configured on each interface.
+[1:28:30] Display this...
+[1:28:30] display this output and set view.
+[1:28:38] 7. Type the command...
+[1:28:39] the command that displays which interfaces are configured with the iNet address family.
+[1:28:43] display this output in set view. When you formulate the command for this step,
+[1:28:48] Take into consideration that the text iNet is present in both iNet and
+[1:28:52] net and iNet6.
+[1:29:03] 8. Type the command that shows you all the
+[1:29:06] you all occurrences of GE001 throughout the configuration.
+[1:29:18] 9. Before you end this...
+[1:29:19] To end this lab module, we highly recommend that you close all SSH windows so that when
+[1:29:24] so that when you begin your next lab module, you will have the advantage of a clean window.
+[1:29:28] window. Experience has shown us that users find this very helpful to help them
+[1:29:33] help them separate the configuration they have deployed between the various labs.
