@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lab - Deploying and Managing Junos OS Configuration | JNCIA-Junos</title>
+  <meta name="description" content="Step-by-step Junos lab guide: candidate configuration, deploying changes, editing IPv4/IPv6, deleting config hierarchically, and commit confirmed." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #0d1117; color: #c9d1d9; line-height: 1.7; }
+    .page-wrap { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+    header { border-bottom: 2px solid #21262d; padding-bottom: 1.5rem; margin-bottom: 2.5rem; }
+    .cert-badge { display: inline-block; background: linear-gradient(135deg, #1f6feb, #388bfd); color: #fff; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.2rem 0.7rem; border-radius: 20px; margin-bottom: 0.75rem; }
+    h1 { font-size: 1.9rem; font-weight: 700; color: #e6edf3; line-height: 1.25; margin-bottom: 0.5rem; }
+    .subtitle { color: #8b949e; font-size: 0.92rem; }
+    .module-pills { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .pill { background: #161b22; border: 1px solid #30363d; color: #8b949e; font-size: 0.78rem; padding: 0.2rem 0.65rem; border-radius: 20px; }
+    h2 { font-size: 1.25rem; font-weight: 700; color: #e6edf3; margin: 2.5rem 0 1rem; padding-bottom: 0.4rem; border-bottom: 1px solid #21262d; display: flex; align-items: center; gap: 0.5rem; }
+    h3 { font-size: 1rem; font-weight: 700; color: #e6edf3; margin: 1.5rem 0 0.5rem; }
+    .info-box { background: #161b22; border: 1px solid #30363d; border-left: 4px solid #388bfd; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 1.25rem; font-size: 0.93rem; }
+    .info-box.warning { border-left-color: #d29922; background: #161200; }
+    .info-box.success { border-left-color: #3fb950; background: #0a1a0e; }
+    .info-box.tip { border-left-color: #a371f7; background: #130d1e; }
+    .info-box strong { color: #e6edf3; }
+    pre { background: #010409; border: 1px solid #30363d; border-radius: 8px; padding: 1rem 1.25rem; overflow-x: auto; margin: 0.75rem 0 1rem; font-size: 0.87rem; line-height: 1.6; }
+    code { font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace; color: #e6edf3; }
+    pre code { color: #e6edf3; }
+    .kw { color: #ff7b72; }
+    .val { color: #a5d6ff; }
+    .cmt { color: #6e7681; font-style: italic; }
+    .ok { color: #3fb950; }
+    .err { color: #f85149; }
+    .diff-add { color: #3fb950; }
+    .diff-del { color: #f85149; }
+    .diff-ctx { color: #8b949e; }
+    .prompt { color: #d29922; }
+    .annotation { display: inline; background: rgba(53,139,253,0.15); border-bottom: 1px dashed #388bfd; color: #79c0ff; }
+    .task-card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 1.5rem 1.75rem; margin-bottom: 2rem; }
+    .task-header { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; }
+    .task-num { background: linear-gradient(135deg, #1f6feb, #388bfd); color: #fff; font-weight: 700; font-size: 0.85rem; min-width: 2.2rem; height: 2.2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 0.1rem; }
+    .task-goal { font-weight: 700; color: #e6edf3; font-size: 1.05rem; line-height: 1.3; }
+    .objective { font-size: 0.85rem; font-weight: 400; color: #8b949e; margin-top: 0.25rem; }
+    .label { display: inline-block; font-size: 0.73rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; padding: 0.15rem 0.55rem; border-radius: 4px; margin-bottom: 0.4rem; margin-top: 0.75rem; }
+    .cmd-label { background: #0d419d; color: #79c0ff; }
+    .output-label { background: #1a1000; color: #d29922; }
+    .output-block { background: #010409; border: 1px solid #30363d; border-radius: 8px; padding: 0.75rem 1.25rem; font-family: 'Cascadia Code','Fira Code','Consolas',monospace; font-size: 0.85rem; margin: 0.5rem 0 1rem; line-height: 1.7; overflow-x: auto; }
+    .topology { background: #0d1117; border: 1px solid #30363d; border-radius: 12px; padding: 1.5rem; margin: 1.25rem 0 2rem; text-align: center; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin: 0.75rem 0 1rem; }
+    th { background: #21262d; color: #e6edf3; font-weight: 700; text-align: left; padding: 0.6rem 0.9rem; }
+    td { padding: 0.55rem 0.9rem; border-top: 1px solid #21262d; color: #c9d1d9; vertical-align: top; }
+    td code, th code { background: #161b22; border: 1px solid #30363d; border-radius: 4px; padding: 0.1rem 0.35rem; font-size: 0.82rem; color: #79c0ff; }
+    tr:nth-child(even) td { background: #0d1117; }
+    .toc { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 1.25rem 1.5rem; margin-bottom: 2.5rem; }
+    .toc h2 { border: none; margin-top: 0; font-size: 1rem; color: #8b949e; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 0.6rem; }
+    .toc ol { padding-left: 1.25rem; }
+    .toc li { margin-bottom: 0.25rem; }
+    .toc a { color: #388bfd; text-decoration: none; }
+    .toc a:hover { text-decoration: underline; }
+    .verify-strip { background: #0a1a0e; border: 1px solid #238636; border-radius: 6px; padding: 0.6rem 1rem; font-size: 0.87rem; color: #3fb950; margin-top: 0.5rem; }
+    .verify-strip strong { color: #56d364; }
+    .trouble-strip { background: #130d1e; border: 1px solid #6e40c9; border-radius: 6px; padding: 0.6rem 1rem; font-size: 0.87rem; color: #a371f7; margin-top: 0.5rem; }
+    .trouble-strip strong { color: #c9a0f7; }
+    .trap-banner { background: #160a0a; border: 2px dashed #f85149; border-radius: 8px; padding: 1rem 1.25rem; margin: 0.75rem 0; font-size: 0.91rem; }
+    .trap-banner strong { color: #f85149; }
+    .cleanup { background: #0a1a0e; border: 1px solid #238636; border-radius: 12px; padding: 1.5rem 1.75rem; margin-top: 2rem; }
+    footer { text-align: center; font-size: 0.8rem; color: #6e7681; padding-top: 2rem; margin-top: 3rem; border-top: 1px solid #21262d; }
+    hr { border: none; border-top: 1px solid #21262d; margin: 2rem 0; }
+    ul, ol { padding-left: 1.5rem; }
+    li { margin-bottom: 0.3rem; }
+    p { margin-bottom: 0.75rem; }
+    a { color: #388bfd; }
+  </style>
+</head>
+<body>
+<div class="page-wrap">
+
+<header>
+  <div class="cert-badge">JNCIA-Junos &middot; Hands-On Lab</div>
+  <h1>Deploying &amp; Managing Junos OS Configuration</h1>
+  <p class="subtitle">
+    Session transcript: 22 August 2026, 9:38 PM &nbsp;&middot;&nbsp; Duration: ~51 min<br>
+    Modules covered: <em>Candidate Configuration &middot; Deploying Config &middot; Editing &amp; Deleting Config &middot; Commit &amp; Rollback &middot; Commit Confirmed</em>
+  </p>
+  <div class="module-pills">
+    <span class="pill">candidate configuration</span>
+    <span class="pill">set / delete</span>
+    <span class="pill">commit / commit-and-quit</span>
+    <span class="pill">rollback</span>
+    <span class="pill">commit confirmed</span>
+    <span class="pill">show | compare</span>
+    <span class="pill">IPv4 &middot; IPv6</span>
+    <span class="pill">MTU</span>
+  </div>
+</header>
+
+<h2 id="scenario">&#x1F4CB; Lab Scenario</h2>
+<p>Your manager has reviewed your reading-a-Junos-configuration skills and decided you are ready to make real changes. You are given <strong>four tasks</strong> on the device currently named <strong>R1</strong>. The tasks cover adding, editing, and deleting configuration using the Junos candidate-configuration workflow &mdash; nothing goes live until you <code>commit</code>.</p>
+<div class="info-box">
+  <strong>Device context (from transcript):</strong>
+  <ul style="margin-top:0.5rem;">
+    <li>Starting hostname: <code>R1</code></li>
+    <li>Management access: SSH (exact IP not stated in transcript &mdash; use your lab environment's management IP)</li>
+    <li>Login: standard Junos CLI &mdash; after login you are in <strong>operational mode</strong> (<code>&gt;</code> prompt)</li>
+    <li>Enter configuration mode: type <code>configure</code> &mdash; prompt changes to <code>#</code></li>
+  </ul>
+</div>
+<div class="info-box warning">
+  <strong>&#x26A0; XE-0/1/3 also has an incorrect IPv4 address</strong> (transcript ~04:52). This is <em>not</em> part of these four tasks. The course explicitly says you will return to it later. Do <em>not</em> fix it during this lab.
+</div>
+
+<h2 id="topology">&#x1F5FA; Lab Topology</h2>
+<p>Single Junos router. Three physical interfaces are touched during this lab. No multi-device topology.</p>
+<div class="topology">
+<svg viewBox="0 0 760 340" xmlns="http://www.w3.org/2000/svg" style="max-width:720px;width:100%;font-family:'Segoe UI',sans-serif;">
+  <rect width="760" height="340" fill="#0d1117" rx="10"/>
+  <!-- Router -->
+  <rect x="270" y="100" width="220" height="130" rx="14" fill="#161b22" stroke="#388bfd" stroke-width="2"/>
+  <rect x="310" y="118" width="140" height="22" rx="4" fill="#1f6feb" opacity="0.5"/>
+  <text x="380" y="134" text-anchor="middle" fill="#79c0ff" font-size="12" font-weight="700">Junos Router</text>
+  <text x="380" y="158" text-anchor="middle" fill="#e6edf3" font-size="13" font-weight="700">R1</text>
+  <text x="380" y="175" text-anchor="middle" fill="#8b949e" font-size="10">(renamed to "router1" in Task 1)</text>
+  <circle cx="280" cy="175" r="6" fill="#388bfd"/>
+  <circle cx="480" cy="175" r="6" fill="#388bfd"/>
+  <circle cx="380" cy="225" r="6" fill="#388bfd"/>
+  <!-- xe-0/1/2 left -->
+  <line x1="280" y1="175" x2="100" y2="175" stroke="#30363d" stroke-width="2" stroke-dasharray="6,3"/>
+  <rect x="10" y="118" width="88" height="116" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <text x="54" y="139" text-anchor="middle" fill="#d29922" font-size="10" font-weight="700">xe-0/1/2</text>
+  <line x1="14" y1="148" x2="94" y2="148" stroke="#30363d" stroke-width="1"/>
+  <text x="54" y="163" text-anchor="middle" fill="#f85149" font-size="9">WRONG IPv4:</text>
+  <text x="54" y="176" text-anchor="middle" fill="#f85149" font-size="9">172.16.200.1/24</text>
+  <text x="54" y="192" text-anchor="middle" fill="#3fb950" font-size="9">CORRECT IPv4:</text>
+  <text x="54" y="205" text-anchor="middle" fill="#3fb950" font-size="9">172.16.20.1/24</text>
+  <text x="185" y="167" text-anchor="middle" fill="#8b949e" font-size="10">Task 3: fix IPv4</text>
+  <!-- xe-0/1/5 right -->
+  <line x1="480" y1="175" x2="660" y2="175" stroke="#30363d" stroke-width="2" stroke-dasharray="6,3"/>
+  <rect x="660" y="118" width="92" height="116" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <text x="706" y="139" text-anchor="middle" fill="#d29922" font-size="10" font-weight="700">xe-0/1/5</text>
+  <line x1="664" y1="148" x2="748" y2="148" stroke="#30363d" stroke-width="1"/>
+  <text x="706" y="163" text-anchor="middle" fill="#8b949e" font-size="9">IPv6 (Task 2):</text>
+  <text x="706" y="177" text-anchor="middle" fill="#a5d6ff" font-size="8.5">2001:db8:1:2::1</text>
+  <text x="706" y="190" text-anchor="middle" fill="#a5d6ff" font-size="8.5">/64</text>
+  <text x="706" y="205" text-anchor="middle" fill="#8b949e" font-size="9">deleted in Bonus</text>
+  <text x="575" y="167" text-anchor="middle" fill="#8b949e" font-size="10">Task 2 + Bonus</text>
+  <!-- MTU below -->
+  <line x1="380" y1="225" x2="380" y2="292" stroke="#30363d" stroke-width="2" stroke-dasharray="6,3"/>
+  <rect x="285" y="292" width="190" height="40" rx="6" fill="#161b22" stroke="#d29922" stroke-width="1"/>
+  <text x="380" y="309" text-anchor="middle" fill="#d29922" font-size="10" font-weight="700">Custom MTU interfaces (x2)</text>
+  <text x="380" y="324" text-anchor="middle" fill="#8b949e" font-size="9">Task 4: find and delete all custom MTU settings</text>
+  <!-- Legend -->
+  <rect x="10" y="10" width="204" height="78" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <text x="20" y="28" fill="#8b949e" font-size="10" font-weight="700">LEGEND</text>
+  <circle cx="25" cy="44" r="5" fill="#f85149"/>
+  <text x="36" y="48" fill="#c9d1d9" font-size="9">Intentionally incorrect value (trap)</text>
+  <circle cx="25" cy="60" r="5" fill="#3fb950"/>
+  <text x="36" y="64" fill="#c9d1d9" font-size="9">Correct / target value</text>
+  <circle cx="25" cy="76" r="5" fill="#388bfd"/>
+  <text x="36" y="80" fill="#c9d1d9" font-size="9">Interface port on router</text>
+  <!-- Task map -->
+  <rect x="540" y="10" width="212" height="88" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <text x="550" y="28" fill="#8b949e" font-size="10" font-weight="700">TASK MAP</text>
+  <text x="550" y="44" fill="#c9d1d9" font-size="9">Task 1 &middot; Rename R1 &rarr; router1</text>
+  <text x="550" y="58" fill="#c9d1d9" font-size="9">Task 2 &middot; Add IPv6 on xe-0/1/5</text>
+  <text x="550" y="72" fill="#c9d1d9" font-size="9">Task 3 &middot; Fix IPv4 on xe-0/1/2</text>
+  <text x="550" y="86" fill="#c9d1d9" font-size="9">Task 4 &middot; Delete custom MTU settings</text>
+</svg>
+</div>
+
+<h2 id="prereqs">&#x2705; Prerequisites</h2>
+<table>
+  <thead><tr><th>Item</th><th>Detail</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Base config loaded</strong></td><td>Previous module's config must be on device: hostname <code>R1</code>, xe-0/1/2 with wrong IPv4 <code>172.16.200.1/24</code>, xe-0/1/5 with no config, two interfaces with custom MTU values, and xe-0/1/3 with another wrong IPv4 (leave it).</td></tr>
+    <tr><td><strong>CLI access</strong></td><td>SSH or console to the router using your lab environment's management IP.</td></tr>
+    <tr><td><strong>Prior modules</strong></td><td><em>Reading a Junos OS Configuration</em> completed &mdash; you've seen set-format output and the hierarchy.</td></tr>
+    <tr><td><strong>Optional first step</strong></td><td>Run <code>set cli screen-width 1000</code> in operational mode right after login. Prevents long commands being clipped. Session-only, not saved.</td></tr>
+  </tbody>
+</table>
+
+<div class="toc">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#task1">Task 1 &mdash; Change hostname from R1 to router1</a></li>
+    <li><a href="#task2">Task 2 &mdash; Add IPv6 address to xe-0/1/5</a></li>
+    <li><a href="#task3">Task 3 &mdash; Fix the incorrect IPv4 address on xe-0/1/2</a></li>
+    <li><a href="#task4">Task 4 &mdash; Delete all custom MTU settings</a></li>
+    <li><a href="#bonus">Bonus Drill &mdash; Delete xe-0/1/5 entirely (hierarchical delete)</a></li>
+    <li><a href="#commit-confirmed">Commit Confirmed &mdash; Safe remote changes</a></li>
+    <li><a href="#traps">Trap Summary</a></li>
+    <li><a href="#reference">Quick Reference: Key Commands</a></li>
+    <li><a href="#cleanup">Cleanup &amp; Wrap-Up</a></li>
+  </ol>
+</div>
+
+<hr/>
+
+<!-- TASK 1 -->
+<div class="task-card" id="task1">
+  <div class="task-header">
+    <div class="task-num">1</div>
+    <div>
+      <div class="task-goal">Change the hostname from <code>R1</code> to <code>router1</code></div>
+      <div class="objective">Goal: understand that hostname is a single-value field &mdash; a new <code>set</code> overrides it; no <code>delete</code> needed first.</div>
+    </div>
+  </div>
+  <div class="label cmd-label">Step 1 &mdash; Enter configuration mode</div>
+<pre><code><span class="prompt">root@R1&gt;</span> <span class="kw">configure</span>
+<span class="cmt">-- prompt changes from &gt; to # --</span>
+<span class="prompt">root@R1#</span></code></pre>
+  <div class="label cmd-label">Step 2 &mdash; Set the new hostname</div>
+<pre><code><span class="prompt">root@R1#</span> <span class="kw">set</span> system host-name <span class="val">router1</span></code></pre>
+  <div class="info-box">
+    <strong>Why the prompt still shows R1:</strong> The change is staged in the candidate configuration only. The prompt does not update until you <code>commit</code>.
+  </div>
+  <div class="label cmd-label">Step 3 &mdash; Review your proposed change</div>
+<pre><code><span class="prompt">root@R1#</span> <span class="kw">show</span> | compare</code></pre>
+  <div class="label output-label">Expected output</div>
+  <div class="output-block">
+[<span class="diff-ctx">edit system</span>]
+<span class="diff-del">-  host-name R1;</span>
+<span class="diff-add">+  host-name router1;</span>
+  </div>
+  <p>The <code>-</code> line = what is removed. The <code>+</code> line = what is added. Only this one line should appear.</p>
+  <div class="label cmd-label">Step 4 &mdash; Commit</div>
+<pre><code><span class="prompt">root@R1#</span> <span class="kw">commit</span>
+<span class="ok">commit complete</span>
+<span class="cmt">-- prompt now shows the new hostname --</span>
+<span class="prompt">root@router1#</span></code></pre>
+  <p>Alternatively, use <code>commit and-quit</code> to save and return to operational mode in one step.</p>
+  <div class="verify-strip"><strong>&#x2713; Verification:</strong> Prompt reads <code>root@router1#</code>. Run <code>show system host-name</code> to confirm programmatically.</div>
+  <div class="trouble-strip"><strong>&#x1F50D; Troubleshoot:</strong> If commit fails, run <code>commit check</code> first to see the specific error. If <code>show | compare</code> shows nothing, you may not have entered the set command correctly.</div>
+</div>
+
+<!-- TASK 2 -->
+<div class="task-card" id="task2">
+  <div class="task-header">
+    <div class="task-num">2</div>
+    <div>
+      <div class="task-goal">Add IPv6 address <code>2001:db8:1:2::1/64</code> to interface <code>xe-0/1/5</code></div>
+      <div class="objective">Goal: xe-0/1/5 is currently blank. One set command adds unit 0, the address family, and the address simultaneously.</div>
+    </div>
+  </div>
+  <div class="label cmd-label">Enter configuration mode (if not already in it)</div>
+<pre><code><span class="prompt">root@router1&gt;</span> <span class="kw">configure</span></code></pre>
+  <div class="label cmd-label">Add the IPv6 address</div>
+<pre><code><span class="prompt">root@router1#</span> <span class="kw">set</span> interfaces <span class="val">xe-0/1/5</span> unit <span class="val">0</span> family inet6 address <span class="val">2001:db8:1:2::1/64</span></code></pre>
+  <p>One command achieves four things: names the interface, sets unit 0, enables <code>family inet6</code>, and assigns the address.</p>
+  <div class="label cmd-label">Review the proposed change</div>
+<pre><code><span class="prompt">root@router1#</span> <span class="kw">show</span> | compare</code></pre>
+  <div class="label output-label">Expected &mdash; all additions, no minus signs (interface was blank)</div>
+  <div class="output-block">
+[<span class="diff-ctx">edit interfaces xe-0/1/5</span>]
+<span class="diff-add">+   unit 0 {</span>
+<span class="diff-add">+       family inet6 {</span>
+<span class="diff-add">+           address 2001:db8:1:2::1/64;</span>
+<span class="diff-add">+       }</span>
+<span class="diff-add">+   }</span>
+  </div>
+  <div class="label cmd-label">Commit</div>
+<pre><code><span class="prompt">root@router1#</span> <span class="kw">commit</span>
+<span class="ok">commit complete</span></code></pre>
+  <div class="verify-strip"><strong>&#x2713; Verification:</strong> Run <code>show interfaces xe-0/1/5</code>. Should show <strong>Physical link is Up</strong> and an inet6 address of <code>2001:db8:1:2::1/64</code>.</div>
+  <div class="trouble-strip"><strong>&#x1F50D; Troubleshoot:</strong> If address doesn't appear, run <code>commit check</code> &mdash; an invalid IPv6 address will be caught there before saving.</div>
+</div>
+
+<!-- TASK 3 -->
+<div class="task-card" id="task3">
+  <div class="task-header">
+    <div class="task-num">3</div>
+    <div>
+      <div class="task-goal">Fix the incorrect IPv4 address on <code>xe-0/1/2</code>: change <code>172.16.200.1/24</code> &rarr; <code>172.16.20.1/24</code></div>
+      <div class="objective">Goal: understand that interfaces support multiple IPs &mdash; you must delete the old address explicitly before adding the new one.</div>
+    </div>
+  </div>
+  <div class="trap-banner">
+    <strong>&#x26A0; TRAP &mdash; The key lesson of Task 3:</strong><br>
+    Simply running <code>set</code> with the new IP will <em>add it alongside</em> the old wrong address &mdash; not replace it. Interfaces can hold multiple IPv4 addresses. You must explicitly <strong>delete</strong> the old address first.
+  </div>
+  <div class="label cmd-label">Step 1 &mdash; Confirm the current wrong address</div>
+<pre><code><span class="prompt">root@router1#</span> <span class="kw">run show</span> configuration interfaces <span class="val">xe-0/1/2</span> | display set | match <span class="val">172</span></code></pre>
+  <div class="label output-label">Expected &mdash; reveals just the IPv4 line</div>
+  <div class="output-block">
+<span class="err">set interfaces xe-0/1/2 unit 0 family inet address 172.16.200.1/24</span>
+  </div>
+  <div class="label cmd-label">Step 2 &mdash; (WRONG WAY, do not commit) Naive approach</div>
+<pre><code><span class="cmt">-- This demonstrates the trap. Roll back after if you try it. --</span>
+<span class="prompt">root@router1#</span> <span class="kw">set</span> interfaces <span class="val">xe-0/1/2</span> unit <span class="val">0</span> family inet address <span class="val">172.16.20.1/24</span></code></pre>
+  <div class="label output-label">What show | compare reveals (the trap)</div>
+  <div class="output-block">
+[<span class="diff-ctx">edit interfaces xe-0/1/2 unit 0 family inet</span>]
+<span class="diff-ctx">    address 172.16.200.1/24;</span>   <span class="annotation">&larr; old wrong IP stays; no minus sign</span>
+<span class="diff-add">+   address 172.16.20.1/24;</span>    <span class="annotation">&larr; new IP added alongside</span>
+  </div>
+  <p>Old address has no minus &mdash; it stays. Roll back:</p>
+<pre><code><span class="prompt">root@router1#</span> <span class="kw">rollback</span></code></pre>
+  <div class="label cmd-label">Step 3 &mdash; CORRECT WAY: delete old, set new</div>
+<pre><code><span class="prompt">root@router1#</span> <span class="kw">delete</span> interfaces <span class="val">xe-0/1/2</span> unit <span class="val">0</span> family inet address <span class="val">172.16.200.1/24</span>
+<span class="prompt">root@router1#</span> <span class="kw">set</span>    interfaces <span class="val">xe-0/1/2</span> unit <span class="val">0</span> family inet address <span class="val">172.16.20.1/24</span></code></pre>
+  <p>Order doesn't matter &mdash; both land in the candidate config and deploy together at commit.</p>
+  <div class="label cmd-label">Step 4 &mdash; Verify before committing</div>
+<pre><code><span class="prompt">root@router1#</span> <span class="kw">show</span> | compare</code></pre>
+  <div class="label output-label">Expected &mdash; clean swap</div>
+  <div class="output-block">
+[<span class="diff-ctx">edit interfaces xe-0/1/2 unit 0 family inet</span>]
+<span class="diff-del">-   address 172.16.200.1/24;</span>
+<span class="diff-add">+   address 172.16.20.1/24;</span>
+  </div>
+  <div class="label cmd-label">Step 5 &mdash; Commit and return to operational mode</div>
+<pre><code><span class="prompt">root@router1#</span> <span class="kw">commit and-quit</span>
+<span class="ok">commit complete</span>
+<span class="prompt">root@router1&gt;</span></code></pre>
+  <div class="label cmd-label">Step 6 &mdash; Verify the live interface</div>
+<pre><code><span class="prompt">root@router1&gt;</span> <span class="kw">show</span> interfaces <span class="val">xe-0/1/2</span></code></pre>
+  <div class="label output-label">Look for these fields in the output</div>
+  <div class="output-block">
+Physical link is <span class="ok">Up</span>
+  ...
+  Protocol inet,
+    Addresses:
+      <span class="ok">172.16.20.1/24</span>         <span class="annotation">&larr; correct IP</span>
+  Protocol inet6,
+    Addresses:               <span class="annotation">&larr; IPv6 still present (untouched)</span>
+  </div>
+  <div class="verify-strip"><strong>&#x2713; Verification:</strong> <code>172.16.200.1/24</code> must NOT appear. Only <code>172.16.20.1/24</code> in inet addresses. IPv6 should still be there.</div>
+  <div class="trouble-strip"><strong>&#x1F50D; Troubleshoot:</strong> If both IPs appear, you forgot to delete the old one. Go back into config mode, delete the old address, commit again.</div>
+</div>
+
+<!-- TASK 4 -->
+<div class="task-card" id="task4">
+  <div class="task-header">
+    <div class="task-num">4</div>
+    <div>
+      <div class="task-goal">Find and delete all custom MTU settings across all interfaces</div>
+      <div class="objective">Goal: use a global config search to identify which two interfaces have custom MTU values, then delete just those values.</div>
+    </div>
+  </div>
+  <div class="label cmd-label">Step 1 &mdash; Search entire config for MTU (operational mode)</div>
+<pre><code><span class="prompt">root@router1&gt;</span> <span class="kw">show</span> configuration | display set | match <span class="val">mtu</span></code></pre>
+  <div class="label output-label">Expected &mdash; two lines, one per interface</div>
+  <div class="output-block">
+set interfaces <span class="annotation">xe-0/1/X</span> mtu <span class="val">NNNN</span>
+set interfaces <span class="annotation">xe-0/1/Y</span> mtu <span class="val">MMMM</span>
+<span class="cmt">-- Exact interface names and MTU values depend on your base config --</span>
+  </div>
+  <p>This <code>| display set | match</code> pattern is used constantly by Junos engineers. Works for any keyword. Memorize it.</p>
+  <div class="label cmd-label">Step 2 &mdash; Delete the MTU from both interfaces (config mode)</div>
+<pre><code><span class="prompt">root@router1&gt;</span> <span class="kw">configure</span>
+<span class="cmt">-- Replace xe-0/1/X and xe-0/1/Y with actual names from Step 1 --</span>
+<span class="prompt">root@router1#</span> <span class="kw">delete</span> interfaces <span class="val">xe-0/1/X</span> mtu
+<span class="prompt">root@router1#</span> <span class="kw">delete</span> interfaces <span class="val">xe-0/1/Y</span> mtu</code></pre>
+  <p>MTU is the deepest item in its hierarchy path, so no hierarchy trap here &mdash; delete operates precisely on it.</p>
+  <div class="label cmd-label">Step 3 &mdash; Verify with show | compare</div>
+<pre><code><span class="prompt">root@router1#</span> <span class="kw">show</span> | compare</code></pre>
+  <div class="label output-label">Expected &mdash; only minus signs, nothing added</div>
+  <div class="output-block">
+[<span class="diff-ctx">edit interfaces xe-0/1/X</span>]
+<span class="diff-del">-  mtu NNNN;</span>
+
+[<span class="diff-ctx">edit interfaces xe-0/1/Y</span>]
+<span class="diff-del">-  mtu MMMM;</span>
+  </div>
+  <div class="label cmd-label">Step 4 &mdash; Commit</div>
+<pre><code><span class="prompt">root@router1#</span> <span class="kw">commit</span>
+<span class="ok">commit complete</span></code></pre>
+  <div class="verify-strip"><strong>&#x2713; Verification:</strong> Run <code>show configuration | display set | match mtu</code> again. It should return <strong>no output</strong> &mdash; no interfaces with custom MTU remaining.</div>
+  <div class="trouble-strip"><strong>&#x1F50D; Troubleshoot:</strong> If output still appears, you missed one interface or mistyped the name. Check exact names from Step 1 and re-run the delete.</div>
+</div>
+
+<hr/>
+
+<!-- BONUS: HIERARCHICAL DELETE -->
+<div class="task-card" id="bonus">
+  <div class="task-header">
+    <div class="task-num" style="background:linear-gradient(135deg,#6e40c9,#a371f7);">&#x2605;</div>
+    <div>
+      <div class="task-goal">Bonus Drill &mdash; Delete <code>xe-0/1/5</code> entirely using hierarchical delete</div>
+      <div class="objective">Goal: understand why deleting the address &ne; deleting the interface, and how to delete an entire hierarchy branch in one command.</div>
+    </div>
+  </div>
+  <div class="info-box tip">
+    <strong>Context (from transcript ~32:32):</strong> The customer changed their mind. They don't want xe-0/1/5 right now. Delete <em>all</em> configuration from it. This drill teaches the single most important rule about <code>delete</code> in Junos.
+  </div>
+  <div class="label cmd-label">Step 1 &mdash; Read the current config before touching it</div>
+<pre><code><span class="prompt">root@router1&gt;</span> <span class="kw">show</span> configuration interfaces <span class="val">xe-0/1/5</span> | display set</code></pre>
+  <div class="label output-label">Expected</div>
+  <div class="output-block">
+<span class="diff-ctx">set interfaces xe-0/1/5 unit 0 family inet6 address 2001:db8:1:2::1/64</span>
+  </div>
+  <div class="label cmd-label">Step 2 &mdash; (WRONG WAY) Deleting only the address</div>
+<pre><code><span class="cmt">-- Intuitive but wrong. Roll back after. --</span>
+<span class="prompt">root@router1#</span> <span class="kw">delete</span> interfaces <span class="val">xe-0/1/5</span> unit <span class="val">0</span> family inet6 address <span class="val">2001:db8:1:2::1/64</span></code></pre>
+  <div class="label output-label">What show | compare reveals (the trap)</div>
+  <div class="output-block">
+[<span class="diff-ctx">edit interfaces xe-0/1/5 unit 0 family inet6</span>]
+<span class="diff-del">-   address 2001:db8:1:2::1/64;</span>
+<span class="cmt">-- interface, unit 0, and family inet6 are still there --</span>
+  </div>
+  <div class="trap-banner">
+    <strong>&#x26A0; Understanding the trap:</strong><br>
+    <code>delete</code> removes only the deepest item you specify. Deleting the address leaves <code>xe-0/1/5</code>, <code>unit 0</code>, and <code>family inet6</code> in the config. An interface with <code>family inet6</code> and no explicit address auto-assigns itself a link-local IPv6 address. The interface is still live even though you wanted it gone.
+  </div>
+<pre><code><span class="cmt">-- Roll back the wrong attempt --</span>
+<span class="prompt">root@router1#</span> <span class="kw">rollback</span></code></pre>
+  <div class="label cmd-label">Step 3 &mdash; CORRECT WAY: delete at the interface level</div>
+<pre><code><span class="prompt">root@router1#</span> <span class="kw">delete</span> interfaces <span class="val">xe-0/1/5</span></code></pre>
+  <p>Stopping at <code>xe-0/1/5</code> causes Junos to delete everything nested under it: unit 0, family inet6, the address &mdash; all gone.</p>
+  <div class="label cmd-label">Step 4 &mdash; Confirm with show | compare</div>
+<pre><code><span class="prompt">root@router1#</span> <span class="kw">show</span> | compare</code></pre>
+  <div class="label output-label">Expected &mdash; entire interface block marked for deletion</div>
+  <div class="output-block">
+[<span class="diff-ctx">edit interfaces</span>]
+<span class="diff-del">-  xe-0/1/5 {</span>
+<span class="diff-del">-      unit 0 {</span>
+<span class="diff-del">-          family inet6 {</span>
+<span class="diff-del">-              address 2001:db8:1:2::1/64;</span>
+<span class="diff-del">-          }</span>
+<span class="diff-del">-      }</span>
+<span class="diff-del">-  }</span>
+  </div>
+<pre><code><span class="prompt">root@router1#</span> <span class="kw">commit and-quit</span>
+<span class="ok">commit complete</span></code></pre>
+  <div class="verify-strip"><strong>&#x2713; Verification:</strong> <code>show configuration interfaces xe-0/1/5</code> returns nothing. <code>show interfaces xe-0/1/5</code> shows Physical link is Down with no addresses.</div>
+  <div class="info-box" style="margin-top:1.25rem;">
+    <strong>Six levels of delete &mdash; reference table (from transcript ~36:55):</strong>
+    <table style="margin-top:0.5rem;">
+      <thead><tr><th>Command</th><th>What is deleted</th></tr></thead>
+      <tbody>
+        <tr><td><code>delete interfaces xe-0/1/5 unit 0 family inet6 address 2001:db8:1:2::1/64</code></td><td>Only that address; unit, family, interface remain</td></tr>
+        <tr><td><code>delete interfaces xe-0/1/5 unit 0 family inet6</code></td><td>The inet6 block and its address</td></tr>
+        <tr><td><code>delete interfaces xe-0/1/5 unit 0</code></td><td>Logical unit 0 and everything under it</td></tr>
+        <tr><td><code>delete interfaces xe-0/1/5</code></td><td>Entire interface and all config &nbsp;&#x2713; <em>this is what you want</em></td></tr>
+        <tr><td><code>delete interfaces</code></td><td>Every single interface on the device</td></tr>
+        <tr><td><code>delete</code></td><td>The entire candidate configuration</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:0.5rem;font-size:0.85rem;color:#8b949e;">Last two are safe in a lab because you still need to commit. Type <code>rollback</code> to undo. <strong>Never run these on production.</strong></p>
+  </div>
+</div>
+
+<hr/>
+
+<!-- COMMIT CONFIRMED -->
+<div class="task-card" id="commit-confirmed">
+  <div class="task-header">
+    <div class="task-num" style="background:linear-gradient(135deg,#d29922,#e3b341);">&#x26A1;</div>
+    <div>
+      <div class="task-goal">Commit Confirmed &mdash; Safe remote changes with automatic rollback</div>
+      <div class="objective">Goal: use commit confirmed so that a bad change auto-rolls-back if you don't confirm it, preventing permanent lockout of a remote device.</div>
+    </div>
+  </div>
+  <div class="info-box warning">
+    <strong>Scenario (from transcript ~43:22):</strong> You are configuring a remote device. If you delete the wrong interface and commit normally, you lose your SSH session &mdash; and can't get back in because the interface is gone. <code>commit confirmed</code> solves this.
+  </div>
+  <div class="label cmd-label">Syntax &mdash; commit confirmed with custom timer</div>
+<pre><code><span class="prompt">root@router1#</span> <span class="kw">commit confirmed</span> <span class="val">2</span>
+<span class="ok">commit confirmed will be rolled back in 2 minutes</span>
+<span class="ok">commit complete</span></code></pre>
+  <p>The number is in minutes. Omit for the default of 10 minutes. The transcript example uses 2 minutes.</p>
+  <div class="info-box">
+    <strong>What happens while the timer runs:</strong><br>
+    Every time you press Enter, Junos prints a countdown. After zero it auto-rolls-back:
+    <div class="output-block" style="margin-top:0.5rem;">
+<span class="val">###[ Commit will be rolled back in 2 minutes ]###</span>
+<span class="val">###[ Commit will be rolled back in 1 minute  ]###</span>
+<span class="val">###[ Commit will be rolled back in less than 1 minute ]###</span>
+<span class="err">commit was not confirmed, automatic rollback complete</span>
+    </div>
+  </div>
+  <h3>Option A &mdash; Not happy: do nothing and wait</h3>
+  <p>The rollback fires automatically. Your connection will restore (if disrupted) after rollback completes.</p>
+  <h3>Option B &mdash; Happy: confirm and cancel the rollback</h3>
+<pre><code><span class="cmt">-- Any of these cancel the auto-rollback: --</span>
+<span class="prompt">root@router1#</span> <span class="kw">commit</span>            <span class="cmt">-- saves again (creates a 2nd commit entry)</span>
+<span class="prompt">root@router1#</span> <span class="kw">commit and-quit</span>   <span class="cmt">-- saves again, returns to op mode</span>
+<span class="prompt">root@router1#</span> <span class="kw">commit check</span>     <span class="cmt">-- validates only, does NOT save a 2nd time (recommended)</span></code></pre>
+  <div class="info-box tip">
+    <strong>Tip &mdash; Why prefer <code>commit check</code> to confirm?</strong><br>
+    Using plain <code>commit</code> to confirm saves your work twice (once for the original <code>commit confirmed</code>, once for the confirming commit). <code>show system commit</code> then shows two identical-looking entries. If you later need to roll back to the true previous config, you'd need to go to config 2, not config 1. Using <code>commit check</code> validates without saving a second time, keeping your rollback history cleaner.
+  </div>
+  <div class="label cmd-label">Power-user: all options combined in one command</div>
+<pre><code><span class="prompt">root@router1#</span> <span class="kw">commit confirmed</span> <span class="val">2</span> comment <span class="val">"Changed WAN IP per ticket #4821"</span> and-quit</code></pre>
+  <p>This single command: commits with 2-min auto-rollback, leaves a comment in commit history, and exits to operational mode.</p>
+  <div class="label cmd-label">View commit history (including comments)</div>
+<pre><code><span class="prompt">root@router1&gt;</span> <span class="kw">show</span> system commit</code></pre>
+  <div class="label output-label">Example</div>
+  <div class="output-block">
+0   2026-08-22 21:45:03 UTC by root via cli
+    <span class="ok">Changed WAN IP per ticket #4821</span>
+1   2026-08-22 21:40:01 UTC by root via cli
+2   2026-08-22 20:10:55 UTC by root via cli
+  </div>
+  <div class="verify-strip"><strong>&#x2713; Verification:</strong> Run <code>commit confirmed 2</code> and watch the countdown banners appear each time you press Enter. Type <code>commit check</code> before zero &mdash; the banner should disappear, confirming rollback was cancelled.</div>
+</div>
+
+<hr/>
+
+<!-- TRAP SUMMARY -->
+<h2 id="traps">&#x1F6A9; Intentional Traps &amp; Things NOT to Fix</h2>
+<div class="trap-banner">
+  <strong>&#x26A0; XE-0/1/3 has an incorrect IPv4 address</strong> &mdash; transcript ~04:48. The course says you will return to it later. Do NOT fix it in this lab. It is deliberately planted.
+</div>
+<div class="trap-banner" style="margin-top:1rem;">
+  <strong>&#x26A0; Task 3 trap &mdash; set does not replace an IPv4 address on an interface</strong><br>
+  Interfaces hold a list of addresses. Setting a second address adds to the list. The tell is in <code>show | compare</code>: if the old address has no minus sign, it is staying. Always delete the old address first.
+</div>
+<div class="trap-banner" style="margin-top:1rem;">
+  <strong>&#x26A0; Bonus trap &mdash; deleting the address leaves the interface alive with a link-local IPv6</strong><br>
+  Delete operates on the deepest point you specify. To remove an interface entirely, delete at the interface name level, not the address level.
+</div>
+
+<!-- QUICK REFERENCE -->
+<h2 id="reference">&#x26A1; Quick Reference: Key Commands</h2>
+<table>
+  <thead><tr><th>Command</th><th>Mode</th><th>What it does</th></tr></thead>
+  <tbody>
+    <tr><td><code>configure</code></td><td>Operational</td><td>Enter configuration mode</td></tr>
+    <tr><td><code>show | compare</code></td><td>Configuration</td><td>Diff candidate vs. active &mdash; use before every commit</td></tr>
+    <tr><td><code>commit</code></td><td>Configuration</td><td>Save and deploy; stay in config mode</td></tr>
+    <tr><td><code>commit and-quit</code></td><td>Configuration</td><td>Save and return to operational mode</td></tr>
+    <tr><td><code>commit check</code></td><td>Configuration</td><td>Validate syntax only; does NOT save</td></tr>
+    <tr><td><code>commit confirmed N</code></td><td>Configuration</td><td>Save, auto-rollback in N minutes unless confirmed</td></tr>
+    <tr><td><code>commit comment "..."</code></td><td>Configuration</td><td>Save with a note visible in show system commit</td></tr>
+    <tr><td><code>rollback</code></td><td>Configuration</td><td>Discard all candidate changes (shortcut for rollback 0)</td></tr>
+    <tr><td><code>rollback N</code></td><td>Configuration</td><td>Load historical config N into candidate (still need to commit)</td></tr>
+    <tr><td><code>show system commit</code></td><td>Operational</td><td>List all historical configs with timestamps and user</td></tr>
+    <tr><td><code>show configuration | compare rollback N</code></td><td>Operational</td><td>Diff active config vs. historical config N</td></tr>
+    <tr><td><code>show configuration | display set | match PATTERN</code></td><td>Operational</td><td>Global config search &mdash; find every line containing PATTERN</td></tr>
+    <tr><td><code>run show ...</code></td><td>Configuration</td><td>Run an operational command without leaving config mode (lab use; minimise in production)</td></tr>
+    <tr><td><code>set cli screen-width 1000</code></td><td>Operational</td><td>Prevent command clipping; session-only, not saved</td></tr>
+    <tr><td><code>exit</code></td><td>Configuration</td><td>Return to operational mode without saving</td></tr>
+  </tbody>
+</table>
+
+<hr/>
+
+<!-- CLEANUP -->
+<div class="cleanup" id="cleanup">
+  <h2 style="border:none;margin-top:0;">&#x1F9F9; Cleanup &amp; What Carries Forward</h2>
+  <h3>End state of your device after this lab</h3>
+  <ul>
+    <li>Hostname: <code>router1</code> (was <code>R1</code>)</li>
+    <li><code>xe-0/1/2</code> IPv4: <code>172.16.20.1/24</code> (corrected from <code>172.16.200.1/24</code>)</li>
+    <li><code>xe-0/1/5</code>: no configuration (deleted in bonus drill; or has IPv6 <code>2001:db8:1:2::1/64</code> if bonus was skipped)</li>
+    <li>All custom MTU settings: removed</li>
+    <li><code>xe-0/1/3</code>: still has its incorrect IPv4 address &mdash; leave it for the next module</li>
+  </ul>
+  <h3>Session housekeeping</h3>
+<pre><code><span class="cmt">-- Confirm you are in operational mode (prompt ends with &gt;, not #) --</span>
+<span class="prompt">root@router1&gt;</span> <span class="kw">show</span> configuration | display set   <span class="cmt">-- final sanity read</span>
+<span class="prompt">root@router1&gt;</span> exit                                  <span class="cmt">-- close SSH session</span></code></pre>
+  <h3>What carries forward to future labs</h3>
+  <ul>
+    <li><code>commit confirmed</code> &mdash; use this any time you make high-risk remote changes</li>
+    <li><code>show | compare</code> &mdash; run this before every single commit from now on</li>
+    <li><code>show configuration | display set | match</code> &mdash; use this any time you need to find a specific config line across all interfaces or protocols</li>
+    <li><code>xe-0/1/3</code> incorrect IPv4 will be fixed in a later module</li>
+  </ul>
+  <div class="info-box success" style="margin-top:1.25rem;">
+    <strong>&#x2705; Lab complete.</strong> You have practiced the full Junos configuration lifecycle: propose &rarr; review &rarr; validate &rarr; commit &rarr; verify &rarr; roll back. These four tasks cover the workflow you will use on every real Junos device.
+  </div>
+</div>
+
+<footer>
+  <p>JNCIA-Junos Lab Guide &middot; Generated from session transcript 22 Aug 2026 &middot; Personal study use only</p>
+</footer>
+
+</div>
+</body>
+</html>
